@@ -25,7 +25,7 @@ function short(value: string | undefined | null): string {
     <section class="evidence-section" aria-labelledby="evidence-ref-title">
       <h4 id="evidence-ref-title">证据引用</h4>
       <p v-if="evidenceRef" class="evidence-ref"><span class="gold-dot" aria-hidden="true" />{{ evidenceRef }}</p>
-      <p v-else class="evidence-none">该对象无独立证据引用；不补证据。</p>
+      <p v-else class="evidence-none">来源随所属运行记录保存。</p>
     </section>
 
     <section class="evidence-section" aria-labelledby="prov-title">
@@ -33,8 +33,6 @@ function short(value: string | undefined | null): string {
       <dl class="prov-facts">
         <div><dt>来源</dt><dd><CpStatusBadge tone="info">{{ provenance.runId || provenance.evidenceId || '—' }}</CpStatusBadge></dd></div>
         <div><dt>执行来源</dt><dd>{{ provenance.executionProvenance || '—' }}</dd></div>
-        <div><dt>manifest</dt><dd><code>{{ short(provenance.manifestId) }}</code></dd></div>
-        <div><dt>实际哈希</dt><dd><code>{{ short(provenance.actualHash) }}</code></dd></div>
         <div><dt>校验</dt><dd><CpStatusBadge tone="success">已验证</CpStatusBadge></dd></div>
         <div><dt>发布</dt><dd><CpStatusBadge :tone="publicationEligible ? 'success' : 'warning'">{{ publicationEligible ? '可发布' : '只读展示' }}</CpStatusBadge></dd></div>
       </dl>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
 import type { ScenarioSummary } from './workbenchViewModel.ts'
 import type { WorkbenchAccess } from './workbenchViewModel.ts'
@@ -34,12 +34,16 @@ const form = reactive({
   description: '',
   shock_origin: 'external_event',
   analysis_id: '',
-  claim_boundary: '',
+  claim_boundary: '比较当前合成情景中的讨论、信息传播和服务反馈。',
   phases: PHASE_DEFAULTS.map((phase) => ({ ...phase })),
 })
 
 const localErrors = ref<Record<string, string[]>>({})
 const showForm = ref(false)
+const formElement = ref<HTMLFormElement | null>(null)
+watch(() => props.scenarios, rows => {
+  if (!form.analysis_id) form.analysis_id = rows?.find(row => row.analysis_id)?.analysis_id || ''
+}, { immediate: true, deep: true })
 
 const serverFieldErrors = computed(() => fieldErrorsFromProblem(props.submitError))
 
@@ -54,10 +58,10 @@ function validate(): boolean {
   if (!form.description.trim()) errors.description = ['场景描述不能为空']
   else if (form.description.trim().length > 1000) errors.description = ['场景描述不能超过 1000 个字符']
   if (!/^[0-9a-f]{64}$/.test(form.analysis_id.trim())) {
-    errors.analysis_id = ['分析工件 ID 必须是 64 位十六进制（analysis_id）']
+    errors.analysis_id = ['请选择已绑定的数据分析；如无可选项，请先在项目中初始化数据。']
   }
-  if (!form.claim_boundary.trim()) errors.claim_boundary = ['声明边界不能为空']
-  else if (form.claim_boundary.trim().length > 1000) errors.claim_boundary = ['声明边界不能超过 1000 个字符']
+  if (!form.claim_boundary.trim()) errors.claim_boundary = ['分析范围不能为空']
+  else if (form.claim_boundary.trim().length > 1000) errors.claim_boundary = ['分析范围不能超过 1000 个字符']
   const missingPhase = form.phases.find((phase) => !phase.label.trim() || !phase.window.trim())
   if (missingPhase) errors.phases = ['四个阶段（baseline/burst/spread/decay）的标签与窗口都不能为空']
   const ids = form.phases.map((phase) => phase.phase_id)
@@ -66,8 +70,12 @@ function validate(): boolean {
   return Object.keys(errors).length === 0
 }
 
-function submit() {
-  if (!validate()) return
+async function submit() {
+  if (!validate()) {
+    await nextTick()
+    formElement.value?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+    return
+  }
   emit('create', {
     name: form.name.trim(),
     description: form.description.trim(),
@@ -83,7 +91,8 @@ function submit() {
   <section class="scenario-panel" aria-labelledby="scenario-title">
     <header class="panel-head">
       <div>
-        <h2 id="scenario-title">冻结情景</h2>
+        <h2 id="scenario-title">事件设置</h2>
+        <p>已绑定的模板可直接使用；新增情景用于保存另一组事件条件。</p>
       </div>
       <div class="head-actions">
         <button type="button" class="refresh" :disabled="loading" @click="emit('refresh')">刷新</button>
@@ -102,8 +111,9 @@ function submit() {
       当前为{{ access === 'unavailable' ? '只读（后端不可用）' : '只读' }}状态：场景创建已禁用。
     </p>
 
-    <form v-if="showForm" class="create-form" novalidate @submit.prevent="submit">
-      <h3>创建严格四阶段场景</h3>
+    <form v-if="showForm" ref="formElement" class="create-form" novalidate @submit.prevent="submit">
+      <h3>新增事件情景</h3>
+      <div v-if="Object.keys(localErrors).length" class="inline-error" role="alert">请检查标红字段后再保存。{{ Object.values(localErrors).flat().join('；') }}</div>
       <p v-if="submitSuccess" class="inline-success" role="status">{{ submitSuccess }}</p>
       <div v-if="submitError" class="inline-error" role="alert">
         {{ submitError.summary }}：{{ submitError.detail }}
@@ -131,14 +141,14 @@ function submit() {
       </label>
 
       <label class="field">
-        <span>分析工件 ID（analysis_id）<em aria-hidden="true">*</em></span>
-        <input v-model="form.analysis_id" type="text" name="analysis_id" placeholder="64 位十六进制" :aria-invalid="Boolean(fieldError('analysis_id'))" />
-        <span class="field-hint">必须引用已登记的分析工件，其父来源快照需已附加到本项目；服务端为最终校验者。</span>
+        <span>人口与数据来源<em aria-hidden="true">*</em></span>
+        <select v-model="form.analysis_id" name="analysis_id" :aria-invalid="Boolean(fieldError('analysis_id'))"><option value="" disabled>选择已绑定的数据</option><option v-for="row in (scenarios || []).filter(item => item.analysis_id)" :key="row.scenario_id" :value="row.analysis_id">{{ row.name }} · 已登记数据</option></select>
+        <span class="field-hint">系统自动使用所选情景关联的数据分析。</span>
         <span v-if="fieldError('analysis_id')" class="field-error" role="alert">{{ fieldError('analysis_id') }}</span>
       </label>
 
       <fieldset class="phases" aria-label="四阶段">
-        <legend>阶段（严格 baseline → burst → spread → decay）<em aria-hidden="true">*</em></legend>
+        <legend>演化阶段：事件前 → 出现 → 扩散 → 后续反馈<em aria-hidden="true">*</em></legend>
         <div v-for="(phase, index) in form.phases" :key="phase.phase_id" class="phase-row">
           <span class="phase-id"><code>{{ phase.phase_id }}</code></span>
           <input v-model="phase.label" :name="'phases.' + phase.phase_id + '.label'" maxlength="40" aria-label="阶段标签" />
@@ -148,13 +158,13 @@ function submit() {
       </fieldset>
 
       <label class="field">
-        <span>声明边界（claim boundary）<em aria-hidden="true">*</em></span>
+        <span>分析范围<em aria-hidden="true">*</em></span>
         <textarea v-model="form.claim_boundary" name="claim_boundary" rows="2" maxlength="1000" :aria-invalid="Boolean(fieldError('claim_boundary'))" />
         <span v-if="fieldError('claim_boundary')" class="field-error" role="alert">{{ fieldError('claim_boundary') }}</span>
       </label>
 
       <div class="form-actions">
-        <button type="submit" class="primary" :disabled="submitting">{{ submitting ? '创建中…' : '创建场景' }}</button>
+        <button type="submit" class="primary" :disabled="submitting">{{ submitting ? '创建中…' : '保存情景' }}</button>
       </div>
     </form>
 
@@ -167,7 +177,7 @@ function submit() {
       <thead><tr><th>场景</th><th>模板</th><th>证据状态</th></tr></thead>
       <tbody>
         <tr v-for="scenario in scenarios ?? []" :key="scenario.scenario_id">
-          <td><strong>{{ scenario.name }}</strong><small><code>{{ scenario.scenario_id }}</code></small></td>
+          <td><strong>{{ scenario.name }}</strong><details v-if="scenario.description" class="scenario-description"><summary>查看事件内容</summary><p data-no-localize>{{ scenario.description }}</p></details><small><code>{{ scenario.scenario_id }}</code></small></td>
           <td>{{ scenario.template_key || '—' }}</td>
           <td><CpStatusBadge :tone="scenario.evidence_binding_status === 'sealed' ? 'evidence' : 'warning'">
             {{ scenario.evidence_binding_status === 'sealed' ? '证据已封存' : (scenario.evidence_binding_status || '未封存') }}
@@ -213,7 +223,12 @@ function submit() {
 .scenario-table { width:100%; border-collapse:collapse; }
 .scenario-table th, .scenario-table td { padding:var(--cp-space-2) var(--cp-space-3); border-bottom:1px solid var(--cp-border-subtle); text-align:left; }
 .scenario-table th { color:var(--cp-text-muted); font-size:var(--cp-text-xs); font-weight:700; }
-.scenario-table td { font-size:var(--cp-text-sm); }
+.scenario-table td { font-size:var(--cp-text-sm); overflow-wrap:anywhere; }
+.scenario-description { margin:.6rem 0; }
+.scenario-description summary { color:var(--cp-action-primary); cursor:pointer; font-size:var(--cp-text-xs); }
+.scenario-description p { white-space:pre-wrap; max-width:42rem; line-height:1.7; color:var(--cp-text-secondary); }
+.scenario-table { table-layout:fixed; }
+.scenario-table th:first-child { width:50%; }
 .scenario-table td small { display:block; color:var(--cp-text-muted); font-size:var(--cp-text-xs); }
 .panel-empty { padding:var(--cp-space-3); border:1px dashed var(--cp-border-strong); color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 @media (max-width:767px) { .phase-row { grid-template-columns:1fr; } .head-actions { flex-wrap:wrap; } }

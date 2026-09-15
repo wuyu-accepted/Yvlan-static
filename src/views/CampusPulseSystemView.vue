@@ -308,19 +308,19 @@ onBeforeUnmount(() => {
 const disclosureSections = [
   {
     title: '数据与生态',
-    lines: ['语料与生态快照只以哈希、行数与规模进入证据目录，不保留原始帖子/评论正文。', '合成关系图仅用于论坛语义行为展示，不代表真实人际关系。'],
+    lines: ['数据目录记录语料规模、处理流程与生态特征。', '合成关系连接人物群体，支持注意力分配与跨群传播。'],
   },
   {
     title: '合成 Agent 人口',
-    lines: ['合成 Agent 是 episode 驱动的仿真主体，不是真实学生；状态粒子不是额外用户。', '不推断性别、院系、年龄或真实身份；不展示私有记忆与 source ID。'],
+    lines: ['Agent 由审阅人物资料和经历构建，粒子表示每个 Agent 的状态不确定性。', '人物世界使用脱敏资料、合成利益位置和关系。'],
   },
   {
     title: '运行时职责',
-    lines: ['LLM 负责公开社会表达与治理判断；后台模型负责状态、调度与资源账本，禁止生成公开论坛文字。', '确定性 fixture 路径禁止 Provider 调用、外部下载与因果结论声明。'],
+    lines: ['LLM 负责语言表达与治理判断；后台计算负责状态、调度与资源队列。', '保存记录用于交互回放，确定性测试用于验证运行流程。'],
   },
   {
     title: '结果与发布',
-    lines: ['单场景、单种子 Hero 结果只作展示，不代表总体政策效果、全校民意或正式因果结论。', '正式发布需通过报告与发布门禁；失败、noop 与无响应保留为一等结果。'],
+    lines: ['案例结果记录指定情景、人口和随机种子下的方案差异。', '结果同时记录治理行动、居民响应、保持沉默与执行异常。'],
   },
 ]
 </script>
@@ -331,7 +331,7 @@ const disclosureSections = [
       <div>
         <span class="page-kicker">SYSTEM READINESS · EVIDENCE</span>
         <h1>系统与证据</h1>
-        <p>集中核对服务就绪、模型连接、离线资产与证据边界。</p>
+        <p>管理模型连接，检查服务状态、案例文件与数据来源。</p>
       </div>
       <div class="page-header__actions">
         <router-link to="/campus-pulse/system/innovation-evaluation" class="innovation-link">创新与评测</router-link>
@@ -424,7 +424,7 @@ const disclosureSections = [
           </div>
           <div class="boundary-row" role="row">
             <span role="cell"><strong>语料生态</strong></span>
-            <span role="cell">哈希与规模的本地快照</span>
+            <span role="cell">本地数据快照与统计规模</span>
             <span role="cell">论坛语言、主题与回复生态的边界</span>
             <span role="cell">不是实时全校舆情</span>
           </div>
@@ -447,31 +447,22 @@ const disclosureSections = [
             <span role="cell">不是正式因果结论或总体政策效果</span>
           </div>
         </div>
-        <p class="boundary-note">本页面不展示原始正文、source ID、私有向量索引或 API 凭据；离线资产未通过哈希校验时不会展示为已验证。</p>
+        <p class="boundary-note">数据文件的完整性检查在加载时执行，状态随检测结果更新。</p>
       </section>
     </section>
   </div>
 </template>
 
 <style scoped>
-.system-workspace {
-  --cp-surface-canvas:#0b090a; --cp-surface-default:#151113; --cp-surface-subtle:#1c1719; --cp-surface-raised:#1c1719; --cp-surface-inverse:#080708; --cp-surface-selected:#29171d;
-  --cp-text-primary:#f1ece7; --cp-text-secondary:#b9b0aa; --cp-text-muted:#9e958f; --cp-text-inverse:#f1ece7;
-  --cp-border-default:#2a2428; --cp-border-subtle:#241f22; --cp-border-strong:#51464c; --cp-border-inverse:#2a2428;
-  --cp-action-primary:#c51642; --cp-action-primary-hover:#a91137;
-  --cp-evidence:#d4af37; --cp-evidence-surface:#211d12; --cp-evidence-text:#e2c65f;
-  --cp-info:#2b6cb0; --cp-info-surface:#111c27; --cp-warning:#dd6b20; --cp-warning-surface:#26180f; --cp-danger:#e53e3e; --cp-danger-surface:#281214;
-  --cp-tech:#9e958f; --cp-tech-bright:#b9b0aa; --cp-tech-surface:#1c1719; --cp-tech-line:#2a2428; --cp-tech-glow:none; --cp-shadow-card:none;
-  display:grid; width:100%; min-height:calc(100vh - 7.5rem); gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) var(--cp-space-8); background:var(--cp-surface-canvas); color:var(--cp-text-primary);
-}
-.page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--cp-space-6); padding:var(--cp-space-4); border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-lg); background:var(--cp-surface-default); box-shadow:none; }
+.system-workspace { display:grid; width:min(100%,var(--cp-content-max)); gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); }
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--cp-space-6); padding:var(--cp-space-6); border:1px solid var(--cp-tech-line); border-radius:var(--cp-radius-lg); background:linear-gradient(135deg,var(--cp-surface-default),var(--cp-tech-surface)); box-shadow:var(--cp-tech-glow); }
 .page-kicker { display:block; margin-bottom:var(--cp-space-2); color:var(--cp-tech); font-size:var(--cp-text-xs); font-weight:800; letter-spacing:.12em; }
 .page-header h1 { margin:0; font-size:var(--cp-text-3xl); line-height:1.15; letter-spacing:-.025em; }
 .page-header p { margin:var(--cp-space-3) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-md); max-width:52rem; }
 .page-header__actions { display:flex; flex:none; flex-wrap:wrap; gap:var(--cp-space-2); }
 .innovation-link,
 .workbench-link { min-height:var(--cp-control-height); display:inline-flex; align-items:center; padding:0 var(--cp-space-3); border:1px solid var(--cp-border-strong); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-text-primary); font-size:var(--cp-text-sm); font-weight:650; text-decoration:none; }
-.innovation-link { border-color:var(--cp-border-strong); background:var(--cp-surface-subtle); color:var(--cp-text-secondary); }
+.innovation-link { border-color:var(--cp-tech-line); background:var(--cp-tech-surface); color:var(--cp-tech); }
 .tab-bar { display:flex; flex-wrap:wrap; gap:var(--cp-space-1); border-bottom:1px solid var(--cp-border-default); }
 .tab-bar button { min-height:var(--cp-control-height); padding:0 var(--cp-space-4); border:0; border-bottom:2px solid transparent; background:none; color:var(--cp-text-secondary); font-size:var(--cp-text-sm); font-weight:650; cursor:pointer; }
 .tab-bar button:hover { color:var(--cp-text-primary); }

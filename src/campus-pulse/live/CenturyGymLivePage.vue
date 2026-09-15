@@ -1,17 +1,24 @@
+<style scoped>
+.completion-comparison{padding:24px;border:1px solid var(--cp-border-default);border-top:3px solid #b80031;background:var(--cp-surface-default);margin-block:20px}.completion-comparison header{display:flex;justify-content:space-between;align-items:start;gap:24px}.completion-comparison h2{font-size:22px;margin:8px 0}.completion-comparison p{font-size:14px;line-height:1.7;color:var(--cp-text-secondary)}.completion-comparison small{color:var(--cp-text-secondary)}.completion-comparison a{white-space:nowrap;color:#b80031}.comparison-columns{display:grid;grid-template-columns:1fr 1fr;gap:20px}.comparison-columns article{padding:18px;border:1px solid var(--cp-border-default)}.comparison-columns button{background:none;color:var(--cp-text-primary);border:0;border-bottom:2px solid #b80031;padding:8px 0;cursor:pointer;font:600 16px inherit}.comparison-columns dl{display:grid;grid-template-columns:1fr 1fr;gap:16px}.comparison-columns dt{font-size:12px;color:var(--cp-text-secondary)}.comparison-columns dd{margin:6px 0;font-size:21px}.comparison-columns button:focus-visible{outline:2px solid #b80031;outline-offset:4px}@media(max-width:700px){.comparison-columns{grid-template-columns:1fr}.completion-comparison header{flex-direction:column}}
+</style>
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
-import ContentTranslation from '../i18n/ContentTranslation.vue'
+import RecordedMessageText from '../i18n/RecordedMessageText.vue'
+import { savedEnglishText } from '../i18n/contentTranslation.ts'
 import AgentDossierDrawer from '../agent-world/AgentDossierDrawer.vue'
 import { agentMicroRoleLabel, agentRoleLabel } from '../agent-world/agentWorldLabels.ts'
 import AgentWorldPanel from '../workbench/AgentWorldPanel.vue'
-import type { AgentDossierEvent, AgentDossierPrivateExcerpt, PublicAgentDossier } from '../agent-world/types.ts'
+import type { AgentBehaviorChainStep, AgentDossierEvent, AgentDossierPrivateExcerpt, PublicAgentDossier } from '../agent-world/types.ts'
 import ForumWorldRuntimeStage from '../agent-world/ForumWorldRuntimeStage.vue'
 import type { ForumWorldRuntimeFrame, ForumWorldRuntimeNode } from '../agent-world/forumWorldRuntime.ts'
-import { currentLocale } from '../i18n/locale.ts'
+import { groupThreadMessages } from '../agent-world/forumWorldRuntime.ts'
+import { examplePrivateDialogue } from '../agent-world/examplePrivateDialogue.ts'
+import { currentLocale, translateInterfaceText } from '../i18n/locale.ts'
 import { useSourceContext } from '../source/sourceContext'
 import { useCampusPulseMotion } from '../app/useCampusPulseMotion'
+import { INSPECTION_FRAME_MS, REPLAY_PACES, createReplayTimer, nextRecordedTick, type ReplayPace } from './replayPlayback.ts'
 import type { SourceState } from '../contracts/source'
 import {
   adaptCenturyGymSocialWorld,
@@ -26,6 +33,8 @@ import {
   getCenturyGymSocialWorld,
   getForumTwinV2AgentWorld,
   readableApiError,
+  getProjectReplay,
+  saveProjectReplay,
 } from '../../services/campusPulseApi.js'
 import {
   loadLiveManifest,
@@ -86,6 +95,11 @@ type LiveWorldEdge = {
 }
 
 const route = useRoute()
+const replayProject = String(route.query.replay_project || '')
+let cursorRevision = 0
+let cursorReady = false
+let cursorQueue: Promise<void> = Promise.resolve()
+const cursorError = ref('')
 const router = useRouter()
 const sourceContext = useSourceContext()
 const manifest = ref<LiveProgressManifest | null>(null)
@@ -94,6 +108,11 @@ const selectedKey = ref('')
 const state = ref<'connecting' | 'waiting' | 'running' | 'succeeded' | 'paused' | 'failed'>('connecting')
 const detail = ref(currentLocale.value === 'en-US' ? 'Preparing the project runtime…' : '正在准备项目运行环境…')
 const replayPlaying = ref(false)
+const replayPace = ref<ReplayPace>('guided')
+const pauseReason = ref<'inspect' | 'chapter' | 'hidden' | ''>('')
+const replayClock = createReplayTimer()
+const frameExtended = ref(false)
+let frameStartedAt = 0
 const demoStarted = ref(false)
 const demoCompleted = ref(false)
 const selectedBranch = ref<'Natural' | 'D'>('D')
@@ -104,13 +123,13 @@ const worldError = ref('')
 const selectedWorldRoleId = ref('')
 const selectedWorldMicroNodeId = ref('')
 const selectedWorldEdgeKey = ref('')
+const featuredDossierDisplayId = ref('FT-0084')
 const worldChannel = ref<'all' | 'public' | 'private'>('all')
 const dossierOpen = ref(false)
 const worldSvgRef = ref<SVGSVGElement | null>(null)
 const liveRoot = ref<HTMLElement | null>(null)
 const liveMotion = useCampusPulseMotion(liveRoot, { autoIntro: false, pageSelector: '.live-console' })
 let timer: ReturnType<typeof setInterval> | undefined
-let replayTimer: ReturnType<typeof setInterval> | undefined
 let controller: AbortController | undefined
 
 const session = computed(() => {
@@ -128,10 +147,7 @@ const branchForkTick = computed(() => manifest.value?.display_contract?.branch_f
   ?? Math.min(...entries.value.filter((entry) => ['Natural', 'D'].includes(entry.branch)).map((entry) => entry.tick), 5))
 const firstTick = computed(() => availableTicks.value[0] ?? 0)
 const lastTick = computed(() => availableTicks.value.at(-1) ?? firstTick.value)
-const playbackInterval = computed(() => {
-  const value = manifest.value?.display_contract?.playback_interval_ms ?? 1900
-  return Number.isInteger(value) && value >= 500 && value <= 10000 ? value : 1900
-})
+const playbackInterval = computed(() => REPLAY_PACES[replayPace.value])
 function entryForTick(tick: number): LiveProgressEntry | undefined {
   const preferred = tick < branchForkTick.value ? 'shared_baseline' : selectedBranch.value
   return entries.value.find((entry) => entry.tick === tick && entry.branch === preferred)
@@ -142,7 +158,21 @@ const selectedTick = computed(() => ticks.value[selectedKey.value] || (playbackE
 const publicBranch = computed(() => selectedTick.value?.public_branch || null)
 const messages = computed(() => [...(publicBranch.value?.messages || [])].sort((left, right) => right.created_tick - left.created_tick || right.message_id.localeCompare(left.message_id)))
 const currentMessages = computed(() => messages.value.filter((message) => message.created_tick === selectedTick.value?.tick))
-const feedMessages = computed(() => (currentMessages.value.length ? currentMessages.value : messages.value).slice(0, 16))
+const finalComparison = computed(() => ['Natural', 'D'].map(branch => {
+  const entry = entries.value.find(item => item.branch === branch && item.tick === lastTick.value)
+  const data = entry ? ticks.value[entryKey(entry)]?.public_branch : null
+  if (!data) return null
+  const posts = data.messages
+  const governanceIds = new Set(posts.filter(item => item.governance_artifact).map(item => item.message_id))
+  const uptake = posts.filter(item => governanceIds.has(item.parent_message_id || '') || governanceIds.has(item.quote_message_id || ''))
+  return { branch, messages:posts.length, replies:posts.filter(item => item.parent_message_id || item.quote_message_id).length,
+    artifacts:data.governance_artifacts.length, uptake:uptake.length, example:uptake[0] || posts.find(item => item.created_tick === lastTick.value) }
+}).filter(item => item !== null))
+const feedGroups = computed(() => groupThreadMessages(currentMessages.value.length ? currentMessages.value : messages.value))
+const feedMessages = computed(() => feedGroups.value.slice(0,16).map(group => group[0]))
+function sameThreadMessages(message: LivePublicMessage) {
+  return feedGroups.value.find(group => group[0].message_id === message.message_id)?.slice(1) || []
+}
 const isEnglish = computed(() => currentLocale.value === 'en-US')
 
 function localize(zh: string, en: string): string {
@@ -227,8 +257,35 @@ function entryKey(entry: Pick<LiveProgressEntry, 'branch' | 'tick'>): string { r
 
 function stopReplay() {
   replayPlaying.value = false
-  if (replayTimer) clearInterval(replayTimer)
-  replayTimer = undefined
+  replayClock.cancel()
+  pauseReason.value = ''
+  frameExtended.value = false
+}
+
+function advanceReplayStep() {
+  const next = nextRecordedTick(availableTicks.value, selectedTick.value?.tick ?? firstTick.value)
+  if (next === null) { stopReplay(); demoCompleted.value = true; return }
+  const entry = entryForTick(next)
+  if (!entry) { stopReplay(); return }
+  selectedKey.value = entryKey(entry)
+  frameStartedAt = Date.now()
+  frameExtended.value = false
+  pauseReason.value = ''
+  if (next === lastTick.value) { stopReplay(); demoCompleted.value = true; return }
+  scheduleReplayStep()
+}
+
+function extendFrameForInspection() {
+  if (!replayPlaying.value || isLiveOperator.value) return
+  frameExtended.value = true
+  pauseReason.value = 'inspect'
+  const elapsed = Math.max(0, Date.now() - frameStartedAt)
+  replayClock.schedule(Math.max(800, INSPECTION_FRAME_MS - elapsed), advanceReplayStep)
+}
+
+function scheduleReplayStep() {
+  if (!replayPlaying.value) return
+  replayClock.schedule(playbackInterval.value, advanceReplayStep)
 }
 
 function startReplay() {
@@ -239,16 +296,22 @@ function startReplay() {
   let index = Math.max(0, playbackEntries.value.findIndex((entry) => entry.tick === selectedTick.value?.tick))
   if (index >= playbackEntries.value.length - 1) index = 0
   selectedKey.value = entryKey(playbackEntries.value[index])
+  if (replayPace.value === 'manual') return
   replayPlaying.value = true
-  replayTimer = setInterval(() => {
-    index += 1
-    if (index >= playbackEntries.value.length) {
-      stopReplay()
-      demoCompleted.value = true
-      return
-    }
-    selectedKey.value = entryKey(playbackEntries.value[index])
-  }, playbackInterval.value)
+  frameStartedAt = Date.now()
+  frameExtended.value = false
+  scheduleReplayStep()
+}
+
+function stepRecorded(direction: -1 | 1) {
+  stopReplay()
+  const index = playbackEntries.value.findIndex(entry => entry.tick === selectedTick.value?.tick)
+  const entry = playbackEntries.value[index + direction]
+  if (entry) selectEntry(entry)
+}
+
+function onDocumentVisibility() {
+  if (document.hidden && replayPlaying.value) { stopReplay(); pauseReason.value = 'hidden' }
 }
 
 function startSimulation() {
@@ -271,6 +334,7 @@ function resetSimulation() {
 }
 
 function selectBranch(branch: 'Natural' | 'D') {
+  extendFrameForInspection()
   selectedBranch.value = branch
   const tick = selectedTick.value?.tick ?? branchForkTick.value
   const replacement = entryForTick(tick)
@@ -290,6 +354,10 @@ function actionLabel(action: string): string {
 }
 function messageInteractions(message: LivePublicMessage) {
   return message.interaction_counts || { like:0, repost:0, report:0 }
+}
+function hotTopicLabel(topic: string): string {
+  if (topic === 'public_governance_update') return localize('治理回应', 'Governance response')
+  return isEnglish.value ? translateInterfaceText(topic) : topic
 }
 function repliesTo(message: LivePublicMessage): number {
   return messages.value.filter((candidate) => candidate.parent_message_id === message.message_id).length
@@ -315,11 +383,13 @@ const metric = computed(() => {
 
 const hotThreads = computed(() => (publicBranch.value?.threads || []).map((thread) => {
   const rows = messages.value.filter((message) => message.thread_id === thread.thread_id)
+    .sort((a,b) => a.created_tick - b.created_tick || a.message_id.localeCompare(b.message_id))
+  const root = rows.find(message => message.message_id === thread.root_message_id) || rows.find(message => !message.parent_message_id) || rows[0]
   const interactions = rows.reduce((sum, message) => {
     const count = messageInteractions(message)
     return sum + (count.like || 0) + (count.repost || 0) * 3
   }, 0)
-  return { thread, messages:rows.length, score:rows.length + (thread.reply_count || 0) * 2 + interactions }
+  return { thread, rows, root, messages:rows.length, score:rows.length + (thread.reply_count || 0) * 2 + interactions }
 }).sort((left, right) => right.score - left.score || right.thread.last_active_tick - left.thread.last_active_tick).slice(0, 10))
 
 const maxHeat = computed(() => Math.max(1, ...hotThreads.value.map((item) => item.score)))
@@ -593,17 +663,20 @@ const representativeAgentsByRole = computed(() => {
   }
   return grouped
 })
+const selectedDossierLiveProfile = computed(() => featuredDossierDisplayId.value
+  ? publicProfileByDisplayId.value.get(featuredDossierDisplayId.value) || null
+  : selectedMicroProfile.value || null)
 const selectedDossierAgent = computed(() => {
   const node = selectedWorldMicroNode.value
-  if (!node) return null
-  const values = representativeAgentsByRole.value.get(node.role_id) || []
+  const live = selectedDossierLiveProfile.value
+  const roleId = live?.macro_role || node?.role_id
+  if (!roleId) return null
+  const values = representativeAgentsByRole.value.get(roleId) || []
   if (!values.length) return null
-  const live = selectedMicroProfile.value
   return (live?.micro_role ? values.find((item) => item.micro_role === live.micro_role) : undefined)
-    || values[(node.micro_index - 1) % values.length]
+    || values[((node?.micro_index || 1) - 1) % values.length]
 })
-const selectedDossierLiveProfile = computed(() => selectedMicroProfile.value || null)
-const selectedDossierDisplayId = computed(() => selectedDossierLiveProfile.value?.display_id || selectedDossierAgent.value?.display_id || '')
+const selectedDossierDisplayId = computed(() => selectedDossierLiveProfile.value?.display_id || selectedDossierAgent.value?.display_id || featuredDossierDisplayId.value || '')
 const selectedDossierEvents = computed<AgentDossierEvent[]>(() => {
   const displayId = selectedDossierDisplayId.value
   const tick = currentTickNumber.value
@@ -614,6 +687,27 @@ const selectedDossierEvents = computed<AgentDossierEvent[]>(() => {
     promptHash:message.provenance?.prompt_sha256 || null, provenance:message.provenance?.kind || null,
     interactionCounts:messageInteractions(message),
   }))
+})
+const selectedDossierBehaviorChain = computed<AgentBehaviorChainStep[]>(() => {
+  const displayId = selectedDossierDisplayId.value
+  const tick = currentTickNumber.value
+  if (!displayId || tick === null) return []
+  const visible = messages.value.filter((message) => message.created_tick <= tick)
+  const own = visible.filter((message) => message.source_agent_display_id === displayId).sort((a,b) => a.created_tick-b.created_tick || a.message_id.localeCompare(b.message_id))
+  const byId = new Map(visible.map((message) => [message.message_id,message]))
+  return own.map((message,index) => {
+    const root = visible.filter((candidate) => candidate.thread_id === message.thread_id && !candidate.parent_message_id).sort((a,b) => a.created_tick-b.created_tick)[0]
+    const contexts = [
+      root && root.message_id !== message.message_id ? { message:root, kind:'thread_root' as const } : null,
+      message.parent_message_id ? { message:byId.get(message.parent_message_id), kind:'direct_parent' as const } : null,
+      message.quote_message_id ? { message:byId.get(message.quote_message_id), kind:'quote' as const } : null,
+    ].filter((item): item is {message:LivePublicMessage;kind:'thread_root'|'direct_parent'|'quote'} => Boolean(item?.message))
+      .filter((item,rowIndex,rows) => rows.findIndex((candidate) => candidate.message.message_id === item.message.message_id) === rowIndex)
+      .map(({message:context,kind}) => ({ id:context.message_id, kind, tick:context.created_tick, speaker:context.source_agent_display_id, text:context.visible_text }))
+    const action = selectedDossierEvents.value.find((event) => event.id === message.message_id)!
+    const responses = visible.filter((candidate) => candidate.source_agent_display_id !== displayId && (candidate.parent_message_id === message.message_id || candidate.quote_message_id === message.message_id)).sort((a,b) => a.created_tick-b.created_tick).map((response) => ({ id:response.message_id, tick:response.created_tick, speaker:response.source_agent_display_id, action:response.action, text:response.visible_text }))
+    return { id:message.message_id, tick:message.created_tick, visibleContext:contexts, action, responses, nextAction:selectedDossierEvents.value.find((event) => event.id === own[index+1]?.message_id) || null }
+  })
 })
 const selectedDossierPromptHash = computed(() => [...selectedDossierEvents.value].sort((a,b) => b.tick-a.tick).find((event) => event.promptHash)?.promptHash || null)
 const selectedDossierPrivateExcerpts = computed<AgentDossierPrivateExcerpt[]>(() => selectedRolePrivateExcerpts.value.map((item) => ({
@@ -691,7 +785,9 @@ const unifiedWorldFrame = computed<ForumWorldRuntimeFrame | null>(() => {
     const excerptIds=new Set(edge.excerpt_ids)
     const privateEvidence=visibleReviewedExcerpts.value.filter(excerpt=>excerptIds.has(excerpt.excerpt_id)).map(excerpt=>({id:excerpt.excerpt_id,kicker:`${worldChannelLabel(excerpt.channel)} · Tick ${excerpt.tick}`,text:localize(excerpt.text_zh,excerpt.text_en),effect:localize(excerpt.effect_zh,excerpt.effect_en),provenance:'reviewed excerpt'}))
     const publicEvidence=edge.channel==='public'?currentMessages.value.filter(message=>publicProfileByDisplayId.value.get(message.source_agent_display_id)?.macro_role===edge.source_role_id).slice(0,3).map(message=>({id:message.message_id,kicker:`${actionLabel(message.action)} · Tick ${message.created_tick}`,text:message.visible_text,provenance:message.provenance?.kind||'reviewed trace'})):[]
-    return {id:edge.key,sourceId:edge.sourceNode!.node_id,targetId:edge.targetNode!.node_id,channel:edge.channel,count:edge.count,label:`${worldRoleLabel(worldRoleById.value.get(edge.source_role_id))} → ${worldRoleLabel(worldRoleById.value.get(edge.target_role_id))}`,evidence:[...privateEvidence,...publicEvidence]}
+    const examples = edge.channel !== 'public' && privateEvidence.length === 0
+      ? examplePrivateDialogue(scenarioId.value, edge.channel === 'private_group', isEnglish.value, edge.key) : []
+    return {id:edge.key,sourceId:edge.sourceNode!.node_id,targetId:edge.targetNode!.node_id,channel:edge.channel,count:edge.count,label:`${worldRoleLabel(worldRoleById.value.get(edge.source_role_id))} → ${worldRoleLabel(worldRoleById.value.get(edge.target_role_id))}`,evidence:[...privateEvidence,...publicEvidence,...examples]}
   })
   return {
     frameId:`century:${selectedBranch.value}:${tick}:${selectedKey.value}`,
@@ -711,7 +807,7 @@ const unifiedWorldFrame = computed<ForumWorldRuntimeFrame | null>(() => {
       {id:'groups',label:localize('活跃小群','Active groups'),value:currentWorldFrame.value?.active_group_count??0},
     ],
     contentSha256:socialWorld.value?.content_sha256||agentWorld.value.world_sha256,
-    boundaryNote:localize('公开内容来自已提交 LLM 结果，私聊仅展示人工审阅摘录和匿名聚合；节点、连线与帖子使用同一 Tick。','Public content comes from committed LLM results; private channels expose only reviewed excerpts and anonymous aggregates. Nodes, edges and posts use the same Tick.'),
+    boundaryNote:localize('节点、连线与帖子使用同一时间步；示例对话单独标记。','Nodes, edges and posts share the same time step; example conversations are labelled separately.'),
   }
 })
 
@@ -720,6 +816,29 @@ function inspectUnifiedWorldNode(node:ForumWorldRuntimeNode):void {
   if(!target)return
   selectWorldMicroNode(target)
   dossierOpen.value=true
+}
+
+function trackUnifiedWorldNode(node:ForumWorldRuntimeNode):void {
+  extendFrameForInspection()
+  const target=liveMicroNodeById.value.get(node.id)
+  if(!target)return
+  featuredDossierDisplayId.value=''
+  selectedWorldMicroNodeId.value=target.node_id
+  selectedWorldRoleId.value=target.role_id
+  selectedWorldEdgeKey.value=''
+}
+
+function inspectFollowedAgent():void {
+  extendFrameForInspection()
+  dossierOpen.value=true
+}
+
+function resetFeaturedFollow():void {
+  extendFrameForInspection()
+  featuredDossierDisplayId.value='FT-0084'
+  selectedWorldMicroNodeId.value=''
+  selectedWorldRoleId.value=''
+  selectedWorldEdgeKey.value=''
 }
 
 const WORLD_EXPORT_CSS = `
@@ -731,7 +850,7 @@ const WORLD_EXPORT_CSS = `
   .edge-signal { stroke:#d51b49; stroke-width:2; stroke-linecap:round; }
   .live-edge.private_direct .edge-signal { stroke:#a77914; stroke-width:2; }
   .live-edge.private_group .edge-signal { stroke:#6e56b0; stroke-width:2; }
-  .live-edge.selected .edge-signal { stroke:#111820; stroke-width:3.2; }
+  .live-edge.selected .edge-signal { stroke:#c9b27a; stroke-width:3.2; }
   .live-world-node .node-body { fill:#ffffff; stroke:#69727d; stroke-width:1; }
   .live-world-node.public-reached .node-body { fill:#fff4f7; stroke:#d51b49; stroke-width:1.5; }
   .live-world-node.private-reached .node-body { fill:#fff9e8; stroke:#a77914; stroke-width:1.5; }
@@ -944,7 +1063,7 @@ function createWorldExportSvg(): string | null {
 
   snapshotLine(root, 60, 1290, SNAPSHOT_WIDTH - 60, 1290, 'snapshot-rule')
   snapshotText(root, 60, 1320, localize('导出内容：运行配置、Tick 指标、匿名关系投影、公开帖子与经审阅私聊摘录。', 'Export includes run configuration, Tick metrics, anonymous relationship projection, public posts and reviewed private excerpts.'), 'snapshot-footer')
-  snapshotText(root, SNAPSHOT_WIDTH - 60, 1320, `${(socialWorld.value?.content_sha256 || agentWorld.value?.world_sha256 || '').slice(0, 16)}…`, 'snapshot-footer', { 'text-anchor':'end' })
+  snapshotText(root, SNAPSHOT_WIDTH - 60, 1320, 'CampusPulse', 'snapshot-footer', { 'text-anchor':'end' })
 
   return new XMLSerializer().serializeToString(root)
 }
@@ -1039,6 +1158,7 @@ function exportWorldPng(): void {
 }
 
 function selectWorldMicroNode(node: MicroWorldNode) {
+  featuredDossierDisplayId.value = ''
   selectedWorldMicroNodeId.value = node.node_id
   selectedWorldRoleId.value = node.role_id
   selectedWorldEdgeKey.value = ''
@@ -1206,7 +1326,6 @@ async function loadSocialWorldContext() {
     }
     socialWorld.value = adaptCenturyGymSocialWorld(await getCenturyGymSocialWorld())
   } catch (cause) {
-    agentWorld.value = null
     socialWorld.value = null
     worldError.value = readableApiError(cause)
   }
@@ -1269,10 +1388,15 @@ async function refresh() {
 }
 
 function selectEntry(entry: LiveProgressEntry) {
-  stopReplay()
+  const wasPlaying = replayPlaying.value
+  replayClock.cancel()
   demoStarted.value = true
   demoCompleted.value = entry.tick === availableTicks.value.at(-1)
   selectedKey.value = entryKey(entry)
+  frameStartedAt = Date.now()
+  frameExtended.value = false
+  pauseReason.value = ''
+  if (wasPlaying && !demoCompleted.value) scheduleReplayStep()
 }
 
 watch([session, baseUrl], () => {
@@ -1289,18 +1413,51 @@ watch([currentLocale, scenarioId], () => {
   else if (state.value === 'connecting') detail.value = localize('正在准备项目运行环境…', 'Preparing the project runtime…')
 })
 
-watch([currentTickNumber, selectedBranch, worldChannel], () => {
+watch([currentTickNumber, selectedBranch, worldChannel], async () => {
   selectedWorldEdgeKey.value = ''
-  liveMotion.pulse('[data-cp-motion-tick]', { y: 8, duration: 0.3 })
+  await nextTick()
+  liveMotion.pulse('[data-cp-motion-tick]', { y: 3, duration: 0.2 })
 })
 
-onMounted(() => {
+onMounted(async () => {
+  document.addEventListener('visibilitychange', onDocumentVisibility)
   document.title = `${localize(scenarioMeta.value.titleZh, scenarioMeta.value.titleEn)} · CampusPulse`
   void loadSocialWorldContext()
-  void refresh()
+  await refresh()
+  if (replayProject) {
+    try {
+      const saved = await getProjectReplay(replayProject)
+      if (!saved) throw new Error('Replay session is missing')
+      cursorRevision = saved.revision
+      selectedBranch.value = saved.branch
+      const entry = entryForTick(saved.tick)
+      if (entry) selectedKey.value = entryKey(entry)
+      demoStarted.value = true
+      cursorReady = true
+      if ((route.query.autoplay === '1' || saved.status === 'playing') && saved.status !== 'completed') startReplay()
+      else demoCompleted.value = saved.status === 'completed'
+      if (route.query.autoplay) await router.replace({query:{...route.query,autoplay:undefined}})
+    } catch (error) { cursorError.value = readableApiError(error); stopReplay() }
+  }
   timer = setInterval(() => { void refresh() }, 1400)
 })
-onBeforeUnmount(() => { if (timer) clearInterval(timer); stopReplay(); controller?.abort() })
+watch([currentTickNumber, selectedBranch, replayPlaying, demoCompleted], () => {
+  if (!replayProject || !cursorReady || currentTickNumber.value === null) return
+  const payload = { tick:currentTickNumber.value, branch:selectedBranch.value,
+    status:demoCompleted.value ? 'completed' : replayPlaying.value ? 'playing' : 'paused' }
+  cursorQueue = cursorQueue.then(async () => {
+    if (!cursorReady) return
+    try {
+      const saved = await saveProjectReplay(replayProject,{...payload,revision:cursorRevision})
+      cursorRevision = saved.revision
+    } catch (error) { cursorReady=false; cursorError.value=readableApiError(error); stopReplay() }
+  })
+})
+watch(replayPace, () => {
+  if (replayPace.value === 'manual') stopReplay()
+  else if (replayPlaying.value) scheduleReplayStep()
+})
+onBeforeUnmount(() => { document.removeEventListener('visibilitychange', onDocumentVisibility); if (timer) clearInterval(timer); stopReplay(); controller?.abort() })
 
 function openProjectPlan() {
   router.push({
@@ -1318,7 +1475,7 @@ function openProjectPlan() {
         <i />
       </div>
       <div class="hero__copy">
-        <p>LIVE PROJECT · {{ scenarioMeta.code }}</p>
+        <p>FORUMTWIN · {{ localize('校园治理推演', 'Campus governance simulation') }}</p>
         <h1>{{ localize(scenarioMeta.titleZh, scenarioMeta.titleEn) }}</h1>
         <span>{{ localize(scenarioMeta.detailZh, scenarioMeta.detailEn) }}</span>
       </div>
@@ -1343,7 +1500,7 @@ function openProjectPlan() {
         <div><p>PROJECT AGENT WORLD</p><h2 id="pre-run-world-title">{{ localize('先检查这个项目将运行在哪个社会世界里', 'Inspect the social world before running the project') }}</h2></div>
         <button type="button" @click="openProjectPlan">{{ localize('配置运行计划', 'Configure run plan') }} <i class="fa-solid fa-arrow-right" /></button>
       </header>
-      <p>{{ localize('人口、人物资料和合成关系构成可复用的校园 Agent 世界；新项目叠加事件、利益位置、治理方案和运行模式。下方每个节点都可检查，并可保存本项目专属的人物版本。', 'Population, profiles, and synthetic relationships form a reusable campus Agent world. A project adds its event, stakes, governance branches, and run mode. Every node can be inspected and given a project-specific profile release.') }}</p>
+      <p>{{ localize('人口、人物资料和合成关系构成可复用的校园 Agent 世界；新项目叠加事件、利益位置、治理方案和运行模式。下方每个节点都可检查，并可保存本项目的人物设定。', 'Population, profiles, and synthetic relationships form a reusable campus Agent world. A project adds its event, stakes, governance branches, and run mode. Every node can be inspected and given project-specific profile settings.') }}</p>
       <AgentWorldPanel :project-id="projectId" @open-plan="openProjectPlan" />
     </section>
 
@@ -1351,7 +1508,7 @@ function openProjectPlan() {
       <div class="project-launch__radar" aria-hidden="true"><i /><i /><i /><b /></div>
       <div class="project-launch__copy">
         <p>PROJECT READY</p>
-        <h2 id="project-launch-title">{{ localize('运行合同已冻结，等待启动', 'Run contract frozen and ready') }}</h2>
+        <h2 id="project-launch-title">{{ localize('世纪馆项目已就绪', 'Century Gym project is ready') }}</h2>
         <span>{{ localize(`本次演示连续播放 ${displayTickRange}；到 Tick ${branchForkTick} 后可在“不追加治理回应”（Natural）与“组合治理”（方案 D）之间切换观察。`, `This demo plays ${displayTickRange}; after Tick ${branchForkTick}, switch between No added response (Natural) and Combined governance (Plan D).`) }}</span>
         <ul>
           <li><b>{{ localize('人口', 'Population') }}</b><span>{{ localize('1,000 个异质 LLM Agent', '1,000 heterogeneous LLM Agents') }}</span></li>
@@ -1359,7 +1516,18 @@ function openProjectPlan() {
           <li><b>{{ localize('治理', 'Governance') }}</b><span>{{ localize('证据卡、服务工单、跨群触达', 'Evidence, service tickets, and outreach') }}</span></li>
         </ul>
       </div>
-      <button type="button" class="launch-action" @click="startSimulation"><i class="fa-solid fa-play" aria-hidden="true" /> {{ localize('启动模拟', 'Start simulation') }}</button>
+      <div class="launch-transport">
+        <label>{{ localize('播放节奏', 'Playback pace') }}
+          <select v-model="replayPace" :aria-label="localize('播放节奏', 'Playback pace')">
+            <option value="guided">{{ localize('标准播放 · 8 秒/步', 'Standard · 8 s/step') }}</option>
+            <option value="continuous">{{ localize('连播 · 4 秒/步', 'Continuous · 4 s/step') }}</option>
+            <option value="quick">{{ localize('快览 · 2 秒/步', 'Quick · 2 s/step') }}</option>
+            <option value="manual">{{ localize('手动逐步', 'Manual steps') }}</option>
+          </select>
+        </label>
+        <button type="button" class="launch-action" @click="startSimulation"><i class="fa-solid fa-play" aria-hidden="true" /> {{ localize('播放推演', 'Play saved simulation') }}</button>
+        <small>{{ localize('点击帖子、节点或对话后，当前画面自动延长到 12 秒并继续播放。', 'Selecting a post, node or conversation extends the current frame to 12 seconds without stopping playback.') }}</small>
+      </div>
     </section>
 
     <section v-if="demoStarted && selectedTick" class="run-stage" data-cp-motion-tick aria-live="polite">
@@ -1371,8 +1539,27 @@ function openProjectPlan() {
       <button v-if="demoCompleted" type="button" class="restart-action" @click="resetSimulation">{{ localize('重新开始', 'Restart') }}</button>
     </section>
 
-    <section v-if="demoStarted && playbackEntries.length" class="timeline" :aria-label="localize('模拟时间步', 'Simulation ticks')">
-      <header><div><span>RUN TIMELINE</span><strong>{{ localize(`${displayTickRange} 现场演化`, `Live evolution · ${displayTickRange}`) }}</strong></div><button type="button" class="replay-control" @click="replayPlaying ? stopReplay() : startReplay()">{{ replayPlaying ? localize('暂停运行', 'Pause run') : demoCompleted ? localize('重新播放', 'Replay') : localize('继续运行', 'Continue run') }}</button></header>
+    <p v-if="cursorError" role="alert">{{ cursorError }}</p>
+    <section v-if="demoStarted && playbackEntries.length && !isLiveOperator" class="timeline" :aria-label="localize('模拟时间步', 'Simulation ticks')">
+      <header>
+        <div><span>{{ localize('演化时间线', 'Evolution timeline') }}</span><strong>{{ displayTickRange }} · {{ branchLabel(selectedBranch) }}</strong></div>
+        <div class="playback-controls">
+          <label><span>{{ localize('播放节奏', 'Playback pace') }}</span><select v-model="replayPace">
+            <option value="guided">{{ localize('标准播放 · 8 秒/步', 'Standard · 8 s/step') }}</option>
+            <option value="continuous">{{ localize('连播 · 4 秒/步', 'Continuous · 4 s/step') }}</option>
+            <option value="quick">{{ localize('快览 · 2 秒/步', 'Quick · 2 s/step') }}</option>
+            <option value="manual">{{ localize('手动逐步', 'Manual steps') }}</option>
+          </select></label>
+          <button type="button" :disabled="selectedTick?.tick === firstTick" @click="stepRecorded(-1)" :aria-label="localize('上一步', 'Previous step')"><i class="fa-solid fa-backward-step" /></button>
+          <button v-if="replayPace !== 'manual'" type="button" class="replay-control" @click="replayPlaying ? stopReplay() : startReplay()"><i :class="replayPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play'" /> {{ replayPlaying ? localize('暂停', 'Pause') : demoCompleted ? localize('重新播放', 'Replay') : localize('继续播放', 'Continue') }}</button>
+          <button type="button" :disabled="selectedTick?.tick === lastTick" @click="stepRecorded(1)" :aria-label="localize('下一步', 'Next step')"><i class="fa-solid fa-forward-step" /></button>
+        </div>
+      </header>
+      <div class="playback-status" role="status">
+        <span v-if="frameExtended">{{ localize('当前画面已延长至 12 秒，播放将自动继续。', 'This frame has been extended to 12 seconds; playback will continue automatically.') }}</span>
+        <span v-else-if="pauseReason === 'hidden'">{{ localize('切换页面时已暂停。', 'Paused while the page was hidden.') }}</span>
+        <span v-else>{{ localize('标准播放每步 8 秒；点选内容后当前画面延长至 12 秒。', 'Standard playback uses 8 seconds per step; selecting content extends the current frame to 12 seconds.') }}</span>
+      </div>
       <div class="timeline__rail"><i :style="{ width:`${timelineProgress}%` }" /></div>
       <ol>
         <li v-for="entry in playbackEntries" :key="entry.tick" :class="{ active:entry.tick === selectedTick?.tick }">
@@ -1382,6 +1569,14 @@ function openProjectPlan() {
     </section>
 
     <template v-if="demoStarted && selectedTick && publicBranch">
+      <section v-if="demoCompleted && finalComparison.length===2" class="completion-comparison" data-no-localize>
+        <header><div><small>{{ localize('推演结果','SIMULATION RESULTS') }}</small><h2>{{ localize('同一事件，两条演化路径','One incident, two trajectories') }}</h2><p>{{ localize('从讨论规模、治理交付和直接承接查看最终差异，点击分支可检查对应帖子。','Compare discussion, governance delivery and direct uptake. Open either branch to inspect its posts.') }}</p></div><RouterLink :to="{path:'/campus-pulse/results',query:replayProject ? {project:replayProject} : {}}">{{ localize('进入案例中心','Open case center') }} →</RouterLink></header>
+        <div class="comparison-columns"><article v-for="row in finalComparison" :key="row.branch">
+          <button type="button" @click="selectBranch(row.branch as 'Natural' | 'D')">{{ row.branch==='Natural' ? localize('Natural · 自然演化','Natural · No added intervention') : localize('D · 组合治理','D · Combined governance') }}</button>
+          <dl><div><dt>{{ localize('公开消息','Public messages') }}</dt><dd>{{ row.messages }}</dd></div><div><dt>{{ localize('回复与引用','Replies and quotes') }}</dt><dd>{{ row.replies }}</dd></div><div><dt>{{ localize('治理交付对象','Governance artifacts') }}</dt><dd>{{ row.artifacts }}</dd></div><div><dt>{{ localize('直接回应治理消息','Direct governance uptake') }}</dt><dd>{{ row.uptake }}</dd></div></dl>
+          <div v-if="row.example"><small>{{ row.example.source_agent_display_id }} · Tick {{ row.example.created_tick }}</small><RecordedMessageText :text="row.example.visible_text" /></div>
+        </article></div>
+      </section>
       <section class="runtime-strip" data-cp-motion-tick>
         <div><span>{{ localize('平行分支', 'Parallel branch') }}</span><strong>{{ branchLabel(selectedTick.branch) }}</strong></div>
         <div><span>{{ localize('公开消息', 'Public messages') }}</span><strong>{{ metric.messages }}</strong></div>
@@ -1389,12 +1584,13 @@ function openProjectPlan() {
         <div><span>{{ localize('点赞', 'Likes') }}</span><strong>{{ metric.like }}</strong></div>
         <div><span>{{ localize('转发', 'Reposts') }}</span><strong>{{ metric.repost }}</strong></div>
         <div><span>{{ localize('举报', 'Reports') }}</span><strong>{{ metric.report }}</strong></div>
-        <div><span>{{ localize('Provider 新请求', 'New Provider requests') }}</span><strong>{{ usage.provider_calls ?? '—' }}</strong></div>
+        <div><span>{{ localize('记录内 Provider 请求', 'Recorded Provider requests') }}</span><strong>{{ usage.provider_calls ?? '—' }}</strong></div>
         <div><span>{{ localize('累计 Token', 'Total tokens') }}</span><strong>{{ typeof usage.total_tokens === 'number' ? usage.total_tokens.toLocaleString('zh-CN') : '—' }}</strong></div>
       </section>
 
-      <ForumWorldRuntimeStage v-if="unifiedWorldFrame" :frame="unifiedWorldFrame" @inspect-node="inspectUnifiedWorldNode" />
-      <div v-else class="social-world-loading"><i/><i/><i/><span>{{ localize('正在加载统一 Agent 世界运行帧…', 'Loading the unified Agent-world runtime frame…') }}</span></div>
+      <ForumWorldRuntimeStage v-if="unifiedWorldFrame" :frame="unifiedWorldFrame" :follow-agent-id="selectedDossierDisplayId" :follow-chain="selectedDossierBehaviorChain" @select-node="trackUnifiedWorldNode" @select-edge="extendFrameForInspection" @inspect-node="inspectUnifiedWorldNode" @start-follow="extendFrameForInspection" @inspect-follow="inspectFollowedAgent" @reset-follow="resetFeaturedFollow" />
+      <div v-if="worldError" class="social-world-error" role="alert"><span>{{ isEnglish ? translateInterfaceText(worldError) : worldError }}</span><button type="button" @click="loadSocialWorldContext">{{ localize('重新加载', 'Reload') }}</button></div>
+      <div v-else-if="!unifiedWorldFrame" class="social-world-loading"><i/><i/><i/><span>{{ localize('正在加载统一 Agent 世界运行帧…', 'Loading the unified Agent-world runtime frame…') }}</span></div>
       <section v-if="false" class="social-world-panel" data-cp-motion-tick aria-labelledby="live-social-world-title">
         <header class="social-world-head">
           <div><span>LIVE AGENT WORLD</span><h2 id="live-social-world-title">{{ localize('校园小世界正在发生什么', 'What is happening inside the campus world') }}</h2><p>{{ localize(`16 个可行动宏观角色被展开为 ${liveMicroNodes.length} 个微角色投影节点。红色双环是本轮真正发言的 LLM，粉色与金色节点分别表示公开 Feed 和私聊触达；触达节点会随 Tick 与分支变化。`, `Sixteen actionable macro roles are expanded into ${liveMicroNodes.length} micro-role projection nodes. Double red rings mark LLM speakers; pink and gold nodes show public-Feed and private-chat reach, changing across Ticks and branches.`) }}</p></div>
@@ -1481,7 +1677,7 @@ function openProjectPlan() {
 
               <section v-if="selectedRolePublicMessages.length" class="inspector-stream">
                 <header><b>{{ localize('关联的公开论坛内容', 'Related public forum content') }}</b><span>LIVE LLM</span></header>
-                <article v-for="message in selectedRolePublicMessages" :key="message.message_id"><small>{{ message.source_agent_display_id }} · Tick {{ message.created_tick }}</small><p data-content-language="zh" lang="zh-CN">{{ message.visible_text }}</p><ContentTranslation :text="message.visible_text" /></article>
+                <article v-for="message in selectedRolePublicMessages" :key="message.message_id"><small>{{ message.source_agent_display_id }} · Tick {{ message.created_tick }}</small><RecordedMessageText :text="message.visible_text" /></article>
               </section>
 
               <div v-if="!selectedRolePublicMessages.length && !selectedRolePrivateExcerpts.length" class="inspector-empty"><i class="fa-solid fa-arrow-pointer"/><span>{{ localize('点击亮起的节点或流动连线，下钻本 Tick 的帖子与对话内容。', 'Select a lit node or moving link to inspect posts and conversations for this Tick.') }}</span></div>
@@ -1502,6 +1698,7 @@ function openProjectPlan() {
         :status-label="selectedMicroStatusLabel"
         :prompt-hash="selectedDossierPromptHash"
         :events="selectedDossierEvents"
+        :behavior-chain="selectedDossierBehaviorChain"
         :related-private-excerpts="selectedDossierPrivateExcerpts"
         :project-id="projectId"
         editable
@@ -1509,7 +1706,7 @@ function openProjectPlan() {
       />
 
       <div class="console-grid">
-        <section class="feed-panel" data-cp-motion-tick>
+        <section class="feed-panel" data-cp-motion-tick @click.capture="extendFrameForInspection" @focusin="extendFrameForInspection">
           <header>
             <div><span>FORUM FEED</span><h2>{{ currentMessages.length ? localize(`Tick ${selectedTick.tick} 新发布`, `New at Tick ${selectedTick.tick}`) : localize('最新论坛动态', 'Latest forum activity') }}</h2></div>
             <small>{{ localize(`${publicBranch.unique_activated_agents ?? '—'} 个 Agent 已激活`, `${publicBranch.unique_activated_agents ?? '—'} Agents activated`) }}</small>
@@ -1517,14 +1714,21 @@ function openProjectPlan() {
           <TransitionGroup name="message" tag="ol">
             <li v-for="message in feedMessages" :key="`${selectedKey}:${message.message_id}`" class="message-card" :class="{ governance:message.action.includes('governance') || message.action === 'service_receipt' }">
               <div class="message-card__meta"><b>{{ message.source_agent_display_id }}</b><span v-if="message.author_visibility === 'anonymous'" class="anonymous-face">{{ localize('小喇叭匿名','Anonymous') }}</span><span>{{ actionLabel(message.action) }}</span><span>Tick {{ message.created_tick }}</span><em>{{ message.provenance?.kind === 'authorized_live_llm' ? 'LIVE LLM' : 'REVIEWED TRACE' }}</em></div>
-              <p data-content-language="zh" lang="zh-CN">{{ message.visible_text }}</p>
-              <ContentTranslation :text="message.visible_text" />
+              <RecordedMessageText :text="message.visible_text" />
               <footer>
                 <span>{{ isEnglish ? `Replies ${repliesTo(message)}` : `评论 ${repliesTo(message)}` }}</span>
                 <span>{{ localize(`赞 ${messageInteractions(message).like}`, `Likes ${messageInteractions(message).like}`) }}</span>
                 <span>{{ localize(`转 ${messageInteractions(message).repost}`, `Reposts ${messageInteractions(message).repost}`) }}</span>
                 <span>{{ localize(`举报 ${messageInteractions(message).report}`, `Reports ${messageInteractions(message).report}`) }}</span>
               </footer>
+              <details v-if="sameThreadMessages(message).length" class="related-replies">
+                <summary>{{ localize(`展开同串其余 ${sameThreadMessages(message).length} 条发言`, `Show ${sameThreadMessages(message).length} more posts in this thread`) }}</summary>
+                <article v-for="reply in sameThreadMessages(message)" :key="reply.message_id">
+                  <header>{{ reply.source_agent_display_id }} · {{ actionLabel(reply.action) }} · Tick {{ reply.created_tick }}</header>
+                  <RecordedMessageText :text="reply.visible_text" />
+                  <small>{{ localize(`赞 ${messageInteractions(reply).like} · 转发 ${messageInteractions(reply).repost} · 举报 ${messageInteractions(reply).report}`, `Likes ${messageInteractions(reply).like} · Reposts ${messageInteractions(reply).repost} · Reports ${messageInteractions(reply).report}`) }}</small>
+                </article>
+              </details>
             </li>
           </TransitionGroup>
           <div v-if="!feedMessages.length" class="baseline-empty"><i class="fa-solid fa-circle-nodes" aria-hidden="true" /><div><strong>{{ stageCopy.title }}</strong><p>{{ stageCopy.detail }}</p><small>{{ localize('该阶段尚无公开帖子；页面只呈现已提交的真实 LLM / reviewed trace 内容。', 'No public post has been committed at this stage; the page shows only live LLM or reviewed-trace content.') }}</small></div></div>
@@ -1534,8 +1738,17 @@ function openProjectPlan() {
           <section class="hot-panel" data-cp-motion-tick>
             <header><span>GLOBAL HOT TOP 10</span><h2>{{ localize('校园论坛热榜', 'Campus forum leaderboard') }}</h2><small>{{ localize('全体 Agent 看到同一榜单', 'Every Agent sees the same board') }}</small></header>
             <ol>
-              <li v-for="(item,index) in hotThreads" :key="item.thread.thread_id">
-                <b>{{ String(index + 1).padStart(2,'0') }}</b><div><strong data-content-language="zh" lang="zh-CN">{{ item.thread.need || item.thread.topic }}</strong><small>{{ localize(`${item.messages} 消息 · ${item.thread.reply_count} 回复 · ${item.thread.participant_count} 人`, `${item.messages} messages · ${item.thread.reply_count} replies · ${item.thread.participant_count} participants`) }}</small><i><span :style="{ width:`${item.score / maxHeat * 100}%` }" /></i></div>
+              <li v-for="(item,index) in hotThreads" :key="`${selectedKey}:${item.thread.thread_id}`">
+                <details class="hot-thread" @toggle="($event.target as HTMLDetailsElement).open && extendFrameForInspection()">
+                  <summary><b class="hot-rank">{{ String(index + 1).padStart(2,'0') }}</b><div class="hot-summary"><strong data-no-localize>{{ hotTopicLabel(item.thread.need || item.thread.topic) }}</strong><span class="hot-preview" data-no-localize>{{ isEnglish ? savedEnglishText(item.root?.visible_text || '') || item.root?.visible_text : item.root?.visible_text }}</span><small>{{ localize(`${item.messages} 消息 · ${item.thread.reply_count} 回复 · ${item.thread.participant_count} 人`, `${item.messages} message${item.messages === 1 ? "" : "s"} · ${item.thread.reply_count} ${item.thread.reply_count === 1 ? "reply" : "replies"} · ${item.thread.participant_count} participant${item.thread.participant_count === 1 ? "" : "s"}`) }}</small><i><span :style="{ width:`${item.score / maxHeat * 100}%` }" /></i></div><span class="hot-chevron" aria-hidden="true">⌄</span></summary>
+                  <div class="hot-discussion" :aria-label="localize('帖子与评论', 'Post and comments')">
+                    <article v-for="message in item.rows" :key="message.message_id" class="hot-message">
+                      <header><b>{{ message === item.root ? localize('原帖', 'Original post') : actionLabel(message.action) }}</b><span>{{ message.source_agent_display_id }} · Tick {{ message.created_tick }}</span></header>
+                      <RecordedMessageText :text="message.visible_text" />
+                      <footer>{{ localize(`赞 ${messageInteractions(message).like} · 转发 ${messageInteractions(message).repost} · 举报 ${messageInteractions(message).report}`, `Likes ${messageInteractions(message).like} · Reposts ${messageInteractions(message).repost} · Reports ${messageInteractions(message).report}`) }}</footer>
+                    </article>
+                  </div>
+                </details>
               </li>
             </ol>
             <p v-if="!hotThreads.length" class="empty">{{ localize('尚无公开讨论串。', 'No public thread yet.') }}</p>
@@ -1552,7 +1765,7 @@ function openProjectPlan() {
 
           <section class="integrity-panel">
             <i class="fa-solid fa-shield-halved" aria-hidden="true" />
-            <div><strong>{{ localize('运行数据已校验', 'Run data verified') }}</strong><span>{{ localize('运行台只读取已提交的公开时间步；manifest 与每个时间步均验证 SHA-256。', 'The console reads committed public ticks only; the manifest and every tick are SHA-256 verified.') }}</span></div>
+            <div><strong>{{ localize('运行数据已校验', 'Run data verified') }}</strong><span>{{ localize('帖子、互动与治理记录按时间步保存，可逐步查看。', 'Posts, interactions and governance records are saved for inspection at each time step.') }}</span></div>
           </section>
         </aside>
       </div>
@@ -1565,7 +1778,7 @@ function openProjectPlan() {
 </template>
 
 <style scoped>
-.live-console { display:grid; width:min(100%,var(--cp-content-max)); min-height:100%; gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); background:var(--cp-canvas-obsidian); color:var(--cp-text-warm); }
+.live-console { display:grid; width:min(100%,var(--cp-content-max)); gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); }
 .hero { position:relative; isolation:isolate; display:grid; min-height:15rem; grid-template-columns:12rem minmax(0,1fr) minmax(14rem,20rem); align-items:center; gap:var(--cp-space-6); overflow:hidden; padding:var(--cp-space-6); border:1px solid #2f2929; border-radius:var(--cp-radius-lg); background:radial-gradient(circle at 16% 50%,rgba(174,11,42,.27),transparent 15rem),linear-gradient(125deg,#161414,#231719 58%,#120f10); color:#fff; box-shadow:var(--cp-shadow-floating); }
 .hero::after { position:absolute; inset:0; z-index:-1; background:repeating-linear-gradient(90deg,transparent 0 5.9rem,rgba(255,255,255,.018) 6rem),repeating-linear-gradient(0deg,transparent 0 5.9rem,rgba(255,255,255,.018) 6rem); content:''; }
 .hero__signal { position:relative; width:10rem; height:10rem; border:1px solid rgba(255,255,255,.08); border-radius:50%; }
@@ -1576,12 +1789,12 @@ function openProjectPlan() {
 .hero__copy p,.timeline header span,.feed-panel header span,.hot-panel header span,.governance-panel header span { margin:0; color:#d7c48d; font:800 var(--cp-text-xs)/1 var(--cp-font-mono); letter-spacing:.09em; }
 .hero__copy h1 { margin:var(--cp-space-2) 0; font-size:clamp(1.8rem,3vw,3rem); line-height:1.08; }
 .hero__copy > span { display:block; max-width:52rem; color:#c7c1c0; font-size:var(--cp-text-sm); line-height:1.75; }
-.hero__status { display:grid; align-content:center; gap:var(--cp-space-2); padding:var(--cp-space-4); border:1px solid rgba(255,255,255,.1); border-radius:var(--cp-radius-md); background:rgba(255,255,255,.045); backdrop-filter:blur(8px); }
+.hero__status { display:grid; align-content:center; gap:var(--cp-space-2); padding:var(--cp-space-4); border:1px solid rgba(255,255,255,.1); border-radius:var(--cp-radius-md); background:rgba(255,255,255,.045);  }
 .hero__status strong { font:800 1.8rem/1 var(--cp-font-mono); }
 .hero__status small { color:#aaa4a3; line-height:1.55; }
 .error-panel button { min-height:var(--cp-control-height); border:1px solid #ba1737; background:#aa0c2b; color:#fff; font-weight:750; cursor:pointer; }
 .launch-panel { display:grid; grid-template-columns:8rem minmax(0,1fr) auto; align-items:center; gap:var(--cp-space-5); padding:var(--cp-space-5); border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-md); background:var(--cp-surface-default); box-shadow:var(--cp-shadow-card); }
-.pre-run-world{display:grid;gap:var(--cp-space-4)}.pre-run-world>header{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--cp-space-4);padding:var(--cp-space-5);border:1px solid var(--cp-border-graphite);border-radius:var(--cp-radius-md);background:var(--cp-surface-charcoal)}.pre-run-world>header p{margin:0 0 var(--cp-space-2);color:var(--cp-action-primary);font:800 var(--cp-text-xs)/1 var(--cp-font-mono);letter-spacing:.09em}.pre-run-world>header h2{margin:0;color:var(--cp-text-warm);font-size:var(--cp-text-xl)}.pre-run-world>header button{display:inline-flex;align-items:center;gap:.55rem;min-height:2.7rem;padding:0 var(--cp-space-4);border:1px solid var(--cp-action-primary);background:var(--cp-action-primary);color:#fff;font-weight:760;cursor:pointer}.pre-run-world>header button:focus-visible{outline:2px solid #1687ff;outline-offset:3px}.pre-run-world>p{margin:0;padding:0 var(--cp-space-2);color:var(--cp-text-warm-muted);font-size:var(--cp-text-sm);line-height:1.7}
+.pre-run-world{display:grid;gap:var(--cp-space-4)}.pre-run-world>header{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--cp-space-4);padding:var(--cp-space-5);border:1px solid var(--cp-border-default);border-radius:var(--cp-radius-md);background:linear-gradient(115deg,var(--cp-surface-selected),var(--cp-surface-default) 62%)}.pre-run-world>header p{margin:0 0 var(--cp-space-2);color:var(--cp-action-primary);font:800 var(--cp-text-xs)/1 var(--cp-font-mono);letter-spacing:.09em}.pre-run-world>header h2{margin:0;font-size:var(--cp-text-xl)}.pre-run-world>header button{display:inline-flex;align-items:center;gap:.55rem;min-height:2.7rem;padding:0 var(--cp-space-4);border:1px solid var(--cp-action-primary);background:var(--cp-action-primary);color:#fff;font-weight:760;cursor:pointer}.pre-run-world>header button:focus-visible{outline:2px solid #1687ff;outline-offset:3px}.pre-run-world>p{margin:0;padding:0 var(--cp-space-2);color:var(--cp-text-secondary);font-size:var(--cp-text-sm);line-height:1.7}
 .project-launch { position:relative; display:grid; grid-template-columns:9rem minmax(0,1fr) auto; align-items:center; gap:var(--cp-space-5); overflow:hidden; padding:var(--cp-space-6); border:1px solid color-mix(in srgb,var(--cp-action-primary) 34%,var(--cp-border-default)); border-radius:var(--cp-radius-lg); background:linear-gradient(120deg,var(--cp-surface-selected),var(--cp-surface-default) 68%); box-shadow:var(--cp-shadow-card); }
 .project-launch::after { position:absolute; right:-6rem; bottom:-9rem; width:19rem; height:19rem; border:1px solid color-mix(in srgb,var(--cp-action-primary) 16%,transparent); border-radius:50%; content:''; pointer-events:none; }
 .project-launch__radar { position:relative; width:8rem; height:8rem; border:1px solid color-mix(in srgb,var(--cp-action-primary) 22%,var(--cp-border-default)); border-radius:50%; }
@@ -1601,7 +1814,7 @@ function openProjectPlan() {
 .social-world-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--cp-space-5);padding:var(--cp-space-5);border-bottom:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 8% 15%,rgba(198,0,48,.18),transparent 18rem)}.social-world-head>div:first-child{max-width:60rem}.social-world-head span{color:#e5c77f;font:800 var(--cp-text-xs)/1 var(--cp-font-mono);letter-spacing:.1em}.social-world-head h2{margin:.45rem 0;font-size:clamp(1.45rem,2.5vw,2.25rem);letter-spacing:-.025em}.social-world-head p{margin:0;color:#aaa2a4;font-size:var(--cp-text-sm);line-height:1.65}.world-channel-switch{display:flex;flex:none;padding:.2rem;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.035)}.world-channel-switch button{min-height:2.35rem;padding:0 var(--cp-space-3);border:0;border-radius:999px;background:transparent;color:#aaa2a4;font-size:var(--cp-text-xs);font-weight:750;cursor:pointer}.world-channel-switch button.active{background:#f5eee9;color:#a5002a;box-shadow:0 5px 16px rgba(0,0,0,.24)}
 .world-channel-switch button:disabled{cursor:not-allowed;opacity:.38}.world-channel-switch button:disabled.active{background:transparent;color:#aaa2a4;box-shadow:none}
 .world-pulse-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.025)}.world-pulse-strip>div{padding:var(--cp-space-3) var(--cp-space-4);border-right:1px solid rgba(255,255,255,.08)}.world-pulse-strip>div:last-child{border-right:0}.world-pulse-strip span{display:block;color:#847a7d;font-size:var(--cp-text-xs)}.world-pulse-strip strong{display:block;margin-top:.3rem;color:#fff;font:800 var(--cp-text-lg)/1 var(--cp-font-mono)}
-.live-world-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(20rem,.65fr);min-height:36rem}.live-world-stage{position:relative;min-width:0;overflow:hidden;border-right:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 50% 50%,rgba(187,0,44,.12),transparent 17rem),linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:auto,46px 46px,46px 46px}.live-world-stage svg{display:block;width:100%;height:100%;min-height:36rem}.world-base-edges line{stroke:#655b5e;stroke-width:.7;opacity:.35}.live-edge{cursor:pointer}.edge-hit{stroke:transparent;stroke-width:13}.edge-signal{stroke:#e21c4d;stroke-linecap:round;stroke-dasharray:3 10;filter:url(#live-glow);animation:edge-flow 1.75s linear infinite}.live-edge.private_direct .edge-signal,.live-edge.private_group .edge-signal{stroke:#edc36b;stroke-dasharray:2 7;animation-duration:1.25s}.live-edge.private_group .edge-signal{stroke:#a98ee6}.live-edge.selected .edge-signal{stroke:#fff;stroke-dasharray:5 5}.live-edge:focus .edge-signal{stroke:#72bdff;stroke-width:5}.live-world-node{cursor:pointer}.node-body{fill:#2a2426;stroke:#807477;stroke-width:1.2;transition:fill .2s,stroke .2s,transform .2s}.live-world-node text{fill:#aca2a4;font:750 9px var(--cp-font-mono);pointer-events:none}.live-world-node .node-activation{fill:#7e7376;font-size:8px}.live-world-node.active .node-body{fill:url(#live-node-active);stroke:#ffd6df;filter:url(#live-glow)}.live-world-node.active>text:first-of-type{fill:#fff}.live-world-node.active .node-activation{fill:#efc878}.live-world-node.selected .node-body,.live-world-node:focus .node-body{stroke:#fff;stroke-width:3}.node-radar{fill:none;stroke:#f11d50;stroke-width:1.2;opacity:.55;transform-box:fill-box;transform-origin:center;animation:live-node-pulse 1.65s ease-out infinite}.live-world-center>circle:first-child{fill:#120f10;stroke:#4c3d41;stroke-width:1.2}.live-world-center .center-orbit{fill:none;stroke:#b70030;stroke-dasharray:2 9;opacity:.55;transform-origin:410px 245px;animation:center-orbit 14s linear infinite}.live-world-center text{fill:#fff;font:750 11px var(--cp-font-mono);letter-spacing:.1em}.live-world-center .center-tick{fill:#efc978;font-size:18px;letter-spacing:0}.live-world-center .center-branch{fill:#817679;font-size:8px;letter-spacing:.05em}.world-legend{position:absolute;right:var(--cp-space-3);bottom:var(--cp-space-3);display:flex;flex-wrap:wrap;gap:var(--cp-space-3);padding:.55rem .75rem;border:1px solid rgba(255,255,255,.1);background:rgba(18,15,16,.86);color:#9f9698;font-size:.66rem;backdrop-filter:blur(8px)}.world-legend span{display:flex;align-items:center;gap:.4rem}.world-legend i{display:block;width:1.2rem;height:2px;background:#e21c4d}.world-legend i.private{background:#edc36b}.world-legend i.active{width:.45rem;height:.45rem;border-radius:50%;background:#e21c4d;box-shadow:0 0 .6rem #e21c4d}
+.live-world-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(20rem,.65fr);min-height:36rem}.live-world-stage{position:relative;min-width:0;overflow:hidden;border-right:1px solid rgba(255,255,255,.1);background:radial-gradient(circle at 50% 50%,rgba(187,0,44,.12),transparent 17rem),linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:auto,46px 46px,46px 46px}.live-world-stage svg{display:block;width:100%;height:100%;min-height:36rem}.world-base-edges line{stroke:#655b5e;stroke-width:.7;opacity:.35}.live-edge{cursor:pointer}.edge-hit{stroke:transparent;stroke-width:13}.edge-signal{stroke:#e21c4d;stroke-linecap:round;stroke-dasharray:3 10;filter:url(#live-glow);animation:edge-flow 1.75s linear infinite}.live-edge.private_direct .edge-signal,.live-edge.private_group .edge-signal{stroke:#edc36b;stroke-dasharray:2 7;animation-duration:1.25s}.live-edge.private_group .edge-signal{stroke:#a98ee6}.live-edge.selected .edge-signal{stroke:#fff;stroke-dasharray:5 5}.live-edge:focus .edge-signal{stroke:#72bdff;stroke-width:5}.live-world-node{cursor:pointer}.node-body{fill:#2a2426;stroke:#807477;stroke-width:1.2;transition:fill .2s,stroke .2s,transform .2s}.live-world-node text{fill:#aca2a4;font:750 9px var(--cp-font-mono);pointer-events:none}.live-world-node .node-activation{fill:#7e7376;font-size:8px}.live-world-node.active .node-body{fill:url(#live-node-active);stroke:#ffd6df;filter:url(#live-glow)}.live-world-node.active>text:first-of-type{fill:#fff}.live-world-node.active .node-activation{fill:#efc878}.live-world-node.selected .node-body,.live-world-node:focus .node-body{stroke:#fff;stroke-width:3}.node-radar{fill:none;stroke:#f11d50;stroke-width:1.2;opacity:.55;transform-box:fill-box;transform-origin:center;animation:live-node-pulse 1.65s ease-out infinite}.live-world-center>circle:first-child{fill:#120f10;stroke:#4c3d41;stroke-width:1.2}.live-world-center .center-orbit{fill:none;stroke:#b70030;stroke-dasharray:2 9;opacity:.55;transform-origin:410px 245px;animation:center-orbit 14s linear infinite}.live-world-center text{fill:#fff;font:750 11px var(--cp-font-mono);letter-spacing:.1em}.live-world-center .center-tick{fill:#efc978;font-size:18px;letter-spacing:0}.live-world-center .center-branch{fill:#817679;font-size:8px;letter-spacing:.05em}.world-legend{position:absolute;right:var(--cp-space-3);bottom:var(--cp-space-3);display:flex;flex-wrap:wrap;gap:var(--cp-space-3);padding:.55rem .75rem;border:1px solid rgba(255,255,255,.1);background:rgba(18,15,16,.86);color:#9f9698;font-size:.66rem;}.world-legend span{display:flex;align-items:center;gap:.4rem}.world-legend i{display:block;width:1.2rem;height:2px;background:#e21c4d}.world-legend i.private{background:#edc36b}.world-legend i.active{width:.45rem;height:.45rem;border-radius:50%;background:#e21c4d;box-shadow:0 0 .6rem #e21c4d}
 .world-pulse-strip small{display:block;margin-top:.3rem;color:#b09b62;font:700 .62rem/1.25 var(--cp-font-mono)}
 .world-macro-clusters circle{fill:rgba(255,255,255,.014);stroke:#5a4d50;stroke-width:.8;stroke-dasharray:2 5}.world-macro-clusters text{fill:#817579;font:700 7px var(--cp-font-mono);letter-spacing:.04em}.world-base-edges line{stroke:#5e5356;stroke-width:.6;opacity:.27}.live-world-node .node-body{fill:#2a2426;stroke:#73676a;stroke-width:.8}.live-world-node.active .node-body{filter:url(#live-glow)}.live-world-node.public-reached .node-body{fill:#bf1742;stroke:#ff91aa}.live-world-node.private-reached .node-body{fill:#b88638;stroke:#f2d690}.live-world-node.public-reached.private-reached .node-body{fill:#d25863;stroke:#ffe0a8}.live-world-node.llm-speaker .node-body{fill:#f31a4f;stroke:#fff}.live-world-node.selected .node-body,.live-world-node:focus-visible .node-body{stroke:#72bdff;stroke-width:2.2}.live-world-node.private-reached .node-radar{stroke:#e4b85d}.llm-ring{fill:none;stroke:#fff;stroke-width:1.15;opacity:.9;pointer-events:none}.llm-ring--outer{stroke:#ef174a;stroke-width:1;stroke-dasharray:2 3;animation:center-orbit 4.5s linear infinite;transform-box:fill-box;transform-origin:center}.world-legend i.reach{width:.48rem;height:.48rem;border-radius:50%;background:#d61b49;box-shadow:0 0 .55rem #d61b49}.world-legend i.llm{width:.55rem;height:.55rem;border:2px double #fff;border-radius:50%;background:#f31a4f;box-shadow:0 0 .6rem #e31a49}
 .world-inspector{display:grid;align-content:start;gap:var(--cp-space-3);min-width:0;max-height:36rem;overflow:auto;padding:var(--cp-space-4);background:#1d191a}.world-inspector>p{margin:0;color:#e5c77f;font:750 .68rem var(--cp-font-mono);text-transform:uppercase}.world-inspector>h3{margin:0;color:#fff;font-size:var(--cp-text-lg);line-height:1.3}.world-inspector>h3 i{margin-inline:.35rem;color:#b80031;font-size:.7rem}.world-inspector>span{color:#92888a;font-size:var(--cp-text-xs);line-height:1.55}.inspector-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.09)}.inspector-stats span{display:grid;gap:.2rem;padding:.65rem;background:#211c1e;color:#847a7d;font-size:.62rem}.inspector-stats b{color:#fff;font-size:1rem}.inspect-agent-button{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.6rem;padding:0 .7rem;border:1px solid #d2aa50;background:transparent;color:#f0dfb5;font-size:.68rem;font-weight:760;cursor:pointer}.inspect-agent-button:hover{background:rgba(210,170,80,.12)}.inspect-agent-button:focus-visible{outline:2px solid #72bdff;outline-offset:2px}.inspector-stream{display:grid;gap:.55rem}.inspector-stream>header{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.1)}.inspector-stream header b{font-size:.72rem}.inspector-stream header span{color:#d7bd78;font:700 .6rem var(--cp-font-mono)}.inspector-stream article{display:grid;gap:.35rem;padding:.7rem;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035)}.inspector-stream article small{color:#8d8285;font-size:.6rem}.inspector-stream article p{margin:0;color:#ded7d3;font-size:.75rem;line-height:1.55}.inspector-stream article em{color:#c9a958;font-size:.62rem;font-style:normal}.private-stream article{border-left:2px solid #d8b45e;background:linear-gradient(100deg,rgba(216,180,94,.08),transparent)}.private-route{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem}.private-route b{color:#ece2d4;font-weight:750}.private-route i{color:#bf1740;font-size:.52rem}.private-route span{margin-left:auto;color:#8d8285}.private-effect{display:grid;gap:.2rem;margin-top:.25rem;padding:.48rem .55rem;border-left:2px solid #b7183f;background:rgba(183,24,63,.09)}.private-effect b{color:#f0d7dd;font-size:.62rem}.private-effect span{color:#b8aaad;font-size:.63rem;line-height:1.45}.inspector-empty{display:flex;align-items:flex-start;gap:.7rem;padding:1rem;border:1px dashed rgba(255,255,255,.14);color:#8f8587;font-size:.72rem;line-height:1.55}.inspector-empty i{color:#d7bd78}.world-data-boundary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem var(--cp-space-4);border-top:1px solid rgba(255,255,255,.09);color:#857b7d;font-size:.64rem}.world-data-boundary code{color:#c3a966}.social-world-error,.social-world-loading{display:flex;min-height:12rem;align-items:center;justify-content:center;gap:.65rem;padding:2rem;color:#aea4a6}.social-world-error button{min-height:2.3rem;padding:0 .8rem;border:1px solid #c41843;background:transparent;color:#fff;cursor:pointer}.social-world-loading i{width:.5rem;height:.5rem;border-radius:50%;background:#d11142;animation:world-loading .85s infinite alternate}.social-world-loading i:nth-child(2){animation-delay:.16s}.social-world-loading i:nth-child(3){animation-delay:.32s}.world-channel-switch button:focus-visible,.social-world-error button:focus-visible{outline:2px solid #78bfff;outline-offset:2px}
@@ -1641,7 +1854,7 @@ function openProjectPlan() {
 .edge-signal{stroke:#d51b49;stroke-linecap:round;stroke-dasharray:3 10;filter:none}
 .live-edge.private_direct .edge-signal{stroke:#a77914;stroke-dasharray:2 7}
 .live-edge.private_group .edge-signal{stroke:#6e56b0;stroke-dasharray:2 7}
-.live-edge.selected .edge-signal{stroke:#111820;stroke-dasharray:none;filter:none}
+.live-edge.selected .edge-signal{stroke:#c9b27a;stroke-dasharray:5 5;filter:drop-shadow(0 0 3px rgba(201,178,122,.45))}
 .live-edge:focus .edge-signal{stroke:#1677c8;stroke-width:3}
 .live-world-node .node-body{fill:#fff;stroke:#69727d;stroke-width:.9}
 .live-world-node text{fill:#29313a}
@@ -1650,7 +1863,7 @@ function openProjectPlan() {
 .live-world-node.private-reached .node-body{fill:#fff9e8;stroke:#a77914}
 .live-world-node.public-reached.private-reached .node-body{fill:#fff1f0;stroke:#bd4c55}
 .live-world-node.llm-speaker .node-body{fill:#d51b49;stroke:#fff}
-.live-world-node.selected .node-body,.live-world-node:focus-visible .node-body{stroke:#111820;stroke-width:2.2}
+.live-world-node.selected .node-body,.live-world-node:focus-visible .node-body{stroke:#a7aeb6;stroke-width:2.2}
 .node-radar{stroke:#d51b49}
 .live-world-node.private-reached .node-radar{stroke:#a77914}
 .llm-ring{stroke:#d51b49}
@@ -1688,4 +1901,36 @@ function openProjectPlan() {
 .world-channel-switch button:disabled.active{color:#5e6975}
 .live-world-center{display:none!important}
 @media(max-width:680px){.world-head-controls{width:100%;align-items:stretch}.world-channel-switch,.world-export-actions{width:100%}.world-export-actions button{flex:1;justify-content:center}}
+
+/* A selected relationship uses a quiet neutral accent. The endpoint nodes
+   remain readable on the world stage instead of receiving a near-black frame. */
+.live-edge.selected .edge-signal{stroke:#c9b27a!important;stroke-width:3!important;stroke-dasharray:5 5!important;filter:drop-shadow(0 0 3px rgba(201,178,122,.45))!important}
+.live-world-node.selected .node-body{stroke:#a7aeb6!important;stroke-width:2.2!important;filter:drop-shadow(0 0 3px rgba(167,174,182,.42))!important}
+.live-world-node:focus .node-body{stroke:#a7aeb6!important;stroke-width:2.2!important}
+.live-world-node:focus-visible .node-body{stroke:#4b9bd4!important;stroke-width:2.4!important}
+.live-edge:focus-visible .edge-signal{stroke:#4b9bd4!important;stroke-width:3.2!important;filter:drop-shadow(0 0 3px rgba(75,155,212,.52))!important}
+.launch-transport{display:grid;gap:12px;min-width:220px;max-width:300px}.launch-transport label{display:grid;gap:7px;color:var(--cp-text-secondary);font-size:13px;font-weight:600}.launch-transport select,.playback-controls select{min-height:40px;border:1px solid var(--cp-border-strong);border-radius:6px;padding:8px 10px;background:var(--cp-surface-default);color:var(--cp-text-primary);font:inherit}.launch-transport small{font-size:12px;line-height:1.65;color:var(--cp-text-secondary)}.launch-transport .launch-action{width:100%;min-width:0;min-height:44px;font-size:14px}
+.timeline>header{gap:16px;flex-wrap:wrap}.playback-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.playback-controls label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--cp-text-secondary)}.playback-controls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:40px;min-height:40px;border:1px solid var(--cp-border-strong);border-radius:6px;padding:8px 12px;font:inherit;font-size:13px;background:var(--cp-surface-default);color:var(--cp-text-primary);cursor:pointer;transition:background 160ms ease,transform 160ms ease}.playback-controls .replay-control{background:var(--cp-action-primary);border-color:var(--cp-action-primary);color:var(--cp-text-inverse);min-width:110px}.playback-controls button:hover:not(:disabled){background:var(--cp-surface-selected);color:var(--cp-action-primary)}.playback-controls button:active:not(:disabled){transform:translateY(1px)}.playback-controls button:disabled{opacity:.4;cursor:default}.playback-status{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:0 16px 12px;color:var(--cp-text-secondary);font-size:12px}.playback-status small{font-variant-numeric:tabular-nums}.launch-transport :focus-visible,.playback-controls :focus-visible{outline:2px solid var(--cp-focus-ring);outline-offset:3px}
+@media(max-width:700px){.launch-transport{width:100%;max-width:none}.timeline .playback-controls{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 44px}.playback-controls label{grid-column:1/-1;width:100%;justify-content:space-between}.playback-controls select{flex:1;min-width:0}.timeline .playback-controls button{width:100%;min-width:0}.playback-controls button:last-child{grid-column:3}.timeline>header>div:first-child{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.playback-controls button{transition:none}}
+</style>
+
+<style scoped>
+.hot-panel li { display:block; }
+.hot-thread summary { display:grid;grid-template-columns:2rem minmax(0,1fr) 1rem;gap:8px;padding:10px 4px;cursor:pointer;list-style:none;border-radius:4px; }
+.hot-thread summary::-webkit-details-marker { display:none; }
+.hot-thread summary:hover { background:var(--cp-surface-selected); }
+.hot-thread summary:focus-visible { outline:2px solid var(--cp-focus-ring);outline-offset:2px; }
+.hot-rank { color:var(--cp-action-primary);font:700 13px var(--cp-font-mono); }
+.hot-preview { display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--cp-text-primary);font-size:13px;line-height:1.6; }
+.hot-chevron { align-self:center;transition:transform 180ms ease; }
+.hot-thread[open] .hot-chevron { transform:rotate(180deg); }
+.hot-thread[open] .hot-preview { display:none; }
+.hot-thread .hot-discussion { display:block;max-height:520px;overflow:auto;overscroll-behavior:contain; }
+.hot-message { padding:14px 8px;border-top:1px solid var(--cp-border-default);font-size:13px; }
+.hot-message header { display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;margin-bottom:8px;font-size:11px; }
+.hot-message header span,.hot-message footer { color:var(--cp-text-secondary); }
+.hot-message footer { margin-top:8px;font-size:11px; }
+.related-replies{margin-top:12px;border-top:1px solid var(--cp-border-default)}.related-replies summary{padding:12px 0;cursor:pointer;color:var(--cp-action-primary);font-size:13px;font-weight:650}.related-replies summary:focus-visible{outline:2px solid var(--cp-focus-ring);outline-offset:2px}.related-replies article{padding:12px 0;border-top:1px solid var(--cp-border-subtle);font-size:13px}.related-replies header,.related-replies small{display:block;color:var(--cp-text-secondary);font-size:11px;margin:6px 0}
+@media(prefers-reduced-motion:reduce){.hot-chevron{transition:none}}
 </style>

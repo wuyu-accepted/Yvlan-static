@@ -69,7 +69,7 @@ onMounted(load)
   <section class="formal-v5" aria-labelledby="formal-v5-title">
     <header>
       <div>
-        <p>FORMALTWIN V5 · PAIRED LLM RUN</p>
+        <p>PAIRED LLM SIMULATION</p>
         <h2 id="formal-v5-title">{{ localize('服务闭环了，为什么信任仍在下降？', 'The service loop closed. Why did trust still fall?') }}</h2>
         <span>{{ localize('住宿床位分配争议 · 同一人口与起点 · Natural / D 推进至 Tick 10', 'Housing allocation dispute · shared population and baseline · Natural / D through Tick 10') }}</span>
       </div>

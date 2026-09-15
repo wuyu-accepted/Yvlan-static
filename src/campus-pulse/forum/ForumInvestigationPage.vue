@@ -630,11 +630,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.forum-investigation-page { --cp-surface-canvas:#fff; --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-surface-raised:#fff; --cp-surface-selected:#fff2f5; --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-text-inverse:#fff; --cp-border-default:#ded8d4; --cp-border-subtle:#ebe7e4; --cp-border-strong:#bdb4b0; --cp-action-primary:#b20f3d; --cp-action-primary-hover:#941032; --cp-tech:#776c70; --cp-tech-bright:#554c4f; --cp-tech-surface:#f4f1ef; --cp-tech-line:#ded8d4; --cp-evidence-surface:#fff9e9; --cp-evidence-text:#765819; width:min(100%,var(--cp-content-max)); min-height:100%; margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) var(--cp-space-8); background:var(--cp-surface-canvas); color:var(--cp-text-primary); color-scheme:light; }
+.forum-investigation-page { width:min(100%,var(--cp-content-max)); margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); color:var(--cp-text-primary); }
 .forum-loading { display:grid; gap:var(--cp-space-3); }
 .forum-loading span { color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .fallback-notice, .tick-notice { margin-bottom:var(--cp-space-3); padding:var(--cp-space-2) var(--cp-space-3); border:1px solid var(--cp-warning); background:var(--cp-warning-surface); color:var(--cp-text-primary); font-size:var(--cp-text-sm); }
-.demo-runtime-banner { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:var(--cp-space-3); align-items:center; margin-bottom:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-space-4); border:1px solid color-mix(in srgb,var(--cp-action-primary) 40%,var(--cp-border-default)); border-radius:var(--cp-radius-md); background:var(--cp-surface-default); }
+.demo-runtime-banner { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:var(--cp-space-3); align-items:center; margin-bottom:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-space-4); border:1px solid color-mix(in srgb,var(--cp-action-primary) 40%,var(--cp-border-default)); border-radius:var(--cp-radius-md); background:linear-gradient(110deg,var(--cp-surface-selected),var(--cp-surface-default)); }
 .demo-runtime-banner__signal { position:relative; width:2rem; height:2rem; border:1px solid color-mix(in srgb,var(--cp-action-primary) 35%,transparent); border-radius:50%; }
 .demo-runtime-banner__signal span,.demo-runtime-banner__signal::after { content:''; position:absolute; inset:50% auto auto 50%; border-radius:50%; transform:translate(-50%,-50%); }
 .demo-runtime-banner__signal span { width:.55rem; height:.55rem; background:var(--cp-action-primary); }

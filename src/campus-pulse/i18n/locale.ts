@@ -1,13 +1,39 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, type Ref, watch } from 'vue'
 import catalogDocument from './uiCatalog.zh-en.json'
+import { createStoredTextLocalizer } from './storedText.mjs'
 
 export type CampusPulseLocale = 'zh-CN' | 'en-US'
 
 // Route-level copy added after the original catalog snapshot. Keep these as
 // exact matches so the phrase fallback cannot produce mixed-language labels.
 const supplementalTranslations: Readonly<Record<string, string>> = Object.freeze({
-  '项目中心': 'Project Center',
-  '项目注册与治理编排': 'Project registry and governance orchestration',
+  '团队与致谢': 'Team & acknowledgements',
+  'CampusPulse 与开源贡献': 'CampusPulse and open-source contributions',
+  "运行参数": "Run parameters",
+  "事件设置": "Incident settings",
+  "查看事件内容": "View incident details",
+  "确认运行参数": "Review run parameters",
+  "选择分支、模型、种子、并发与 Token 上限；核对预览后启动运行。": "Select branches, model, seeds, concurrency and token cap; review the preview before starting.",
+  "配置事件、Agent 人口、治理方案与运行参数": "Configure the incident, Agent population, governance plans and run parameters",
+  "从事件定义到运行参数，依次完成事件、治理方案和模型预算设置。": "Define the incident, configure governance plans and review the model budget.",
+  "已绑定的模板可直接使用；新增情景用于保存另一组事件条件。": "Use a bound template, or save a new scenario with a different set of incident conditions.",
+  "新增事件情景": "Add an incident scenario",
+  "人口与数据来源": "Population and data source",
+  "选择已绑定的数据": "Select bound data",
+  "系统自动使用所选情景关联的数据分析。": "The system uses the analysis linked to the selected scenario.",
+  "演化阶段：事件前 → 出现 → 扩散 → 后续反馈": "Phases: before the event → onset → spread → follow-up",
+  "分析范围": "Analysis scope",
+  "请选择已绑定的数据分析；如无可选项，请先在项目中初始化数据。": "Select a bound analysis. Initialize the project data first if no option is available.",
+  "请检查标红字段后再保存。": "Check the highlighted fields before saving.",
+  "检查已保存的事件和演化阶段": "Review the saved incident and its phases",
+  "确认模型、分支、时间步和预算": "Review the model, branches, time steps and budget",
+  "新建项目向导": "Project setup",
+  "创建向导": "Project setup",
+  "通过创建向导依次定义治理目标、Agent 世界、事件情景与运行方案。每一步都会自动保存草稿，你可以随时回来继续。": "Define the project and incident in the setup wizard. Drafts are saved automatically.",
+  "从项目进入 Agent 世界、事件情景、治理方案与运行参数。": "Open the Agent world, incident, policy plans and run parameters from the project.",
+  "播放推演": "Play saved simulation",
+  "世纪馆项目已就绪": "Century Gym project is ready.",
+  "记录内 Provider 请求": "Recorded Provider requests",
   '把社会模拟从“能运行”': 'Move social simulation from “it runs”',
   '你现在想完成什么？': 'What would you like to do?',
   '首页负责说明能力与边界；具体任务从下面三个入口开始。': 'This page explains the product’s capabilities and boundaries. Start a specific task from one of the three paths below.',
@@ -258,13 +284,18 @@ const phraseTranslations: ReadonlyArray<readonly [string, string]> = Object.free
   ['当前不可入队', 'Not queueable'], ['不允许 Provider 调用', 'Provider calls not allowed'],
   ['不可入队', 'Not queueable'],
   ['SHA-256 匹配', 'SHA-256 match'], ['schema 为', 'schema:'],
-  ['就绪', 'ready'], ['阻断', 'blocked'], ['未知', 'unknown'],
+  ['就绪', 'ready'], ['阻断', 'blocked'], ['未知', 'unknown'], ['项', 'items'],
   ['已安装', 'installed'],
   ['（', ' ('], ['）', ')'], ['，', ', '], ['；', '; '], ['：', ': '],
 ])
 
 export const currentLocale = computed(() => locale.value)
 export const isEnglish = computed(() => locale.value === 'en-US')
+
+const storedTextLocalizer = createStoredTextLocalizer(catalog)
+export function localizeStoredText(value: string, language: CampusPulseLocale = locale.value): string {
+  return storedTextLocalizer(value, language)
+}
 
 export function setLocale(value: CampusPulseLocale): void {
   locale.value = value

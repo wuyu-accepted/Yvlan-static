@@ -13,7 +13,7 @@ defineProps({
 </template>
 
 <style scoped>
-.cp-status-badge { display:inline-flex; min-height:1.5rem; align-items:center; gap:var(--cp-space-1); padding:.125rem var(--cp-space-2); border:1px solid var(--cp-border-default); border-radius:999px; background:var(--cp-surface-subtle); color:var(--cp-text-secondary); font:650 var(--cp-text-xs)/1.25 var(--cp-font-sans); white-space:nowrap; }
+.cp-status-badge { display:inline-flex; min-height:1.5rem; align-items:center; gap:var(--cp-space-1); padding:.125rem var(--cp-space-2); border:1px solid var(--cp-border-default); border-radius:999px; background:var(--cp-surface-subtle); color:var(--cp-text-secondary); font:600 var(--cp-text-xs)/1.25 var(--cp-font-sans); white-space:nowrap; }
 .cp-status-badge--evidence { border-color:var(--cp-evidence); background:var(--cp-evidence-surface); color:var(--cp-evidence-text); }
 .cp-status-badge--info { border-color:var(--cp-info); background:var(--cp-info-surface); color:var(--cp-info); }
 .cp-status-badge--success { border-color:var(--cp-success); background:var(--cp-success-surface); color:var(--cp-success); }

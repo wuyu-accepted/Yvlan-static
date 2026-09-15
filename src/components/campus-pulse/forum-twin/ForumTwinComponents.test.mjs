@@ -100,7 +100,7 @@ test('product pages expose the simulator first and keep verified results as a ca
   assert.match(summary, /result\.slotCompleteness/)
   assert.match(summary, /LLM slot completion/)
   assert.match(summary, /LLM 槽位完成度/)
-  assert.match(system, /禁止生成公开论坛文字/)
+  assert.match(system, /LLM 负责语言表达与治理判断；后台计算负责状态、调度与资源队列/)
   assert.match(navigation, /label: '产品首页'/)
   assert.match(navigation, /label: '项目工作台'/)
   assert.match(navigation, /label: '实时演化'/)

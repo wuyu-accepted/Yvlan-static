@@ -79,9 +79,9 @@ function metric(item: ResourcePolicyBranchSummary | undefined, key: keyof Resour
     <div class="finding-grid">
       <article class="finding">
         <p class="eyebrow">这次预演真正发现了什么</p>
-        <h3>治理不是把舆情曲线压下去，而是把“信息问题”和“个体问题”分开处理</h3>
+        <h3>分别处理规则信息与个体求助</h3>
         <p data-no-localize>{{ primaryFinding }}</p>
-        <p class="boundary">这是一场单场景、单 canonical seed 的模型条件实验，不代表现实因果效果或全校民意。</p>
+        <p class="boundary">资源分配情景 · 同一人口与随机种子的方案对比</p>
       </article>
 
       <article v-if="story.closedLoops[0]" class="conversation" aria-labelledby="loop-title">

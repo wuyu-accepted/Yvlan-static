@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
-import { currentLocale } from '../i18n/locale.ts'
 import type { ApiProblem } from '../contracts/api.ts'
 import type {
   GateStatus,
@@ -18,11 +17,6 @@ const props = defineProps<{
 }>()
 
 defineEmits<{ refresh: [] }>()
-
-const isEnglish = computed(() => currentLocale.value === 'en-US')
-const gateSummary = computed(() => isEnglish.value
-  ? `${readyCount.value} ready · ${blockedCount.value} blocked · ${unknownCount.value} unknown (${props.status?.gates.length ?? 0} items)`
-  : `${readyCount.value} 就绪 · ${blockedCount.value} 阻断 · ${unknownCount.value} 未知（${props.status?.gates.length ?? 0} 项）`)
 
 const gateTone = (status: GateStatus): string => (
   status === 'ready' ? 'success'
@@ -60,7 +54,11 @@ function short(value: string | undefined): string {
   return value ? value.slice(0, 10) + '…' + value.slice(-8) : '—'
 }
 function formatCapability(item: RuntimeCapabilityVM): string {
-  return item.note ? item.value + '（' + item.note + '）' : item.value
+  const states: Record<string, string> = { enabled:'已启用', disabled:'已停用', installed:'已安装', not_installed:'待安装', ready:'就绪', not_ready:'待配置', qualified:'已检查' }
+  if (item.key === 'template_mapping') return item.value === '未声明' ? '待配置' : '已配置'
+  const value = item.key === 'asset_bundle' ? item.value.split(' · ').at(-1) || '未声明' : item.value
+  const label = states[value] || value
+  return item.key === 'live_enqueue' && item.note ? label + '（请配置运行组件）' : label
 }
 </script>
 
@@ -69,7 +67,7 @@ function formatCapability(item: RuntimeCapabilityVM): string {
     <header class="tab-head">
       <div>
         <h2 id="readiness-title">就绪状态</h2>
-        <p class="tab-intro">未知状态不会显示为就绪。</p>
+        <p class="tab-intro">查看服务连接、运行能力与案例文件状态。</p>
       </div>
       <button type="button" class="refresh" :disabled="loading" @click="$emit('refresh')">{{ loading ? '检测中…' : '重新检测' }}</button>
     </header>
@@ -88,7 +86,7 @@ function formatCapability(item: RuntimeCapabilityVM): string {
             <dd><CpStatusBadge :tone="apiTone" :icon="status?.api.status === 'available' ? 'fa-circle-check' : status?.api.status === 'unavailable' ? 'fa-circle-xmark' : 'fa-triangle-exclamation'">{{ apiLabel }}</CpStatusBadge></dd>
           </div>
           <div><dt>检测时间</dt><dd>{{ checkedAt || status?.api.lastCheckedAt || '—' }}</dd></div>
-          <div><dt>门禁汇总</dt><dd>{{ gateSummary }}</dd></div>
+          <div><dt>门禁汇总</dt><dd>{{ readyCount }} 就绪 · {{ blockedCount }} 阻断 · {{ unknownCount }} 未知（{{ status?.gates.length ?? 0 }} 项）</dd></div>
           <div><dt>新鲜度</dt><dd>{{ status?.freshness === 'stale' ? '上次已知（已过期）' : status?.freshness === 'fresh' ? '当前探测' : '未检测' }}</dd></div>
         </dl>
         <p class="service-detail">{{ status?.api.detail || '未检测到后端响应；当前只读，未知状态保持未知。' }}</p>
@@ -127,18 +125,17 @@ function formatCapability(item: RuntimeCapabilityVM): string {
           <table class="gate-table">
             <caption class="sr-only">离线资产校验结果</caption>
             <thead>
-              <tr><th scope="col">资产</th><th scope="col">状态</th><th scope="col">说明</th><th scope="col">SHA-256</th><th scope="col">发布资格</th></tr>
+              <tr><th scope="col">资产</th><th scope="col">状态</th><th scope="col">说明</th><th scope="col">发布资格</th></tr>
             </thead>
             <tbody>
               <tr v-for="asset in status?.offlineAssets ?? []" :key="asset.id">
                 <th scope="row">{{ asset.label }}</th>
                 <td><CpStatusBadge :tone="assetTone(asset.status)" :icon="asset.status === 'verified' ? 'fa-circle-check' : 'fa-triangle-exclamation'">{{ assetLabel(asset.status) }}</CpStatusBadge></td>
                 <td>{{ asset.detail }}</td>
-                <td><code>{{ short(asset.actualSha256 || asset.expectedSha256) }}</code></td>
                 <td>{{ asset.publicationEligible === false ? '不允许（只读展示）' : asset.publicationEligible === true ? '允许' : '—' }}</td>
               </tr>
               <tr v-if="(status?.offlineAssets ?? []).length === 0">
-                <td colspan="5" class="panel-empty">离线资产校验未运行。</td>
+                <td colspan="4" class="panel-empty">离线资产校验未运行。</td>
               </tr>
             </tbody>
           </table>
@@ -154,11 +151,11 @@ function formatCapability(item: RuntimeCapabilityVM): string {
               <tr><th scope="col">能力</th><th scope="col">值</th></tr>
             </thead>
             <tbody>
-              <tr v-for="item in status?.runtimeCapabilities ?? []" :key="item.key">
+              <tr v-for="item in (status?.runtimeCapabilities ?? []).filter(item => !['schema_version', 'phase'].includes(item.key))" :key="item.key">
                 <th scope="row">{{ item.label }}</th>
                 <td>{{ formatCapability(item) }}</td>
               </tr>
-              <tr v-if="(status?.runtimeCapabilities ?? []).length === 0">
+              <tr v-if="((status?.runtimeCapabilities ?? []).filter(item => !['schema_version', 'phase'].includes(item.key))).length === 0">
                 <td colspan="2" class="panel-empty">后端不可达，无能力数据。</td>
               </tr>
             </tbody>
@@ -166,17 +163,6 @@ function formatCapability(item: RuntimeCapabilityVM): string {
         </div>
       </section>
 
-      <section aria-labelledby="versions-title">
-        <h3 id="versions-title">数据版本</h3>
-        <dl class="versions">
-          <div v-for="version in status?.versions ?? []" :key="version.label">
-            <dt>{{ version.label }}</dt><dd><code>{{ version.value }}</code></dd>
-          </div>
-          <div v-if="(status?.versions ?? []).length === 0">
-            <dt>版本</dt><dd>未检测</dd>
-          </div>
-        </dl>
-      </section>
     </template>
   </section>
 </template>

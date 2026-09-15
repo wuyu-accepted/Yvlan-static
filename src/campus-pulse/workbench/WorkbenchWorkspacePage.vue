@@ -9,8 +9,8 @@ import {
   createProject,
   createProjectPolicy,
   createProjectScenario,
+  deleteProject,
   enqueueRun,
-  getLiveRuntimeCapability,
   getProjectSensingState,
   getRun,
   getRunRuntime,
@@ -29,7 +29,6 @@ import {
 } from '../../services/campusPulseApi'
 import type { ApiProblem } from '../contracts/api.ts'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
-import { currentLocale } from '../i18n/locale.ts'
 import { makeOperationToken } from './operationToken'
 import { workspaceFromQuery, workspaceToQuery, type WorkbenchWorkspaceState } from './workbenchState.ts'
 import {
@@ -66,18 +65,15 @@ import WorkbenchEvidencePanel from './WorkbenchEvidencePanel.vue'
 import WorkbenchScenarioPanel from './WorkbenchScenarioPanel.vue'
 import WorkbenchPolicyPanel from './WorkbenchPolicyPanel.vue'
 import WorkbenchPlanPanel from './WorkbenchPlanPanel.vue'
-import WorkbenchPreflightPanel, {
-  readWorkbenchPreflightSnapshot,
-  retainWorkbenchPreflightSnapshot,
-  type WorkbenchPreflightSnapshot,
-} from './WorkbenchPreflightPanel.vue'
 import WorkbenchRunsPanel from './WorkbenchRunsPanel.vue'
 import WorkbenchRunMonitor from './WorkbenchRunMonitor.vue'
+import ForumLiveVignettePanel from './ForumLiveVignettePanel.vue'
+import { currentLocale, localizeStoredText } from '../i18n/locale.ts'
+import { useProductShellContext } from '../app/shellContext'
 
 const route = useRoute()
 const router = useRouter()
-const isEnglish = computed(() => currentLocale.value === 'en-US')
-const l = (zh: string, en: string) => isEnglish.value ? en : zh
+const demoWorkspace = ref(false)
 
 const workspace = computed<WorkbenchWorkspaceState>(() => {
   const state = workspaceFromQuery(route.query as Record<string, unknown>)
@@ -105,7 +101,11 @@ function workspaceLocation(next: WorkbenchWorkspaceState) {
   return { name: 'campus-pulse-workbench', query: workspaceToQuery(next) }
 }
 
-const access = ref<'interactive' | 'readonly' | 'unavailable'>('unavailable')
+const shell = useProductShellContext()
+const serviceState = shell?.serviceState ?? ref('checking')
+const access = computed<'interactive' | 'readonly' | 'unavailable'>(() =>
+  serviceState.value === 'available' ? 'interactive'
+    : serviceState.value === 'unavailable' ? 'unavailable' : 'readonly')
 const accessError = ref('')
 const lastSync = ref<string | null>(null)
 
@@ -161,9 +161,9 @@ const cancelMutation = reactive<MutationState<unknown>>({ status: 'idle' })
 const runActionNotice = ref('')
 
 const projectMutation = reactive<MutationState<unknown>>({ status: 'idle' })
+const deletingProjectId = ref('')
 
 const showCreateDialog = ref(false)
-const preflightSnapshot = ref<WorkbenchPreflightSnapshot | null>(readWorkbenchPreflightSnapshot(workspace.value.project))
 
 const probeToken = makeOperationToken()
 const projectsToken = makeOperationToken()
@@ -185,22 +185,25 @@ async function probeBackend() {
   const id = probeToken.next()
   accessError.value = ''
   try {
-    const [health, readiness, overview, capability] = await Promise.all([
-      getWorkbenchHealth(),
-      getWorkbenchReadiness(),
-      getWorkbenchOverview(),
-      getLiveRuntimeCapability(),
-    ])
+    const health = shell?.refreshHealth ? await shell.refreshHealth() : await getWorkbenchHealth()
     if (!probeToken.isCurrent(id)) return
-    readinessData.value = readiness
-    overviewCounts.value = countsFromOverview(overview)
-    access.value = 'interactive'
+    if (!health) return
+    serviceState.value = 'available'
+    demoWorkspace.value = health.workspace?.demo === true
     lastSync.value = new Date().toISOString()
   } catch (error) {
     if (!probeToken.isCurrent(id)) return
-    access.value = 'unavailable'
+    serviceState.value = 'unavailable'
     accessError.value = readableApiError(error)
+    return
   }
+  // Capability readiness does not determine whether the project API is online.
+  const [readiness, overview] = await Promise.allSettled([
+    getWorkbenchReadiness(), getWorkbenchOverview(),
+  ])
+  if (!probeToken.isCurrent(id)) return
+  readinessData.value = readiness.status === 'fulfilled' ? readiness.value : null
+  if (overview.status === 'fulfilled') overviewCounts.value = countsFromOverview(overview.value)
 }
 
 // ---- projects -------------------------------------------------------------
@@ -224,6 +227,24 @@ async function loadProjects() {
 function selectProject(projectId: string) {
   if (workspace.value.project === projectId) return
   router.push(workspaceLocation({ ...workspace.value, project: projectId, section: 'overview', run: undefined }))
+}
+
+async function removeProject(project: WorkbenchProject) {
+  if (access.value !== 'interactive' || deletingProjectId.value) return
+  const confirmed = window.confirm(`删除项目“${localizeStoredText(project.name)}”？删除后可使用相同名称重新创建。`)
+  if (!confirmed) return
+  deletingProjectId.value = project.project_id
+  try {
+    await deleteProject(project.project_id)
+    if (workspace.value.project === project.project_id) {
+      await router.push({ name:'campus-pulse-workbench' })
+    }
+    await loadProjects()
+  } catch (error) {
+    projectsError.value = error as ApiProblem
+  } finally {
+    deletingProjectId.value = ''
+  }
 }
 
 function changeSection(section: WorkbenchWorkspaceState['section']) {
@@ -272,9 +293,37 @@ function isCenturyGymProject(project: WorkbenchProject | null | undefined): bool
   return /世纪馆|体育场地预约|幽灵预约/.test(`${project.name} ${project.governance_domain} ${project.objective}`)
 }
 
+function inferProjectScenario(project: WorkbenchProject | null | undefined): 'century_gym_ghost_booking_dispute' | 'governance_legitimacy_dispute' | 'lecture_external_incident_shock' {
+  const key = project?.project_id === workspace.value.project ? scenarios.value?.[0]?.template_key : undefined
+  if (key?.includes('century_gym')) return 'century_gym_ghost_booking_dispute'
+  if (key?.includes('lecture')) return 'lecture_external_incident_shock'
+  if (key?.includes('housing')) return 'governance_legitimacy_dispute'
+  const corpus = `${project?.name || ''} ${project?.governance_domain || ''} ${project?.objective || ''}`
+  if (/世纪馆|体育场地预约|幽灵预约|羽毛球|乒乓球/.test(corpus)) return 'century_gym_ghost_booking_dispute'
+  if (/讲座|辱骂|冲突|主办方|现场发言/.test(corpus)) return 'lecture_external_incident_shock'
+  return 'governance_legitimacy_dispute'
+}
+
+function projectLiveLocation(project: WorkbenchProject | null | undefined, projectId?: string) {
+  const centuryGym = inferProjectScenario(project) === 'century_gym_ghost_booking_dispute'
+  return {
+    name:'campus-pulse-live-world',
+    query:{
+      scenario:inferProjectScenario(project),
+      project_id:project?.project_id || projectId || undefined,
+      session:centuryGym ? 'century-gym-demo' : undefined,
+      reset:centuryGym ? '1' : undefined,
+    },
+  }
+}
+
+function startProjectDemo(projectId?: string) {
+  const project = (projects.value ?? []).find((item) => item.project_id === projectId) || selectedProject.value
+  router.push(projectLiveLocation(project,projectId))
+}
+
 function openCreateProjectDialog() {
-  projectMutation.status = 'idle'
-  showCreateDialog.value = true
+  void router.push({ name: 'campus-pulse-project-new' })
 }
 
 async function createNewProject(payload: CreateProjectRequest) {
@@ -491,7 +540,7 @@ async function activateSensing(snapshotId: string) {
   } catch (error) {
     const problem = error as ApiProblem
     sensingMutationError.value = isCasConflict(problem)
-      ? { ...problem, detail: problem.detail + ' 当前版本 ' + expected + '；请刷新后重试，不会自动覆盖。' } as ApiProblem
+      ? { ...problem, detail: problem.detail + ' 请刷新项目状态后重试。' } as ApiProblem
       : problem
     if (isCasConflict(problem)) await loadSection()
   } finally {
@@ -777,16 +826,6 @@ watch(() => workspace.value.section, (section) => {
   }
 })
 
-watch(() => workspace.value.project, () => {
-  preflightSnapshot.value = readWorkbenchPreflightSnapshot(workspace.value.project)
-})
-
-function retainPreflightSnapshot(snapshot: WorkbenchPreflightSnapshot) {
-  if (snapshot.projectId !== workspace.value.project) return
-  retainWorkbenchPreflightSnapshot(snapshot)
-  preflightSnapshot.value = snapshot
-}
-
 onMounted(async () => {
   probeBackend()
   await loadProjects()
@@ -816,32 +855,21 @@ const filteredProjects = computed(() => {
   return list.filter((project) => (
     project.name.toLowerCase().includes(q)
     || project.governance_domain.toLowerCase().includes(q)
+    || localizeStoredText(project.name).toLowerCase().includes(q)
+    || localizeStoredText(project.governance_domain).toLowerCase().includes(q)
   ))
 })
 
 const projectCountLabel = computed(() => {
-  if (access.value === 'unavailable') return '不可用'
-  if (projects.value === null) return '未知'
+  if (access.value === 'unavailable') return currentLocale.value === 'en-US' ? 'Unavailable' : '不可用'
+  if (projects.value === null) return currentLocale.value === 'en-US' ? 'Unknown' : '未知'
+  if (currentLocale.value === 'en-US') return `${projects.value.length} project${projects.value.length === 1 ? '' : 's'}`
   return projects.value.length + ' 个项目'
 })
 
 const selectedProject = computed(() => (
   (projects.value ?? []).find((project) => project.project_id === workspace.value.project) || null
 ))
-
-const runtimeRunStatuses = new Set(['queued','enqueued','running','paused','succeeded'])
-const latestRuntimeRun = computed(() => [...(runs.value ?? [])]
-  .filter((run) => Boolean(
-    run.result_sha256
-    || runtimeRunStatuses.has(run.effective_runtime_status || run.status || run.plan_status),
-  ))
-  .sort((left, right) => String(right.created_at || '').localeCompare(String(left.created_at || '')))[0] || null)
-const contextualRuntimeLocation = computed(() => selectedProject.value && latestRuntimeRun.value ? {
-  name:'campus-pulse-run-live',
-  params:{ runId:latestRuntimeRun.value.run_id },
-  query:{ project:selectedProject.value.project_id },
-} : null)
-const contextualDemoLabel = computed(() => '进入项目实时世界')
 
 const planSubmitError = computed(() => (
   planMutation.status === 'error' || planMutation.status === 'conflict' || planMutation.status === 'invalid'
@@ -862,9 +890,9 @@ const latestRunStatus = computed(() => {
 const sections: Array<{ key: WorkbenchWorkspaceState['section']; label: string }> = [
   { key: 'overview', label: '总览' },
   { key: 'evidence', label: 'Agent 世界' },
-  { key: 'scenarios', label: '事件场景' },
+  { key: 'scenarios', label: '事件设置' },
   { key: 'policies', label: '治理方案' },
-  { key: 'plan', label: '运行合同' },
+  { key: 'plan', label: '运行参数' },
   { key: 'runs', label: '运行监控' },
 ]
 
@@ -875,9 +903,9 @@ const workflowSteps: Array<{
   detail: string
 }> = [
   { number: '1', key: 'evidence', label: 'Agent 世界', detail: '固定人口、Profile、关系与利益位置' },
-  { number: '2', key: 'scenarios', label: '事件场景', detail: '定义冲击和四阶段时间轴' },
+  { number: '2', key: 'scenarios', label: '事件设置', detail: '检查已保存的事件和演化阶段' },
   { number: '3', key: 'policies', label: '治理方案', detail: '设置可执行动作与承诺' },
-  { number: '4', key: 'plan', label: '运行合同', detail: '冻结模型、分支、种子和预算' },
+  { number: '4', key: 'plan', label: '运行参数', detail: '确认模型、分支、时间步和预算' },
   { number: '5', key: 'runs', label: '运行监控', detail: '入队、观察、暂停和查看结果' },
 ]
 </script>
@@ -892,21 +920,18 @@ const workflowSteps: Array<{
       </div>
       <div class="head-actions">
         <CpStatusBadge :tone="access === 'interactive' ? 'success' : access === 'readonly' ? 'warning' : 'neutral'">
-          {{ access === 'interactive' ? '内部服务已连接' : access === 'readonly' ? '只读' : '服务未连接' }}
+          {{ serviceState === 'checking' ? '正在检查后端' : access === 'interactive' ? '内部服务已连接' : access === 'readonly' ? '只读' : '服务未连接' }}
         </CpStatusBadge>
         <span v-if="lastSync" class="last-sync">上次同步 {{ new Date(lastSync).toLocaleTimeString('zh-CN') }}</span>
         <button type="button" class="refresh" @click="refreshAll">刷新</button>
-        <RouterLink class="refresh header-link" to="/campus-pulse/app">项目中心</RouterLink>
         <RouterLink class="provider-link" to="/campus-pulse/system?tab=provider"><i class="fa-solid fa-key" aria-hidden="true" /> 模型与 API</RouterLink>
-        <RouterLink v-if="contextualRuntimeLocation" class="offline-link" :to="contextualRuntimeLocation">{{ contextualDemoLabel }}</RouterLink>
-        <button v-else type="button" class="offline-link" disabled :title="selectedProject ? '需要先创建并启动真实运行' : '请先选择项目'">{{ contextualDemoLabel }}</button>
       </div>
     </header>
 
     <div v-if="access === 'unavailable'" class="unavailable-banner" role="status">
       <div>
         <strong>后端不可用</strong>
-        <p>写操作暂不可用；已验证离线结果仍可查看。{{ accessError ? accessError : '' }} 未知状态保持未知。</p>
+        <p>连接恢复后可继续编辑项目。{{ accessError ? accessError : '' }}</p>
       </div>
       <div class="banner-actions">
         <button type="button" class="refresh" @click="probeBackend">重试连接</button>
@@ -914,85 +939,67 @@ const workflowSteps: Array<{
       </div>
     </div>
 
+    <nav v-if="!workspace.project" class="workflow-guide" aria-label="模拟器工作流">
+      <button
+        v-for="step in workflowSteps"
+        :key="step.key"
+        type="button"
+        :class="{ active: workspace.section === step.key }"
+        :disabled="!workspace.project"
+        @click="changeSection(step.key)"
+      >
+        <b>{{ step.number }}</b>
+        <span>{{ step.label }}</span>
+        <small>{{ step.detail }}</small>
+      </button>
+    </nav>
+
     <div class="workbench-layout">
       <aside class="projects-pane" aria-label="模拟项目">
-        <section class="project-context" :aria-label="l('项目上下文', 'Project context')">
-          <p class="rail-label">PROJECT CONTEXT</p>
-          <div v-if="selectedProject" class="selected-project-context">
-            <span class="project-glyph" aria-hidden="true"><i class="fa-solid fa-building-columns" /></span>
-            <span class="project-copy">
-              <strong>{{ selectedProject.name }}</strong>
-              <small>{{ selectedProject.governance_domain }}</small>
-              <code>{{ selectedProject.project_id }}</code>
-            </span>
-          </div>
-          <p v-else class="no-project-context">{{ l('尚未选择项目', 'No project selected') }}</p>
+        <div class="pane-tools">
+          <label class="search">
+            <span class="visually-hidden">搜索项目</span>
+            <input type="search" placeholder="搜索项目 / 领域" :value="workspace.q" @input="setProjectSearch(($event.target as HTMLInputElement).value)" />
+          </label>
+          <button type="button" class="primary" :disabled="access !== 'interactive'" @click="openCreateProjectDialog">+ 新建项目</button>
+        </div>
 
-          <details class="project-switcher" :open="!workspace.project">
-            <summary><span>{{ l('切换项目', 'Change project') }}</span><small>{{ projectCountLabel }}</small></summary>
-            <div class="project-picker">
-              <label class="search">
-                <span class="visually-hidden">{{ l('搜索项目', 'Search projects') }}</span>
-                <input type="search" :placeholder="l('搜索项目 / 领域', 'Search project / domain')" :value="workspace.q" @input="setProjectSearch(($event.target as HTMLInputElement).value)" />
-              </label>
+        <p class="pane-count" data-no-localize>{{ projectCountLabel }}</p>
 
-              <div v-if="access === 'unavailable'" class="pane-state">
-                <strong>{{ l('项目状态未知', 'Project state unknown') }}</strong>
-                <p>{{ l('后端不可用，项目列表状态未知。', 'The backend is unavailable, so project state is unknown.') }}</p>
-              </div>
-              <div v-else-if="projectsLoading" class="pane-state">{{ l('正在读取项目…', 'Loading projects…') }}</div>
-              <div v-else-if="projectsError" class="pane-state" role="alert">
-                <strong>{{ l('项目列表读取失败', 'Could not load projects') }}</strong>
-                <p>{{ projectsError.summary }}</p>
-                <button type="button" @click="loadProjects">{{ l('重试', 'Retry') }}</button>
-              </div>
-              <div v-else-if="filteredProjects.length === 0" class="pane-state">
-                <strong v-if="projects && projects.length === 0">{{ l('尚无模拟项目', 'No simulation projects yet') }}</strong>
-                <strong v-else>{{ l('没有匹配项目', 'No matching projects') }}</strong>
-              </div>
-              <ul v-else class="project-list">
-                <li v-for="project in filteredProjects" :key="project.project_id">
-                  <button
-                    type="button"
-                    class="project-row"
-                    :class="{ selected: project.project_id === workspace.project }"
-                    :aria-current="project.project_id === workspace.project ? 'page' : undefined"
-                    @click="selectProject(project.project_id)"
-                  >
-                    <span class="project-copy"><strong>{{ project.name }}</strong><small>{{ project.governance_domain }}</small></span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </details>
-          <button type="button" class="new-project-link" :disabled="access !== 'interactive'" @click="openCreateProjectDialog">+ {{ l('新建项目', 'New project') }}</button>
-        </section>
-
-        <nav class="rail-workflow" aria-label="模拟器工作流">
-          <p class="rail-label">WORKFLOW</p>
-          <button
-            v-for="item in sections"
-            :key="item.key"
-            type="button"
-            :class="{ active: workspace.section === item.key }"
-            :aria-current="workspace.section === item.key ? 'page' : undefined"
-            :disabled="!workspace.project"
-            @click="changeSection(item.key)"
-          >
-            <span>{{ item.label }}</span>
-            <small v-if="workflowSteps.find((step) => step.key === item.key)">{{ workflowSteps.find((step) => step.key === item.key)?.detail }}</small>
-            <small v-else>{{ l('项目状态与下一步', 'Project status and next steps') }}</small>
-          </button>
-        </nav>
-      </aside>
-
-      <aside class="preflight-rail" aria-label="运行前检查">
-        <WorkbenchPreflightPanel
-          :access="access"
-          :snapshot="preflightSnapshot"
-          :runtime="runtime"
-          :has-run="Boolean(selectedRun)"
-        />
+        <div v-if="access === 'unavailable'" class="pane-state">
+          <strong>项目状态未知</strong>
+          <p>后端不可用，项目列表状态未知。</p>
+        </div>
+        <div v-else-if="projectsLoading" class="pane-state">正在读取项目…</div>
+        <div v-else-if="projectsError" class="pane-state" role="alert">
+          <strong>项目列表读取失败</strong>
+          <p>{{ projectsError.summary }}</p>
+          <button type="button" @click="loadProjects">重试</button>
+        </div>
+        <div v-else-if="filteredProjects.length === 0" class="pane-state">
+          <strong v-if="projects && projects.length === 0">尚无模拟项目</strong>
+          <strong v-else>没有匹配项目</strong>
+          <p>创建项目后，可以绑定证据、配置场景并生成运行计划。</p>
+          <button type="button" :disabled="access !== 'interactive'" @click="openCreateProjectDialog">新建推演项目</button>
+        </div>
+        <ul v-else class="project-list">
+          <li v-for="project in filteredProjects" :key="project.project_id">
+            <button
+              type="button"
+              class="project-row"
+              :class="{ selected: project.project_id === workspace.project }"
+              :aria-current="project.project_id === workspace.project ? 'page' : undefined"
+              @click="selectProject(project.project_id)"
+            >
+              <span class="project-glyph" aria-hidden="true"><i class="fa-solid fa-building-columns" /></span>
+              <span class="project-copy">
+                <strong data-no-localize>{{ localizeStoredText(project.name) }}</strong>
+                <small data-no-localize>{{ localizeStoredText(project.governance_domain) }}</small>
+              </span>
+            </button>
+            <button type="button" class="project-delete" :disabled="access !== 'interactive' || Boolean(deletingProjectId)" :aria-label="`删除项目 ${localizeStoredText(project.name)}`" @click="removeProject(project)"><i class="fa-regular fa-trash-can" aria-hidden="true" /></button>
+          </li>
+        </ul>
       </aside>
 
       <section class="workspace-main" aria-label="项目工作区">
@@ -1007,23 +1014,34 @@ const workflowSteps: Array<{
         </template>
 
         <template v-else-if="selectedProject">
+          <nav class="context-nav" aria-label="项目导航">
+            <button
+              v-for="item in sections"
+              :key="item.key"
+              type="button"
+              :class="{ active: workspace.section === item.key }"
+              :aria-current="workspace.section === item.key ? 'page' : undefined"
+              @click="changeSection(item.key)"
+            >{{ item.label }}</button>
+          </nav>
+
           <div class="section-body">
             <WorkbenchOverviewPanel
               v-if="workspace.section === 'overview'"
               :project="selectedProject"
               :counts="overviewCounts"
               :access="access"
+              :scenario-key="scenarios?.[0]?.template_key || undefined"
               :scenario-count="scenarios?.length ?? null"
               :policy-count="policies?.length ?? null"
               :run-count="runs?.length ?? null"
               :evidence-count="evidence?.length ?? null"
               :sensing-count="sensingSnapshots?.length ?? null"
               :latest-run-status="latestRunStatus"
-              :runtime-available="Boolean(latestRuntimeRun)"
               :readiness="readinessData"
               demo-kind="live_world"
               @go="changeSection"
-              @start-demo="latestRuntimeRun && router.push({ name:'campus-pulse-run-live', params:{ runId:latestRuntimeRun.run_id }, query:{ project:workspace.project } })"
+              @start-demo="startProjectDemo(workspace.project)"
             />
 
             <WorkbenchEvidencePanel
@@ -1076,8 +1094,17 @@ const workflowSteps: Array<{
               @refresh="loadSection"
             />
 
+            <template v-else-if="workspace.section === 'plan'">
+            <ForumLiveVignettePanel
+              v-if="!demoWorkspace"
+              :project-id="workspace.project"
+              :scenario-id="scenarios?.some(item => item.template_key === 'project_setup_custom_v1') ? null : inferProjectScenario(selectedProject)"
+              :scenario-configured="Boolean(scenarios?.length)"
+              @configure-scenario="changeSection('scenarios')"
+            />
+            <details v-if="!demoWorkspace" class="advanced-run-settings">
+            <summary data-no-localize>{{ currentLocale === 'en-US' ? 'Advanced run configuration' : '高级运行配置' }}</summary>
             <WorkbenchPlanPanel
-              v-else-if="workspace.section === 'plan'"
               :project-id="workspace.project"
               :access="access"
               :scenarios="scenarios"
@@ -1097,8 +1124,17 @@ const workflowSteps: Array<{
               @open-run="selectRun"
               @open-section="changeSection"
               @bootstrap-project="bootstrapCurrentProject"
-              @preflight-change="retainPreflightSnapshot"
             />
+            </details>
+            <WorkbenchOverviewPanel v-else
+              :project="selectedProject" :counts="overviewCounts" :access="access"
+              :scenario-key="scenarios?.[0]?.template_key"
+              :scenario-count="scenarios?.length ?? null" :policy-count="policies?.length ?? null"
+              :run-count="runs?.length ?? null" :evidence-count="evidence?.length ?? null"
+              :sensing-count="sensingSnapshots?.length ?? null" :latest-run-status="latestRunStatus"
+              :readiness="readinessData" demo-kind="live_world" @go="changeSection"
+            />
+            </template>
 
             <template v-else-if="workspace.section === 'runs'">
               <WorkbenchRunsPanel
@@ -1163,17 +1199,8 @@ const workflowSteps: Array<{
 </template>
 
 <style scoped>
-.workbench-workspace {
-  --cp-surface-canvas:#0b090a; --cp-surface-default:#151113; --cp-surface-subtle:#1c1719; --cp-surface-raised:#1c1719; --cp-surface-inverse:#080708; --cp-surface-selected:#29171d;
-  --cp-text-primary:#f1ece7; --cp-text-secondary:#b9b0aa; --cp-text-muted:#9e958f; --cp-text-inverse:#f1ece7;
-  --cp-border-default:#2a2428; --cp-border-subtle:#241f22; --cp-border-strong:#51464c; --cp-border-inverse:#2a2428;
-  --cp-action-primary:#c51642; --cp-action-primary-hover:#a91137;
-  --cp-evidence:#d4af37; --cp-evidence-surface:#211d12; --cp-evidence-text:#e2c65f;
-  --cp-info:#2b6cb0; --cp-info-surface:#111c27; --cp-warning:#dd6b20; --cp-warning-surface:#26180f; --cp-danger:#e53e3e; --cp-danger-surface:#281214;
-  --cp-tech:#9e958f; --cp-tech-bright:#b9b0aa; --cp-tech-surface:#1c1719; --cp-tech-line:#2a2428; --cp-tech-glow:none; --cp-shadow-card:none;
-  display:grid; gap:var(--cp-space-4); width:100%; min-height:calc(100vh - 7.5rem); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) var(--cp-space-8); background:var(--cp-surface-canvas); color:var(--cp-text-primary);
-}
-.page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--cp-space-6); padding:var(--cp-space-4); border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-lg); background:var(--cp-surface-default); box-shadow:none; }
+.workbench-workspace { display:grid; gap:var(--cp-space-4); width:min(100%,var(--cp-content-max)); margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); }
+.page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--cp-space-6); padding:var(--cp-space-6); border:1px solid var(--cp-tech-line); border-radius:var(--cp-radius-lg); background:var(--cp-surface-default); box-shadow:var(--cp-shadow-sm); }
 .page-kicker { display:block; margin-bottom:var(--cp-space-2); color:var(--cp-tech); font-size:var(--cp-text-xs); font-weight:800; letter-spacing:.12em; }
 .page-head h1 { margin:0; font-size:var(--cp-text-3xl); line-height:1.15; letter-spacing:-.025em; }
 .page-head p { max-width:56rem; margin:var(--cp-space-3) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-md); line-height:1.7; }
@@ -1181,87 +1208,70 @@ const workflowSteps: Array<{
 .last-sync { color:var(--cp-text-muted); font-size:var(--cp-text-xs); }
 .refresh, .primary { min-height:var(--cp-control-height); padding:0 var(--cp-space-3); border:1px solid var(--cp-border-strong); border-radius:var(--cp-radius-sm); font-size:var(--cp-text-sm); font-weight:650; cursor:pointer; }
 .refresh { background:var(--cp-surface-default); color:var(--cp-text-primary); }
-.header-link { display:inline-flex; align-items:center; text-decoration:none; }
 .provider-link { display:inline-flex; min-height:var(--cp-control-height); align-items:center; gap:.45rem; padding:0 var(--cp-space-3); border:1px solid var(--cp-action-primary); border-radius:var(--cp-radius-sm); background:var(--cp-surface-selected); color:var(--cp-action-primary); font-size:var(--cp-text-sm); font-weight:700; text-decoration:none; }
-.provider-link:hover { background:var(--cp-action-primary); color:var(--cp-text-inverse); }
-.primary { border-color:var(--cp-action-primary); background:var(--cp-action-primary); color:var(--cp-text-inverse); }
+.provider-link:hover { background:var(--cp-action-primary); color:var(--cp-surface-default); }
+.primary { border-color:var(--cp-action-primary); background:var(--cp-action-primary); color:var(--cp-surface-default); }
 .primary:hover { background:var(--cp-action-primary-hover); }
 .primary:disabled { opacity:.5; cursor:not-allowed; }
 .offline-link { display:inline-flex; min-height:var(--cp-control-height); align-items:center; padding:0 var(--cp-space-3); border:1px solid var(--cp-evidence); border-radius:var(--cp-radius-sm); background:var(--cp-evidence-surface); color:var(--cp-evidence-text); font-size:var(--cp-text-sm); font-weight:650; text-decoration:none; }
-.head-actions .offline-link { border-color:var(--cp-action-primary); background:var(--cp-action-primary); color:var(--cp-text-inverse); }
-.head-actions .offline-link:hover { background:var(--cp-action-primary-hover); }
-.head-actions .offline-link:disabled { border-color:var(--cp-border-strong); background:var(--cp-surface-subtle); color:var(--cp-text-muted); cursor:not-allowed; }
 .unavailable-banner { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-space-4); border:1px solid var(--cp-warning); background:var(--cp-warning-surface); }
 .unavailable-banner strong { font-size:var(--cp-text-sm); }
 .unavailable-banner p { margin:var(--cp-space-1) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .banner-actions { display:flex; flex-wrap:wrap; gap:var(--cp-space-2); }
-.workbench-layout { display:grid; grid-template-areas:"left main preflight"; grid-template-columns:minmax(13rem,16rem) minmax(0,1fr) minmax(15rem,18rem); gap:var(--cp-space-3); align-items:start; }
+.workflow-guide { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border:1px solid var(--cp-border-default); background:var(--cp-surface-default); }
+.workflow-guide button { display:grid; min-width:0; grid-template-columns:1.75rem 1fr; gap:var(--cp-space-1) var(--cp-space-2); padding:var(--cp-space-3); border:0; border-right:1px solid var(--cp-border-default); background:transparent; color:var(--cp-text-primary); text-align:left; cursor:pointer; }
+.workflow-guide button:last-child { border-right:0; }
+.workflow-guide button:hover:not(:disabled) { background:var(--cp-surface-selected); }
+.workflow-guide button.active { box-shadow:inset 0 3px 0 var(--cp-action-primary); background:var(--cp-surface-selected); }
+.workflow-guide button:disabled { cursor:not-allowed; opacity:.62; }
+.workflow-guide b { display:flex; width:1.75rem; height:1.75rem; grid-row:1 / 3; align-items:center; justify-content:center; background:var(--cp-surface-inverse); color:var(--cp-text-inverse); font-size:var(--cp-text-xs); }
+.workflow-guide button.active b { background:var(--cp-action-primary); }
+.workflow-guide span { overflow:hidden; font-size:var(--cp-text-sm); font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.workflow-guide small { color:var(--cp-text-muted); font-size:var(--cp-text-xs); line-height:var(--cp-leading-normal); }
+.workbench-layout { display:grid; grid-template-columns:minmax(15rem,20rem) minmax(0,1fr); gap:var(--cp-space-4); align-items:start; }
 .projects-pane { position:sticky; top:var(--cp-topbar-height); display:grid; gap:var(--cp-space-3); }
-.projects-pane { grid-area:left; }
-.preflight-rail { grid-area:preflight; position:sticky; top:var(--cp-topbar-height); min-width:0; }
+.pane-tools { display:grid; gap:var(--cp-space-2); }
 .search input { width:100%; min-height:var(--cp-control-height); padding:0 var(--cp-space-2); border:1px solid var(--cp-border-strong); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-text-primary); }
-.project-context { display:grid; gap:var(--cp-space-2); padding-bottom:var(--cp-space-4); border-bottom:1px solid var(--cp-border-default); }
-.rail-label { margin:0; color:var(--cp-text-muted); font:750 var(--cp-text-xs)/1 var(--cp-font-mono); letter-spacing:.11em; }
-.selected-project-context { display:flex; align-items:flex-start; gap:var(--cp-space-2); padding:var(--cp-space-2) 0; }
-.selected-project-context code { overflow:hidden; margin-top:2px; color:var(--cp-text-muted); font-size:.61rem; text-overflow:ellipsis; white-space:nowrap; }
-.no-project-context { margin:0; color:var(--cp-text-muted); font-size:var(--cp-text-sm); }
-.project-switcher { border-block:1px solid var(--cp-border-subtle); }
-.project-switcher summary { display:flex; min-height:var(--cp-control-height); align-items:center; justify-content:space-between; gap:var(--cp-space-2); color:var(--cp-text-primary); font-size:var(--cp-text-sm); font-weight:650; cursor:pointer; list-style-position:inside; }
-.project-switcher summary small { margin-left:auto; color:var(--cp-text-muted); font-size:var(--cp-text-xs); font-weight:600; }
-.project-switcher[open] summary { border-bottom:1px solid var(--cp-border-subtle); }
-.project-picker { display:grid; gap:var(--cp-space-2); padding:var(--cp-space-2) 0; }
-.new-project-link { justify-self:start; min-height:2rem; padding:0; border:0; background:transparent; color:var(--cp-action-primary); font-size:var(--cp-text-xs); font-weight:700; cursor:pointer; }
-.new-project-link:disabled { opacity:.5; cursor:not-allowed; }
+.pane-count { margin:0; color:var(--cp-text-muted); font-size:var(--cp-text-xs); font-weight:700; }
 .pane-state { display:grid; gap:var(--cp-space-2); padding:var(--cp-space-3); border:1px dashed var(--cp-border-strong); color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .pane-state strong { color:var(--cp-text-primary); }
 .pane-state button { justify-self:start; min-height:var(--cp-control-height); padding:0 var(--cp-space-3); border:1px solid var(--cp-border-strong); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-action-primary); font-weight:650; cursor:pointer; }
-.project-list { display:grid; max-height:14rem; gap:var(--cp-space-1); margin:0; padding:0; overflow:auto; list-style:none; }
-.project-row { display:flex; align-items:center; gap:var(--cp-space-2); width:100%; padding:var(--cp-space-2); border:0; border-left:2px solid transparent; background:transparent; color:var(--cp-text-primary); text-align:left; cursor:pointer; }
+.project-list { display:grid; gap:var(--cp-space-1); margin:0; padding:0; list-style:none; }
+.project-list>li{display:grid;grid-template-columns:minmax(0,1fr) 2.5rem;gap:.35rem;align-items:stretch}.project-delete{display:grid;place-items:center;border:1px solid var(--cp-border-subtle);background:var(--cp-surface-default);color:var(--cp-text-muted);cursor:pointer}.project-delete:hover:not(:disabled){border-color:var(--cp-danger);color:var(--cp-danger);background:#fff4f5}.project-delete:focus-visible{outline:2px solid var(--cp-focus-ring);outline-offset:2px}.project-delete:disabled{opacity:.4;cursor:default}
+.project-row { display:flex; align-items:center; gap:var(--cp-space-2); width:100%; padding:var(--cp-space-2) var(--cp-space-3); border:1px solid var(--cp-border-subtle); border-left:3px solid transparent; background:var(--cp-surface-default); text-align:left; cursor:pointer; }
 .project-row:hover { background:var(--cp-surface-subtle); }
 .project-row.selected { border-left-color:var(--cp-action-primary); background:var(--cp-surface-selected); }
 .project-glyph { flex:none; display:flex; align-items:center; justify-content:center; width:2rem; height:2rem; border-radius:var(--cp-radius-sm); background:var(--cp-surface-subtle); color:var(--cp-action-primary); font-weight:800; }
 .project-copy { min-width:0; display:grid; }
 .project-copy strong { font-size:var(--cp-text-sm); }
 .project-copy small { color:var(--cp-text-muted); font-size:var(--cp-text-xs); }
-.rail-workflow { display:grid; background:transparent; }
-.rail-workflow .rail-label { padding:var(--cp-space-1) var(--cp-space-3) var(--cp-space-2); }
-.rail-workflow button { display:grid; gap:2px; min-height:var(--cp-control-height); padding:var(--cp-space-2) var(--cp-space-3); border:0; border-bottom:1px solid var(--cp-border-subtle); border-left:3px solid transparent; background:transparent; color:var(--cp-text-primary); text-align:left; cursor:pointer; }
-.rail-workflow button:last-child { border-bottom:0; }
-.rail-workflow button:hover:not(:disabled) { background:var(--cp-surface-subtle); }
-.rail-workflow button.active { border-left-color:var(--cp-action-primary); background:var(--cp-surface-selected); }
-.rail-workflow button:disabled { cursor:not-allowed; opacity:.55; }
-.rail-workflow span { font-size:var(--cp-text-sm); font-weight:700; }
-.rail-workflow small { color:var(--cp-text-muted); font-size:var(--cp-text-xs); line-height:var(--cp-leading-normal); }
-.workspace-main { grid-area:main; display:grid; gap:var(--cp-space-4); min-width:0; }
+.workspace-main { display:grid; gap:var(--cp-space-4); min-width:0; }
 .workspace-empty { display:grid; gap:var(--cp-space-2); padding:var(--cp-space-6); border:1px dashed var(--cp-border-strong); }
 .workspace-empty h2 { margin:0; font-size:var(--cp-text-lg); }
 .workspace-empty p { margin:0; color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .workspace-empty .primary { justify-self:start; }
+.context-nav { display:flex; flex-wrap:wrap; gap:0; border-bottom:1px solid var(--cp-border-default); }
+.context-nav button { min-height:var(--cp-control-height); padding:0 var(--cp-space-4); border:0; border-bottom:2px solid transparent; background:none; color:var(--cp-text-secondary); font-weight:650; cursor:pointer; }
+.context-nav button.active { border-bottom-color:var(--cp-action-primary); color:var(--cp-action-primary); }
 .section-body { display:grid; gap:var(--cp-space-4); min-width:0; }
-.workbench-workspace :deep(button.primary),
-.workbench-workspace :deep(.live-demo button),
-.workbench-workspace :deep(.open-dossier) { color:var(--cp-text-inverse); }
-@media (min-width:1280px) and (max-width:1799px) {
-  .workspace-main :deep(.network-layout),
-  .workspace-main :deep(.world-grid),
-  .workspace-main :deep(.risk-card) { grid-template-columns:1fr; }
-  .workspace-main :deep(.role-inspector) { border-top:1px solid var(--cp-border-default); border-left:0; }
-  .workspace-main :deep(.channel-flow) { grid-template-columns:1fr; gap:var(--cp-space-2); }
-  .workspace-main :deep(.channel-link) { padding:var(--cp-space-2); transform:rotate(90deg); }
-}
-@media (max-width:1279px) {
-  .workbench-layout { grid-template-areas:"left" "preflight" "main"; grid-template-columns:1fr; }
+.advanced-run-settings { min-width:0; border:1px solid var(--cp-border-default); background:var(--cp-surface-default); }
+.advanced-run-settings > summary { padding:var(--cp-space-4); color:var(--cp-text-primary); font-size:var(--cp-text-sm); font-weight:650; cursor:pointer; }
+.advanced-run-settings > summary:hover { background:var(--cp-surface-selected); }
+.advanced-run-settings > summary:focus-visible { outline:2px solid var(--cp-action-primary); outline-offset:-3px; }
+.advanced-run-settings[open] > summary { border-bottom:1px solid var(--cp-border-default); }
+@media (max-width:1023px) {
+  .workflow-guide { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .workflow-guide button { border-bottom:1px solid var(--cp-border-default); }
+  .workbench-layout { grid-template-columns:1fr; }
   .projects-pane { position:static; }
-  .preflight-rail { position:static; }
-  .rail-workflow { grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .rail-workflow button { border-right:1px solid var(--cp-border-subtle); }
 }
 @media (max-width:767px) {
   .page-head { flex-direction:column; }
   .head-actions { justify-content:flex-start; }
   .unavailable-banner { flex-direction:column; }
+  .context-nav button { min-height:var(--cp-touch-target); }
   .workbench-workspace { padding-top:var(--cp-space-4); }
-  .rail-workflow { grid-template-columns:1fr 1fr; }
-  .rail-workflow button { min-height:var(--cp-touch-target); }
+  .workflow-guide { grid-template-columns:1fr; }
+  .workflow-guide button { min-height:var(--cp-touch-target); border-right:0; }
 }
 </style>

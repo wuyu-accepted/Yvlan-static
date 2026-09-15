@@ -75,11 +75,28 @@ export function projectFromPayload(item: unknown): WorkbenchProject | null {
 }
 
 export function projectListFromPayload(payload: unknown): WorkbenchProject[] {
-  if (!Array.isArray(payload)) return []
-  return payload.map(projectFromPayload).filter((item): item is WorkbenchProject => item !== null)
+  const rows = Array.isArray(payload) ? payload : (payload && typeof payload === 'object' && Array.isArray((payload as any).data) ? (payload as any).data : [])
+  const parsed = rows.map((item) => projectFromPayload(item)).filter((item): item is WorkbenchProject => Boolean(item))
+  // The catalog is a workspace index: repeated template projects collapse to the newest record.
+  // Custom projects retain their own records because their event settings are distinct.
+  const grouped = new Map<string, WorkbenchProject>()
+  for (const project of parsed) {
+    const text = `${project.name} ${project.governance_domain} ${project.objective}`
+    const key = /世纪馆|体育场地预约|幽灵预约|羽毛球|乒乓球/.test(text)
+      ? 'template:century-gym'
+      : /住宿|床位|分配|资格|申诉/.test(text)
+        ? 'template:housing'
+        : /讲座|辱骂|冲突|主办方|现场发言/.test(text)
+          ? 'template:lecture'
+          : `project:${project.project_id}`
+    const current = grouped.get(key)
+    if (!current || (project.updated_at || project.created_at || '') > (current.updated_at || current.created_at || '')) grouped.set(key, project)
+  }
+  return [...grouped.values()]
 }
 
 export interface ScenarioSummary {
+  analysis_id?: string
   scenario_id: string
   name: string
   description: string
@@ -94,6 +111,7 @@ export function scenarioListFromPayload(payload: unknown): ScenarioSummary[] {
     const row = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>
     return {
       scenario_id: String(row.scenario_id ?? ''),
+      analysis_id: typeof row.analysis_id === 'string' ? row.analysis_id : undefined,
       name: String(row.name ?? ''),
       description: String(row.description ?? ''),
       template_key: typeof row.template_key === 'string' ? row.template_key : undefined,

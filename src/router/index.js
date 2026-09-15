@@ -26,8 +26,6 @@ const ForumTwinView = () =>
   import('../views/ForumTwinView.vue')
 const CampusPulseCoverPage = () =>
   import('../campus-pulse/landing/CampusPulseCoverPage.vue')
-const PublicShowcaseHome = () =>
-  import('../campus-pulse/landing/PublicShowcaseHome.vue')
 const CampusPulseOverviewView = () =>
   import('../views/CampusPulseOverviewView.vue')
 const CampusPulseResultsView = () =>
@@ -48,8 +46,6 @@ const RunAnalysisPage = () =>
   import('../campus-pulse/analysis/RunAnalysisPage.vue')
 const CenturyGymLivePage = () =>
   import('../campus-pulse/live/CenturyGymLivePage.vue')
-const LiveEvolutionLandingPage = () =>
-  import('../campus-pulse/live/LiveEvolutionLandingPage.vue')
 const ProductNotFound = () =>
   import('../campus-pulse/pages/ProductNotFound.vue')
 const ResultSummaryBoundary = () =>
@@ -108,8 +104,8 @@ const routes = [
   {
     path: '/campus-pulse',
     name: 'campus-pulse',
-    component: publicDemo ? PublicShowcaseHome : CampusPulseCoverPage,
-    meta: publicDemo ? productRouteMeta.overview : {
+    component: CampusPulseCoverPage,
+    meta: {
       standaloneCover: true,
       title: 'CampusPulse',
       documentTitle: 'CampusPulse · 校园论坛社会模拟',
@@ -129,12 +125,6 @@ const routes = [
     beforeEnter: canonicalizeLegacyRun,
   },
   {
-    path: '/campus-pulse/live-evolution',
-    name: 'campus-pulse-live-evolution',
-    component: LiveEvolutionLandingPage,
-    meta: productRouteMeta.liveEvolution,
-  },
-  {
     path: '/campus-pulse/live',
     name: 'campus-pulse-live-world',
     component: CenturyGymLivePage,
@@ -143,11 +133,8 @@ const routes = [
   {
     path: '/campus-pulse/live/century-gym',
     name: 'campus-pulse-century-gym-live',
-    redirect: {
-      name: 'campus-pulse-run-live',
-      params: { runId: 'century-gym-demo' },
-      query: { session: 'century-gym-demo', branch: 'D', tick: '0' },
-    },
+    component: CenturyGymLivePage,
+    meta: productRouteMeta.centuryGymLive,
   },
   {
     path: '/campus-pulse/results',
@@ -311,6 +298,12 @@ const routes = [
     meta: productRouteMeta.workbench,
   },
   {
+    path: '/campus-pulse/acknowledgements',
+    name: 'campus-pulse-acknowledgements',
+    component: () => import('../campus-pulse/system/AcknowledgementsPage.vue'),
+    meta: { ...productRouteMeta.system, title: '团队与致谢', navId: 'acknowledgements' },
+  },
+  {
     path: '/campus-pulse/:pathMatch(.*)*',
     name: 'campus-pulse-not-found',
     component: ProductNotFound,
@@ -337,13 +330,14 @@ const router = createRouter({
 
 const publicDemoAllowedNames = new Set([
   'campus-pulse',
-  'campus-pulse-live-evolution',
+  'campus-pulse-forum',
   'campus-pulse-results',
   'campus-pulse-result-forum',
   'campus-pulse-result-summary',
   'campus-pulse-result-mechanisms',
   'campus-pulse-result-governance',
   'campus-pulse-result-evidence',
+  'campus-pulse-acknowledgements',
   'campus-pulse-not-found',
 ])
 

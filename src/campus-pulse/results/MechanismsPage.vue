@@ -166,10 +166,9 @@ function claimEvidenceLabel() {
 .table-wrap { max-height:26rem; overflow:auto; }
 .moment-table table { width:100%; border-collapse:collapse; font-size:var(--cp-text-sm); font-variant-numeric:tabular-nums; }
 .moment-table th, .moment-table td { padding:var(--cp-space-2) var(--cp-space-3); border-top:1px solid var(--cp-border-subtle); text-align:left; vertical-align:top; }
-.moment-table th { background:var(--cp-surface-subtle); color:var(--cp-text-muted); }
 .moment-table td strong { display:block; }
 .moment-table td p { margin:var(--cp-space-1) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-xs); line-height:1.5; }
-.moment-table a { color:var(--cp-action-primary); font-weight:700; text-decoration:none; white-space:nowrap; }
+.moment-table a { color:var(--brand-red); font-weight:700; text-decoration:none; white-space:nowrap; }
 .claim-summary dl { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); margin:0; }
 .claim-summary dl div { padding:var(--cp-space-3) var(--cp-space-4); border-right:1px solid var(--cp-border-subtle); border-bottom:1px solid var(--cp-border-subtle); }
 .claim-summary dt { color:var(--cp-text-muted); font-size:var(--cp-text-xs); }

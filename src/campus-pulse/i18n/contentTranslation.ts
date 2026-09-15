@@ -1,11 +1,18 @@
 import bundledTranslations from './contentTranslations.en.json'
+import gymTranslations from './centuryGymContent.en.json'
 
 interface TranslationResponse {
   data?: { translation?: string; model?: string; source?: string }
 }
 
 const bundled = (bundledTranslations as { translations?: Record<string, string> }).translations || {}
-const memory = new Map<string, string>(Object.entries(bundled))
+const memory = new Map<string, string>(Object.entries({ ...bundled, ...gymTranslations.translations }))
+
+export function savedEnglishText(text: string): string | null {
+  const normalized = text.trim()
+  if (!/[\u3400-\u9fff]/.test(normalized)) return normalized
+  return memory.get(normalized) || null
+}
 
 export async function translateSyntheticContent(text: string): Promise<{ text: string; source: string }> {
   const normalized = text.trim()
@@ -31,4 +38,3 @@ export async function translateSyntheticContent(text: string): Promise<{ text: s
     window.clearTimeout(timeout)
   }
 }
-

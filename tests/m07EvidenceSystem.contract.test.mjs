@@ -301,7 +301,7 @@ test('M07 system view keeps truth anchors and drops hardcoded scale numbers', ()
   assert.match(view, /<h1>系统与证据<\/h1>/)
   assert.match(view, /<h2 id="evidence-boundary-title">数据与证据边界<\/h2>/)
   assert.match(view, /不是实时全校舆情/)
-  assert.match(view, /禁止生成公开论坛文字/)
+  assert.match(view, /LLM 负责语言表达与治理判断；后台计算负责状态、调度与资源队列/)
   for (const artifact of [
     '582,408', '132,917', '454,053', '22,477', '67 turns', '10,000 个粒子',
     '单轮最多 67', '八个配对种子', 'emulator public messages = 0',
@@ -316,17 +316,15 @@ test('M07 system page probes real endpoints and never hardcodes READY', () => {
     assert.match(view, new RegExp(token))
   }
   const readiness = read('src/campus-pulse/system/SystemReadinessTab.vue')
-  assert.match(readiness, /未知状态不会显示为就绪/)
-  assert.match(readiness, /const gateSummary = computed/)
-  assert.match(readiness, /unknown \(\$\{props\.status\?\.gates\.length \?\? 0\} items\)/)
-  assert.match(readiness, /未知（\$\{props\.status\?\.gates\.length \?\? 0\} 项）/)
-  assert.doesNotMatch(readiness, /\{\{ status\?\.gates\.length \?\? 0 \}\} 项/)
+  assert.match(readiness, /查看服务连接、运行能力与案例文件状态/)
+  assert.match(readiness, /status === 'ready' \? '就绪'/)
+  assert.doesNotMatch(readiness.split('<template>')[1], /actualSha256|expectedSha256|version\.value/)
   assert.match(view, /未知状态保持未知/)
 })
 
-test('M07 navigation keeps exactly five entries and system meta is readiness-based', () => {
+test('M07 navigation includes team credits and system meta is readiness-based', () => {
   const navigation = read('src/campus-pulse/app/navigation.js')
-  assert.equal((navigation.match(/Object\.freeze\(\{ id:/g) || []).length, 5)
+  assert.equal((navigation.match(/Object\.freeze\(\{ id:/g) || []).length, 6)
   assert.doesNotMatch(navigation, /static-system-claims/)
   assert.match(navigation, /System Readiness（后端探测）/)
 })

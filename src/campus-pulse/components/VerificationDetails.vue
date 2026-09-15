@@ -4,9 +4,8 @@ import type { SourceState } from '../contracts/source'
 import CpStatusBadge from './CpStatusBadge.vue'
 
 const props = defineProps<{ source: SourceState }>()
-const shortHash = (value?: string) => value ? `${value.slice(0, 10)}…${value.slice(-8)}` : '未提供'
 const verificationLabel = computed(() => ({
-  verified: '已验证', unverified: '未验证', mismatch: '哈希不匹配', failed: '验证失败', missing: '证据缺失',
+  verified: '已验证', unverified: '未验证', mismatch: '文件校验不一致', failed: '验证失败', missing: '证据缺失',
 }[props.source.verification]))
 </script>
 
@@ -27,7 +26,6 @@ const verificationLabel = computed(() => ({
       <div><dt>Run</dt><dd>{{ source.provenance.runId || '离线资产' }}</dd></div>
       <div><dt>Scenario</dt><dd>{{ source.provenance.scenarioId || '未声明' }}</dd></div>
       <div><dt>Manifest</dt><dd>{{ source.provenance.manifestAvailable ? '可用' : '缺失' }}</dd></div>
-      <div><dt>校验摘要</dt><dd><code>{{ shortHash(source.provenance.actualHash) }}</code></dd></div>
       <div><dt>发布资格</dt><dd>{{ source.publicationEligible === null ? '未声明' : source.publicationEligible ? '允许' : '不允许' }}</dd></div>
       <div><dt>新鲜度</dt><dd>{{ source.freshness.status === 'stale' ? '已过期' : source.freshness.status === 'fresh' ? '当前响应' : '无可验证时间戳' }}</dd></div>
     </dl>

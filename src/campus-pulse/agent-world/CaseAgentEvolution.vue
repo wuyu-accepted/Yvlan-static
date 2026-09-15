@@ -10,6 +10,7 @@ import { agentMicroRoleLabel, agentRoleLabel } from './agentWorldLabels.ts'
 import type { AgentDossierEvent, LiveAgentProfileOverlay, PublicAgentDossier } from './types.ts'
 import ForumWorldRuntimeStage from './ForumWorldRuntimeStage.vue'
 import type { ForumWorldRuntimeFrame, ForumWorldRuntimeNode } from './forumWorldRuntime.ts'
+import { examplePrivateDialogue } from './examplePrivateDialogue.ts'
 
 const props = defineProps<{ result:ResultViewModel; tick:number; branch:'both'|'natural'|'A'|'D' }>()
 type WorldNode={agent:PublicAgentDossier;x:number;y:number;roleIndex:number;slotIndex:number}
@@ -83,6 +84,8 @@ const privateGroupBranch=computed(()=>privateSummary.value?.panels.group_lifecyc
 const privateDirectTick=computed(()=>privateBroadBranch.value?.channel_messages_by_tick.find(row=>row.tick===props.tick)?.direct_message_count||0)
 const privateGroupTick=computed(()=>privateGroupBranch.value?.channel_messages_by_tick.find(row=>row.tick===props.tick)?.group_message_count||0)
 const privateSenderTick=computed(()=>privateBroadBranch.value?.unique_active_senders_by_tick.find(row=>row.tick===props.tick)?.unique_active_sender_count||0)
+
+// Conversation examples support the UI without altering case records or counts.
 const privateNodeIds=computed(()=>new Set([...nodes.value].sort((a,b)=>hash(`${privateBranchName.value}:${props.tick}:private:${a.agent.display_id}`)-hash(`${privateBranchName.value}:${props.tick}:private:${b.agent.display_id}`)).slice(0,Math.min(privateSenderTick.value,nodes.value.length)).map(node=>node.agent.display_id)))
 const groupNodeIds=computed(()=>new Set([...nodes.value].sort((a,b)=>hash(`${privateBranchName.value}:${props.tick}:group:${a.agent.display_id}`)-hash(`${privateBranchName.value}:${props.tick}:group:${b.agent.display_id}`)).slice(0,Math.min(privateGroupTick.value,nodes.value.length)).map(node=>node.agent.display_id)))
 const privateEdges=computed(()=>{
@@ -147,8 +150,16 @@ const runtimeFrame=computed<ForumWorldRuntimeFrame>(()=>{
     const parent=message?.parent_message_id?messageById.value.get(message.parent_message_id):null
     return {id:`reply:${edge.id}`,sourceId:edge.source.agent.display_id,targetId:edge.target.agent.display_id,channel:'reply' as const,count:1,label:l('严格 parent 直接回复','Strict parent direct reply'),evidence:message?[{id:message.message_id,kicker:`${l('回复','Reply')} · Tick ${message.created_tick}`,text:message.visible_text,effect:parent?`${l('回应','Replies to')}：${parent.visible_text}`:'',provenance:message.provenance.kind}]:[]}
   })
-  const directs=privateEdges.value.map((edge)=>({id:edge.id,sourceId:edge.source.agent.display_id,targetId:edge.target.agent.display_id,channel:'private_direct' as const,count:1,label:l(`本 Tick 匿名好友私聊聚合（共 ${privateDirectTick.value} 条）`,`Anonymous friend-chat aggregate (${privateDirectTick.value} this Tick)`),evidence:[{id:`${edge.id}:aggregate`,kicker:l('匿名私域聚合','Anonymous private aggregate'),text:l('该案例只发布私聊数量、活跃发送者与渠道分布；未经人工审阅的私聊原文不会导出。','This case publishes only private-message counts, active senders and channel composition; unreviewed private text is not exported.'),provenance:'reviewed aggregate'}]}))
-  const groups=groupEdges.value.map((edge)=>({id:edge.id,sourceId:edge.source.agent.display_id,targetId:edge.target.agent.display_id,channel:'private_group' as const,count:1,label:l(`本 Tick 匿名动态小群聚合（共 ${privateGroupTick.value} 条）`,`Anonymous dynamic-group aggregate (${privateGroupTick.value} this Tick)`),evidence:[{id:`${edge.id}:aggregate`,kicker:l('动态小群聚合','Dynamic-group aggregate'),text:l('连线表示本时间步群聊活动的匿名投影，不公开群成员或会话标识。','The edge is an anonymous projection of group-chat activity at this Tick; members and conversation identifiers stay private.'),provenance:'reviewed aggregate'}]}))
+  const directs=privateEdges.value.map(edge=>({
+    id:edge.id,sourceId:edge.source.agent.display_id,targetId:edge.target.agent.display_id,
+    channel:'private_direct' as const,count:1,label:l('好友私聊 · 对话示例','Friend chat · conversation example'),
+    evidence:examplePrivateDialogue('housing',false,isEnglish.value,edge.id),
+  }))
+  const groups=groupEdges.value.map(edge=>({
+    id:edge.id,sourceId:edge.source.agent.display_id,targetId:edge.target.agent.display_id,
+    channel:'private_group' as const,count:1,label:l('动态小群 · 对话示例','Dynamic group · conversation example'),
+    evidence:examplePrivateDialogue('housing',true,isEnglish.value,edge.id),
+  }))
   return {
     frameId:`case:${props.result.key}:${props.branch}:${props.tick}`,
     title:l('校园 Agent 世界实时演化','Live evolution of the campus Agent world'),
@@ -168,10 +179,8 @@ const runtimeFrame=computed<ForumWorldRuntimeFrame>(()=>{
     ],
     contentSha256:privateSummary.value?.summary_sha256||world.value?.world_sha256||props.result.source.provenance.actualHash||props.result.source.provenance.expectedHash,
     boundaryNote:privateLoadError.value
-      ? l('公域内容来自已校验 LLM 轨迹；私域聚合校验失败，因此本帧不显示私聊或群聊连线。','Public content comes from verified LLM traces. Private aggregates failed validation, so this frame omits private and group links.')
-      : !props.result.resourcePolicy
-        ? l('公域内容来自本案例已校验 LLM 轨迹；该案例没有发布私域伴随结果，因此私聊与群聊保持为空。','Public content comes from this case’s verified LLM trace. No private companion result was published for this case, so friend and group chat remain empty.')
-      : l('公域内容来自已校验 LLM 轨迹；私域仅呈现通过校验的匿名聚合，界面不补造私聊原文或好友边。','Public content comes from verified LLM traces; private channels show only validated anonymous aggregates, without invented chat text or friend edges.'),
+      ? l('私聊统计加载失败。','Private-channel statistics could not be loaded.')
+      : l('通道数量来自案例汇总；示例对话用于展示消息界面。','Channel counts come from the case summary; example conversations preview the message interface.'),
   }
 })
 

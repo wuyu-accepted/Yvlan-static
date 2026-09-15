@@ -12,6 +12,47 @@ export interface ForumWorldRuntimeEvidence {
   text: string
   effect?: string
   provenance?: string
+  speaker?: string
+  align?: 'left' | 'right'
+}
+
+export function distinctRuntimeEvidence(rows: ForumWorldRuntimeEvidence[] = []): ForumWorldRuntimeEvidence[] {
+  const ids = new Set<string>()
+  const content = new Set<string>()
+  return rows.filter(row => {
+    const key = `${row.speaker || ''}\u0000${row.text.normalize('NFKC').replace(/\s+/g, '')}`
+    if (!row.text.trim() || ids.has(row.id) || content.has(key)) return false
+    ids.add(row.id); content.add(key)
+    return true
+  })
+}
+
+export function groupThreadMessages<T extends { thread_id?: string; message_id: string }>(rows: T[]): T[][] {
+  const threads = new Map<string, T[]>()
+  for (const row of rows) {
+    const key = row.thread_id || row.message_id
+    const group = threads.get(key) || []
+    if (!group.some(item => item.message_id === row.message_id)) group.push(row)
+    threads.set(key, group)
+  }
+  return [...threads.values()]
+}
+
+// Repeated copies of the same source belong to one inspectable conversation.
+// Keep every edge/count for the propagation graph, but link copies to the first
+// stable owner instead of presenting them as new dialogue.
+export function sharedEvidenceOwners(edges: ForumWorldRuntimeEdge[]): Map<string, string> {
+  const seen = new Map<string, string>()
+  const owners = new Map<string, string>()
+  for (const edge of [...edges].sort((a,b) => a.id.localeCompare(b.id))) {
+    const rows = distinctRuntimeEvidence(edge.evidence)
+    if (!rows.length) continue
+    const key = JSON.stringify(rows.map(row => [row.provenance || '', row.speaker || '', row.text.normalize('NFKC').replace(/\s+/g,'')]))
+    const owner = seen.get(key)
+    if (owner) owners.set(edge.id, owner)
+    else seen.set(key, edge.id)
+  }
+  return owners
 }
 
 export interface ForumWorldRuntimeNode {
@@ -47,7 +88,6 @@ export interface ForumWorldRuntimeMetric {
   label: string
   value: string | number
   note?: string
-  help?: string
 }
 
 export interface ForumWorldRuntimeFrame {

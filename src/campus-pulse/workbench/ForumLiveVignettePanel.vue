@@ -361,7 +361,7 @@ onBeforeUnmount(stopPolling)
     <div v-if="!preflight" class="prepare-row">
       <div>
         <strong>{{ localize('先冻结运行合同', 'Freeze the run contract first') }}</strong>
-        <span>{{ localize('此步骤只生成预算、代码哈希与隐私清单，不发送 Prompt。', 'This step only generates the budget, code hashes, and privacy manifest; it sends no prompt.') }}</span>
+        <span>{{ localize('核对调用预算和发送内容，确认后即可启动。', 'Review the call budget and transmitted fields, then confirm to start.') }}</span>
       </div>
       <button type="button" class="primary" :disabled="busy || !scenarioReady" @click="prepare">
         {{ preparing ? localize('正在生成…', 'Preparing…') : localize('生成 Preflight', 'Generate preflight') }}
@@ -377,8 +377,7 @@ onBeforeUnmount(stopPolling)
       </div>
 
       <div class="hash-row">
-        <span>Preflight SHA-256</span>
-        <code>{{ preflight.preflight_sha256 }}</code>
+        <span>{{ localize('运行前检查', 'Pre-run check') }}</span>
         <i :class="preflight.privacy_scan?.passed ? 'pass' : 'fail'">{{ preflight.privacy_scan?.passed ? localize('隐私扫描通过', 'Privacy scan passed') : localize('未通过', 'Failed') }}</i>
       </div>
 

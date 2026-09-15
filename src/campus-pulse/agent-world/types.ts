@@ -98,6 +98,31 @@ export interface AgentDossierPrivateExcerpt {
   effectEn: string
 }
 
+export interface AgentBehaviorChainContext {
+  id: string
+  kind: 'thread_root' | 'direct_parent' | 'quote'
+  tick: number
+  speaker: string
+  text: string
+}
+
+export interface AgentBehaviorChainResponse {
+  id: string
+  tick: number
+  speaker: string
+  action: string
+  text: string
+}
+
+export interface AgentBehaviorChainStep {
+  id: string
+  tick: number
+  visibleContext: AgentBehaviorChainContext[]
+  action: AgentDossierEvent
+  responses: AgentBehaviorChainResponse[]
+  nextAction: AgentDossierEvent | null
+}
+
 export interface LiveAgentProfileOverlay {
   display_id: string
   macro_role: string

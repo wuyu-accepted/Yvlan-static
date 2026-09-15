@@ -42,11 +42,11 @@ async function loadCases() {
   if (resource.status === 'fulfilled') resourceResult.value = auditedReplayAdapter.result('hero', resource.value)
   if (lecture.status === 'fulfilled') lectureResult.value = auditedReplayAdapter.result('lecture', lecture.value)
   if (flagship.status === 'fulfilled') flagshipSummary.value = flagship.value
-  else flagshipError.value = '三种子五方案结果未通过文件哈希与公开结果合同校验。'
+  else flagshipError.value = '三种子五方案结果未通过文件完整性检查。'
   if (!resourceResult.value || !lectureResult.value) {
-    error.value = '一个或多个案例未通过文件哈希与公开结果合同校验。'
+    error.value = '一个或多个案例未通过文件完整性检查。'
   }
-  if (resourceResult.value && lectureResult.value) {
+  if (resourceResult.value && lectureResult.value && flagshipSummary.value) {
     sourceContext.publishSourceState(route.fullPath, {
       key: 'verified-case-center',
       mode: 'offline_hero',
@@ -56,12 +56,12 @@ async function loadCases() {
       availability: { backend: 'unknown', access: 'readonly' },
       provenance: {
         manifestAvailable: true,
-        evidenceId: 'resource-policy-r1+lecture-open-choice-r4',
+        evidenceId: 'resource-flagship-v1+resource-policy-r1+lecture-open-choice-r4',
         origin: 'hash-verified bundled evidence',
       },
       publicationEligible: false,
-      boundaries: ['住宿资源与讲座冲突两个案例已分别通过公开文件哈希和结果合同校验；其他资产保持独立校验状态。'],
-      boundarySummary: '案例中心的两个登记案例已校验。',
+      boundaries: ['三种子产品验证与两个逐帖案例均已通过文件完整性检查。'],
+      boundarySummary: '结果中心公开证据已校验。',
     })
   }
   loading.value = false
@@ -152,7 +152,7 @@ onBeforeUnmount(stopLecture)
     <template v-else>
       <section v-if="!publicDemo" class="template-launcher" aria-label="案例模板">
         <div><span>TEMPLATE LIBRARY</span><strong>{{ l('把已验证案例复制到项目流程', 'Copy a verified case into the project flow') }}</strong><p>{{ l('保留固定 Agent 世界，重新配置事件、分支、预算和模型。', 'Keep the fixed Agent world, then reconfigure the event, branches, budget, and model.') }}</p></div>
-        <nav><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'housing'}}">{{ l('复制住宿案例', 'Copy housing') }}</RouterLink><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'lecture'}}">{{ l('复制讲座案例', 'Copy lecture') }}</RouterLink></nav>
+        <nav><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'housing'}}">{{ l('复制住宿案例', 'Copy housing') }}</RouterLink><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'lecture'}}">{{ l('复制讲座案例', 'Copy lecture') }}</RouterLink><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'century_gym'}}">{{ l('复制世纪馆案例', 'Copy Century Gym') }}</RouterLink></nav>
       </section>
       <div class="case-grid">
       <article v-if="resourceStory" class="case-card case-card--effective">

@@ -32,8 +32,9 @@ const activeSensingAvailable = computed(() => (
   (props.sensingSnapshots ?? []).filter((snap) => snap.snapshot_id !== props.sensingState?.activeSnapshotId).length > 0
 ))
 
-function short(value: string | undefined): string {
-  return value ? value.slice(0, 12) + '…' + value.slice(-8) : '—'
+function snapshotTitle(value: string | undefined, fallback: string): string {
+  if (!value || /[a-f0-9]{12,}|sha256|snapshot[_:-]|^\w+_\w+$/i.test(value)) return fallback
+  return value
 }
 </script>
 
@@ -62,15 +63,13 @@ function short(value: string | undefined): string {
       </div>
       <table v-else-if="evidence && evidence.length" class="bindings" aria-label="项目证据绑定">
         <thead>
-          <tr><th>快照</th><th>schema</th><th>角色</th><th>操作</th></tr>
+          <tr><th>快照</th><th>角色</th><th>操作</th></tr>
         </thead>
         <tbody>
           <tr v-for="binding in evidence ?? []" :key="binding.snapshotId">
             <td>
-              <strong>{{ binding.title || binding.snapshotId }}</strong>
-              <small><code>{{ short(binding.manifestSha256) }}</code></small>
+              <strong>{{ snapshotTitle(binding.title, '论坛证据快照') }}</strong>
             </td>
-            <td>{{ binding.schemaVersion || '—' }}</td>
             <td><CpStatusBadge v-if="binding.primary" tone="evidence">主证据</CpStatusBadge><span v-else class="muted">绑定</span></td>
             <td><button type="button" class="row-action" @click="emit('openEvidence', binding.snapshotId)">查看证据</button></td>
           </tr>
@@ -91,14 +90,12 @@ function short(value: string | undefined): string {
       <template v-else>
         <dl class="sensing-state">
           <div><dt>当前状态</dt><dd>{{ sensingState?.status || '未知' }}</dd></div>
-          <div><dt>状态版本</dt><dd>{{ sensingState?.stateVersion ?? '—' }}</dd></div>
-          <div><dt>激活快照</dt><dd>{{ sensingState?.activeSnapshotTitle || sensingState?.activeSnapshotId || '未激活' }}</dd></div>
+          <div><dt>激活快照</dt><dd>{{ sensingState?.activeSnapshotId ? snapshotTitle(sensingState?.activeSnapshotTitle, '当前感知基线') : '未激活' }}</dd></div>
         </dl>
         <div v-if="sensingSnapshots && sensingSnapshots.length" class="sensing-list">
           <div v-for="snap in sensingSnapshots" :key="snap.snapshot_id" class="sensing-row">
             <span class="sensing-copy">
-              <strong>{{ snap.title || snap.snapshot_id }}</strong>
-              <small><code>{{ short(snap.manifest_sha256) }}</code></small>
+              <strong>{{ snapshotTitle(snap.title, '论坛感知快照') }}</strong>
             </span>
             <button
               v-if="snap.snapshot_id !== sensingState?.activeSnapshotId"

@@ -109,10 +109,9 @@ const actionLabel = { decision: '决策', noop: 'noop', no_response: '无响应'
 .governance-uptake > header { padding:var(--cp-space-3) var(--cp-space-4); border-bottom:1px solid var(--cp-border-default); }
 .governance-uptake table { width:100%; border-collapse:collapse; font-size:var(--cp-text-sm); }
 .governance-uptake th, .governance-uptake td { padding:var(--cp-space-2) var(--cp-space-3); border-top:1px solid var(--cp-border-subtle); text-align:left; vertical-align:top; }
-.governance-uptake th { background:var(--cp-surface-subtle); color:var(--cp-text-muted); }
 .governance-uptake td strong { display:block; }
 .governance-uptake td p { margin:var(--cp-space-1) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-xs); line-height:1.5; }
-.governance-uptake a { color:var(--cp-action-primary); font-weight:700; text-decoration:none; white-space:nowrap; }
+.governance-uptake a { color:var(--brand-red); font-weight:700; text-decoration:none; white-space:nowrap; }
 .governance-empty { margin:0; padding:var(--cp-space-4); color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .governance-note { margin:0; padding:var(--cp-space-2) var(--cp-space-3); border-left:3px solid var(--cp-border-strong); color:var(--cp-text-secondary); font-size:var(--cp-text-xs); }
 @media (max-width:767px) { .governance-summary dl { grid-template-columns:repeat(2,minmax(0,1fr)); } }

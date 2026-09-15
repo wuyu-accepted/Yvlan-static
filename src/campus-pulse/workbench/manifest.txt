@@ -2,7 +2,6 @@ AgentWorldPanel.vue
 WorkbenchEvidencePanel.vue
 WorkbenchOverviewPanel.vue
 WorkbenchPlanPanel.vue
-WorkbenchPreflightPanel.vue
 WorkbenchPolicyPanel.vue
 WorkbenchProjectCreateDialog.vue
 WorkbenchRunMonitor.vue

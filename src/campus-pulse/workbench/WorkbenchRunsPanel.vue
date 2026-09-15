@@ -98,7 +98,6 @@ const filteredRuns = computed(() => {
             <button type="button" class="run-link" @click="emit('selectRun', run.run_id)">
               <code>{{ run.run_id.slice(0, 12) }}…</code>
             </button>
-            <small v-if="run.result_sha256" class="result-hash">结果 {{ run.result_sha256.slice(0, 10) }}…</small>
           </td>
           <td>{{ EXECUTION_MODE_LABELS[run.execution_mode] || run.execution_mode }}</td>
           <td><CpStatusBadge :tone="runStateTone(runStateLabel(run.effective_runtime_status || run.plan_status || run.status))">{{ runStateLabel(run.effective_runtime_status || run.plan_status || run.status) }}</CpStatusBadge></td>

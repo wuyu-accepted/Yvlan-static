@@ -133,7 +133,6 @@ onBeforeUnmount(() => { if (pollTimer) clearInterval(pollTimer) })
     <div class="monitor-grid">
       <dl class="runtime-facts" aria-label="运行时事实">
         <div><dt>状态</dt><dd>{{ runStateLabel(status) }}</dd></div>
-        <div><dt>状态版本</dt><dd>{{ runtime?.stateVersion ?? '—' }}</dd></div>
         <div><dt>已完成轮次</dt><dd>{{ formatCount(runtime?.turnsCompleted) }} / {{ formatCount(runtime?.turnsReserved) }}</dd></div>
         <div><dt>Token 使用</dt><dd>{{ formatCount(runtime?.tokensUsed) }} / {{ formatCount(runtime?.tokenLimit) }}</dd></div>
         <div><dt>活跃单元</dt><dd>{{ formatCount(runtime?.activeUnits) }} / {{ formatCount(runtime?.concurrencyLimit) }}</dd></div>
@@ -214,7 +213,7 @@ onBeforeUnmount(() => { if (pollTimer) clearInterval(pollTimer) })
     <div v-if="showCancel" class="cancel-dialog" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
       <div class="cancel-box">
         <h3 id="cancel-title">取消运行</h3>
-        <p>目标运行：<code>{{ run?.run_id }}</code>（状态版本 {{ cancelForm.expected_state_version }}）</p>
+        <p>目标运行：<code>{{ run?.run_id }}</code></p>
         <label class="field">
           <span>取消原因（严格枚举）<em aria-hidden="true">*</em></span>
           <select v-model="cancelForm.reason_code">

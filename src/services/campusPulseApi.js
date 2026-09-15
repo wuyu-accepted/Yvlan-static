@@ -17,7 +17,8 @@ export async function getWorkbenchOverview() {
 }
 
 export async function getForumTwinV2AgentWorld() {
-  return unwrap(await client.get('/forum-twin-v2/agent-world'))
+  // The first immutable population/relationship validation can exceed 12s.
+  return unwrap(await client.get('/forum-twin-v2/agent-world', { timeout: 60_000 }))
 }
 
 export async function getForumTwinV2AgentDossier(displayId, projectId = null) {
@@ -122,12 +123,22 @@ export async function createProject(payload) {
   return unwrap(await client.post('/projects', payload))
 }
 
-export async function bootstrapProject(projectId) {
-  return unwrap(await client.post(`/projects/${encodeURIComponent(projectId)}/bootstrap`))
+export async function bootstrapProject(projectId, setup = undefined) {
+  return unwrap(await client.post(`/projects/${encodeURIComponent(projectId)}/bootstrap`, setup))
 }
 
 export async function listProjectScenarios(projectId) {
   return unwrap(await client.get(`/projects/${encodeURIComponent(projectId)}/scenarios`))
+}
+
+export async function getProjectReplay(projectId) {
+  return unwrap(await client.get(`/projects/${encodeURIComponent(projectId)}/replay`))
+}
+export async function startProjectReplay(projectId) {
+  return unwrap(await client.post(`/projects/${encodeURIComponent(projectId)}/replay`))
+}
+export async function saveProjectReplay(projectId, cursor) {
+  return unwrap(await client.put(`/projects/${encodeURIComponent(projectId)}/replay`, cursor))
 }
 
 export async function listProjectPolicies(projectId) {
@@ -401,6 +412,10 @@ export async function updateProject(projectId, payload) {
       payload,
     ),
   )
+}
+
+export async function deleteProject(projectId) {
+  await client.delete(`/projects/${encodeURIComponent(projectId)}`)
 }
 
 export async function getRun(runId) {

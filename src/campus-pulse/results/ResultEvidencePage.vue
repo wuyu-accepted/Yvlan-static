@@ -46,21 +46,21 @@ function gateTone(status: string) {
     <section class="evidence-intro" aria-labelledby="evidence-title">
       <header>
         <h2 id="evidence-title">证据与来源</h2>
-        <p>仅展示可校验、可审计的材料。</p>
+        <p>查看运行来源、文件状态和报告。</p>
       </header>
     </section>
 
     <section class="evidence-panel" aria-labelledby="hash-title">
-      <header><h2 id="hash-title">哈希链</h2><p>逐项核对 manifest 摘要。</p></header>
+      <header><h2 id="hash-title">文件完整性</h2><p>结果文件与来源记录的校验状态。</p></header>
       <ul class="hash-chain">
         <li v-for="row in evidence.hashChain" :key="row.label">
           <CpStatusBadge :tone="row.verified ? 'evidence' : 'danger'" :icon="row.verified ? 'fa-circle-check' : 'fa-triangle-exclamation'">
             {{ row.verified ? '已核对' : '未通过' }}
           </CpStatusBadge>
-          <div><strong>{{ row.label }}</strong><code>{{ row.value }}</code></div>
+          <div><strong>{{ row.label }}</strong></div>
         </li>
       </ul>
-      <p v-if="!evidence.hashChain.length" class="panel-empty">当前结果未发布可校验的哈希链。</p>
+      <p v-if="!evidence.hashChain.length" class="panel-empty">当前结果的文件校验记录暂不可用。</p>
     </section>
 
     <section class="evidence-panel" aria-labelledby="provenance-title">
@@ -116,7 +116,7 @@ function gateTone(status: string) {
 .hash-chain li { display:flex; align-items:center; gap:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-space-4); border-top:1px solid var(--cp-border-subtle); }
 .hash-chain div { min-width:0; }
 .hash-chain strong { display:block; font-size:var(--cp-text-sm); }
-.hash-chain code { padding:var(--cp-space-1) var(--cp-space-2); border:1px solid var(--cp-border-subtle); background:var(--cp-surface-subtle); color:var(--cp-text-secondary); font-family:var(--cp-font-mono); font-size:var(--cp-text-xs); }
+.hash-chain code { font-family:var(--cp-font-mono); color:var(--cp-text-secondary); font-size:var(--cp-text-xs); }
 .provenance-table { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin:0; }
 .provenance-table div { min-width:0; padding:var(--cp-space-3) var(--cp-space-4); border-right:1px solid var(--cp-border-subtle); border-bottom:1px solid var(--cp-border-subtle); }
 .provenance-table dt { color:var(--cp-text-muted); font-size:var(--cp-text-xs); }

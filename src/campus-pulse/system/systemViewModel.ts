@@ -118,9 +118,9 @@ export function gatesFromPayloads(
   const schema = asString(checks.schema)
   gates.push(gate(
     'schema',
-    '存储 Schema',
+    '数据存储',
     schema === 'current' ? 'ready' : schema === 'migration_required' ? 'blocked' : 'unknown',
-    schema === 'current' ? 'Schema 与预期版本一致' : schema ? '需要迁移' : '未声明',
+    schema === 'current' ? '数据存储就绪' : schema ? '需要迁移' : '未声明',
     schema === 'current' ? '无需操作' : '由后端执行迁移后再操作',
   ))
 
@@ -183,7 +183,7 @@ export function gatesFromPayloads(
     'provider_executor',
     'Provider Executor',
     executorState === 'installed' ? 'ready' : executorState === 'not_installed' ? 'degraded' : 'unknown',
-    executorState === 'installed' ? '确定性 fixture 路径可用' : executorState === 'not_installed' ? '未安装授权 executor（不伪装可入队）' : '未声明',
+    executorState === 'installed' ? '确定性 fixture 路径可用' : executorState === 'not_installed' ? '运行组件待安装' : '未声明',
     executorState === 'installed' ? '不允许对外 Provider 调用' : '安装授权 executor（外部依赖）',
   ))
 
@@ -194,7 +194,7 @@ export function gatesFromPayloads(
     '正式 Live 入队',
     liveEnqueue === true ? 'ready' : liveEnqueue === false ? 'blocked' : 'unknown',
     liveEnqueue === true ? '正式 live 可入队' : liveEnqueue === false ? '当前不可入队：' + (blocker || 'authorized runtime 未安装') : '未声明',
-    liveEnqueue === true ? '无需操作' : '保持已校验离线案例与契约测试的异常路径',
+    liveEnqueue === true ? '无需操作' : '配置运行组件后可启动新模拟',
   ))
 
   const fixtureState = asString(fixture.executor_state)
@@ -202,7 +202,7 @@ export function gatesFromPayloads(
     'deterministic_fixture',
     '确定性 Fixture',
     fixtureState === 'installed' ? 'ready' : fixtureState ? 'degraded' : 'unknown',
-    fixtureState === 'installed' ? '离线确定性执行可用（禁止 Provider 调用/外部下载/因果结论）' : fixtureState ? 'fixture 未就位' : '未声明',
+    fixtureState === 'installed' ? '本地测试执行器可用' : fixtureState ? 'fixture 未就位' : '未声明',
     fixtureState === 'installed' ? '用于离线回放与演示' : '安装确定性 fixture',
   ))
 
@@ -278,7 +278,7 @@ async function sha256Hex(text: string): Promise<string> {
 export async function verifyOfflineHeroAsset(): Promise<OfflineAssetVM> {
   const base: OfflineAssetVM = {
     id: 'offline-hero',
-    label: '真实 LLM 住宿资源分配案例（resource-policy-live-r1）',
+    label: '住宿资源分配案例',
     status: 'failed',
     detail: '校验未完成',
   }
@@ -301,15 +301,15 @@ export async function verifyOfflineHeroAsset(): Promise<OfflineAssetVM> {
     }
     const schema = asString(asRecord(parsed.result).schema_version)
     if (schema !== HERO_ASSET.expectedSchema) {
-      return { ...base, status: 'mismatch', detail: 'schema 不匹配：' + (schema || '缺失'), expectedSha256, actualSha256, schemaVersion: schema }
+      return { ...base, status: 'mismatch', detail: '文件格式不兼容，请重新加载案例文件', expectedSha256, actualSha256, schemaVersion: schema }
     }
     if (actualSha256 !== expectedSha256) {
-      return { ...base, status: 'mismatch', detail: '哈希不匹配：资产与声明不一致', expectedSha256, actualSha256, schemaVersion: schema }
+      return { ...base, status: 'mismatch', detail: '文件内容与发布记录不一致，请重新加载案例文件', expectedSha256, actualSha256, schemaVersion: schema }
     }
     return {
       ...base,
       status: 'verified',
-      detail: 'SHA-256 匹配（' + expectedSha256.slice(0, 10) + '…），schema 为 ' + schema,
+      detail: '文件完整性与格式检查通过',
       expectedSha256,
       actualSha256,
       schemaVersion: schema,

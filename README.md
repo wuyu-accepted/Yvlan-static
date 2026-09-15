@@ -1,6 +1,8 @@
 # Yvlan Static Demo
 
-CampusPulse / ForumTwin 的公开静态演示站。仓库只包含 Vue 3 + Vite 前端和脱敏、哈希绑定的公开案例资产，不包含后端、数据库、API Key、Provider 请求账本或私有 Agent 数据。
+CampusPulse / ForumTwin 的公开静态演示站。仓库包含 Vue 3 + Vite 前端，以及脱敏、哈希绑定的公开案例资产。
+
+当前页面组件、布局、动效和设计令牌同步自原仓库 `main` 的 `57de822` 版本；静态模式仅保留公开案例所需入口。
 
 ## 本地运行
 
@@ -27,7 +29,7 @@ npm run build -- --configLoader runner
 
 推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会自动构建并部署到 GitHub Pages。
 
-公开演示模式保留产品介绍、案例中心、论坛调查、结果证据、模型与数据以及创新评测页面；需要后端写操作的项目创建、工作台、实时运行和运行分析路由会返回案例中心。
+公开演示模式保留产品封面、案例中心、论坛调查、结果证据以及团队致谢页面；其他操作型路由会返回产品封面。
 
 ## 数据边界
 

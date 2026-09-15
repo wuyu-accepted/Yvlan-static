@@ -144,6 +144,6 @@ test('M03 simulator layout uses shared tokens and a responsive task workflow', (
   assert.match(page, /hero-facts/)
   assert.match(page, /≤67/)
   assert.doesNotMatch(page, /动力学生成发言/)
-  assert.match(page, /定义事件[\s\S]*绑定社会人口[\s\S]*配置论坛与治理[\s\S]*冻结运行合同[\s\S]*运行与观察/)
+  assert.match(page, /定义事件[\s\S]*绑定社会人口[\s\S]*配置论坛与治理[\s\S]*确认运行参数[\s\S]*运行与观察/)
   assert.doesNotMatch(page, /font-size:\s*(?:[3-9]|\d{2,})rem/)
 })

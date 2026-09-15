@@ -8,14 +8,10 @@ import ThemeToggle from './components/ThemeToggle.vue'
 
 const route = useRoute()
 const usesProductShell = computed(() => route.meta.productShell === true)
-const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 </script>
 
 <template>
-  <div class="app" :class="{ 'public-demo-theme': publicDemo }">
-    <aside v-if="publicDemo" class="public-demo-notice" role="status">
-      公开成果展示 · 内容来自脱敏、哈希校验的封存案例
-    </aside>
+  <div class="app">
     <ThemeToggle v-if="!usesProductShell && route.meta.standaloneCover !== true" class="global-theme-toggle" />
     <router-view v-slot="{ Component }">
       <ProductShell v-if="usesProductShell" :route-loading="productRouteLoading">
@@ -35,23 +31,6 @@ const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
   min-height: 100vh;
   background-color: var(--bg-color);
   position: relative;
-}
-
-.public-demo-notice {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 10000;
-  max-width: min(34rem, calc(100vw - 2rem));
-  padding: .65rem .9rem;
-  border: 1px solid #ded8d4;
-  border-radius: .75rem;
-  background: rgba(255, 255, 255, .96);
-  color: #3e3639;
-  box-shadow: 0 .75rem 2rem rgba(38, 30, 33, .12);
-  font-size: .78rem;
-  line-height: 1.5;
-  backdrop-filter: blur(12px);
 }
 
 /* 全局滚动条样式 */

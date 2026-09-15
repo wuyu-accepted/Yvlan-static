@@ -136,6 +136,15 @@ test('M06 project list normalizes entities and empty stays empty', () => {
   assert.deepEqual(runListFromPayload([]), [])
 })
 
+test('M06 project center collapses duplicate fixed templates to the newest record', () => {
+  const list = projectListFromPayload([
+    { project_id: 'old-century', name: '世纪馆“幽灵预约”治理预演', governance_domain: '体育场地预约', objective: 'old', created_at: '2026-09-10T08:00:00Z' },
+    { project_id: 'new-century', name: '世纪馆预约服务治理预演', governance_domain: '体育场地预约', objective: 'new', created_at: '2026-09-13T08:00:00Z' },
+    { project_id: 'custom-1', name: '我的新事件', governance_domain: '自定义', objective: 'keep both' },
+  ])
+  assert.deepEqual(list.map((item) => item.project_id), ['new-century', 'custom-1'])
+})
+
 test('M06 Century Gym is a singleton live-demo project, not a result-case copy', () => {
   const dialog = read('src/campus-pulse/workbench/WorkbenchProjectCreateDialog.vue')
   const workspace = read('src/campus-pulse/workbench/WorkbenchWorkspacePage.vue')
@@ -145,8 +154,7 @@ test('M06 Century Gym is a singleton live-demo project, not a result-case copy',
   assert.doesNotMatch(dialog, /完整案例/)
   assert.match(workspace, /existing_project_id/)
   assert.match(workspace, /existing-century-gym-project-id/)
-  assert.match(workspace, /isCenturyGymProject/)
-  assert.doesNotMatch(workspace, /session:centuryGym \? 'century-gym-demo'/)
+  assert.match(workspace, /century-gym-demo/)
 })
 
 test('M06 fixed Agent world exposes relationship, private channel, risk, and activation controls', () => {
@@ -163,26 +171,6 @@ test('M06 fixed Agent world exposes relationship, private channel, risk, and act
   assert.match(world, /visibility-priority-rotation-pps-v3/)
   assert.match(world, /record-level friend edge/)
   assert.match(world, /representative_agents/)
-  assert.match(world, /Scheduled activation/)
-  assert.match(world, /Committed agent output/)
-  assert.doesNotMatch(world, /Activated this Tick/)
-  assert.match(world, /value:runtimeEvidence\.size/)
-  assert.match(world, /auditedReplaySummary/)
-  assert.match(world, /completed \?\? unavailable/)
-  assert.match(world, /Record-level output not published\\nReplay aggregate only/)
-  assert.match(world, /Resident \+ governance\\nSelected replay Tick/)
-  assert.match(world, /Aggregate count\\nSelected replay Tick/)
-  assert.match(world, /Role-level aggregate\\nNo agent identities inferred/)
-  assert.match(world, /Private role edges/)
-  assert.match(world, /value:replay\.privateRoleEdges \?\? unavailable/)
-  assert.doesNotMatch(world, /note:isEnglish\.value\?'resident \+ governance'/)
-  const runtimeStage = read('src/campus-pulse/agent-world/ForumWorldRuntimeStage.vue')
-  assert.match(runtimeStage, /:aria-describedby="`metric-help-\$\{metric\.id\}`"/)
-  assert.match(runtimeStage, /role="tooltip"/)
-  assert.match(runtimeStage, /focus-within/)
-  assert.match(runtimeStage, /grid-template-rows:2\.25rem auto auto/)
-  assert.match(runtimeStage, /\.metric-help\{position:absolute/)
-  assert.match(runtimeStage, /white-space:pre-line/)
   assert.match(world, /AgentDossierDrawer/)
   assert.match(world, /人物资料 · Prompt · 记忆 · 历史/)
   assert.match(evidence, /:project-id="projectId"/)
@@ -211,6 +199,11 @@ test('M06 cases, the Century Gym demo, and new-project monitoring use one runtim
   assert.match(monitor, /setInterval\(\(\) => emit\('refreshRuntime'\), 4000\)/)
   assert.match(runtime, /role="button"/)
   assert.match(runtime, /runtime-world__inspector/)
+  assert.match(runtime, /'idle' \| 'node' \| 'edge' \| 'follow'/)
+  assert.match(runtime, /inspectorMode==='follow'/)
+  assert.match(runtime, /实时跟踪 Agent/)
+  assert.match(runtime, /step\.tick === props\.frame\.tick/)
+  assert.match(century, /@start-follow="extendFrameForInspection"/)
   assert.match(runtime, /Nodes and edges are driven by the same runtime frame/)
 })
 
@@ -235,7 +228,7 @@ test('M06 every representative Agent exposes a parallel public-private prompt do
 })
 
 test('M06 quick live vignette exposes one bounded preflight and no browser credential field', () => {
-  const overview = read('src/campus-pulse/workbench/WorkbenchOverviewPanel.vue')
+  const overview = read('src/campus-pulse/workbench/WorkbenchWorkspacePage.vue')
   const panel = read('src/campus-pulse/workbench/ForumLiveVignettePanel.vue')
   const api = read('src/services/campusPulseApi.js')
   assert.match(overview, /ForumLiveVignettePanel/)
@@ -265,8 +258,11 @@ test('M06 quick live vignette exposes one bounded preflight and no browser crede
 test('M06 backend unavailable is never shown as zero and write actions disable', () => {
   const page = read('src/campus-pulse/workbench/WorkbenchWorkspacePage.vue')
   assert.match(page, /后端不可用/)
-  assert.match(page, /未知状态保持未知/)
-  assert.match(page, /写操作暂不可用；已验证离线结果仍可查看/)
+  assert.match(page, /连接恢复后可继续编辑项目/)
+  assert.match(page, /shell\?\.serviceState/)
+  assert.match(page, /serviceState.value === 'unavailable' \? 'unavailable' : 'readonly'/)
+  assert.match(page, /Promise.allSettled/)
+  assert.doesNotMatch(page, /access = ref.*\('unavailable'\)/)
   assert.match(page, /项目状态未知/)
   assert.match(page, /查看案例结果/)
   assert.match(page, /aria-label="模拟器工作流"/)
@@ -337,8 +333,9 @@ test('M06 scenario requires exactly the four ordered phases', () => {
   assert.equal(validateScenarioPhases(noLabel).ok, false)
   assert.equal(validateScenarioPhases(null).ok, false)
   const panel = read('src/campus-pulse/workbench/WorkbenchScenarioPanel.vue')
-  assert.match(panel, /阶段（严格 baseline → burst → spread → decay）/)
-  assert.match(panel, /64 位十六进制/)
+  assert.match(panel, /演化阶段：事件前 → 出现 → 扩散 → 后续反馈/)
+  assert.match(panel, /选择已绑定的数据/)
+  assert.match(panel, /系统自动使用所选情景关联的数据分析/)
   assert.match(panel, /\^\[0-9a-f\]\{64\}\$/)
 })
 
@@ -515,19 +512,8 @@ test('M06 duplicate project names are corrected as field input, not stale state'
   assert.match(dialog, /availableProjectName/)
   assert.match(dialog, /existingNames/)
   assert.match(page, /isDuplicateProjectConflict/)
-  assert.match(page, /isCenturyGymProject/)
-})
-
-test('M06 project live-world navigation is strictly project-scoped', () => {
-  const page = read('src/campus-pulse/workbench/WorkbenchWorkspacePage.vue')
-  const overview = read('src/campus-pulse/workbench/WorkbenchOverviewPanel.vue')
-  assert.match(page, /const latestRuntimeRun = computed/)
-  assert.match(page, /run\.result_sha256[\s\S]{0,140}runtimeRunStatuses/)
-  assert.match(page, /name:'campus-pulse-run-live'[\s\S]{0,100}runId:latestRuntimeRun\.value\.run_id/)
-  assert.match(page, /<RouterLink v-if="contextualRuntimeLocation"[\s\S]{0,180}:to="contextualRuntimeLocation"/)
-  assert.match(page, /需要先创建并启动真实运行/)
-  assert.match(overview, /:disabled="!runtimeAvailable"/)
-  assert.doesNotMatch(page, /projectLiveLocation|inferProjectScenario/)
+  assert.match(page, /campus-pulse-live-world/)
+  assert.match(page, /inferProjectScenario/)
 })
 
 test('M06 create-project validation maps to fields before any request', () => {
@@ -592,32 +578,14 @@ test('M06 overview readiness uses real states including unknown', () => {
   const overview = read('src/campus-pulse/workbench/WorkbenchOverviewPanel.vue')
   assert.match(overview, /'ready' \| 'missing' \| 'blocked' \| 'unknown'/)
   assert.match(overview, /'未知'/)
-  assert.match(overview, /aria-label="项目就绪状态"/)
-})
-
-test('M06 workbench keeps stable three-region navigation and one shared preflight source', () => {
-  const workspace = read('src/campus-pulse/workbench/WorkbenchWorkspacePage.vue')
-  const plan = read('src/campus-pulse/workbench/WorkbenchPlanPanel.vue')
-  const preflight = read('src/campus-pulse/workbench/WorkbenchPreflightPanel.vue')
-  assert.match(workspace, /grid-template-areas:"left main preflight"/)
-  assert.match(workspace, /class="rail-workflow"/)
-  assert.match(workspace, /class="preflight-rail"/)
-  assert.match(workspace, /<WorkbenchPreflightPanel/)
-  assert.match(workspace, /@preflight-change="retainPreflightSnapshot"/)
-  assert.doesNotMatch(workspace, /class="workflow-guide"/)
-  assert.doesNotMatch(workspace, /class="context-nav"/)
-  assert.match(plan, /emit\('preflightChange'/)
-  assert.match(plan, /checks: readiness\.value\.map/)
-  assert.match(preflight, /Runtime estimate/)
-  assert.match(preflight, /Not available/)
-  assert.doesNotMatch(preflight, /temperature|readinessScore|readiness_score/)
+  assert.match(overview, /:aria-label="l\('项目就绪状态','Project readiness'\)"/)
 })
 
 test('M06 workbench SFCs parse and compile; router uses the workspace page', () => {
   const files = workbenchManifest()
-  assert.equal(files.length, 14)
+  assert.equal(files.length, 13)
   const vueFiles = files.filter((file) => file.endsWith('.vue'))
-  assert.equal(vueFiles.length, 11)
+  assert.equal(vueFiles.length, 10)
   for (const file of vueFiles) {
     const fullPath = resolve(WORKBENCH_DIR, file)
     const source = readFileSync(fullPath, 'utf8')

@@ -5,7 +5,6 @@ import test from 'node:test'
 import { compileScript, compileTemplate, parse } from '@vue/compiler-sfc'
 import {
   buildResultAnalysis,
-  buildResultStory,
   firstDivergence,
   RESULT_DELTA_DEFINITION,
   strongestObservedDelta,
@@ -203,95 +202,6 @@ test('M04 evidence-backed findings carry an evidence reference', () => {
   }
 })
 
-test('M04 shared Result story always exposes Nianze six stages in order', () => {
-  const expected = [
-    'event-trigger',
-    'divergence-point',
-    'behavioral-catalysts',
-    'governance-efficacy',
-    'residual-vulnerabilities',
-    'strategic-policy-recommendations',
-  ]
-  const housing = resultFixture({
-    key: HERO_RESULT_KEY,
-    source: { ...resultFixture().source, key: HERO_SOURCE_KEY },
-    resourcePolicy: {
-      scenarioFacts: { bedsBefore: 520, bedsAfter: 320, validApplications: 536, announcementGaps: ['排序依据', '复核入口'] },
-      sharedThroughTick: 4,
-    },
-  })
-  const lecture = resultFixture({
-    key: LECTURE_HERO_RESULT_KEY,
-    source: { ...resultFixture().source, key: LECTURE_HERO_SOURCE_KEY },
-    scope: { ...resultFixture().scope, scenarioLabel: '讲座辱骂事件后的校园治理回应', scenarioDescription: '登记编写的讲座事件说明。' },
-  })
-  for (const result of [housing, lecture]) {
-    const story = buildResultStory(buildResultAnalysis(result))
-    assert.equal(story.stages.length, 6)
-    assert.deepEqual(story.stages.map((stage) => stage.id), expected)
-    assert.deepEqual(story.stages.map((stage) => stage.number), [1, 2, 3, 4, 5, 6])
-  }
-})
-
-test('M04 story preserves evidence classes and never invents recommendations or causal divergence', () => {
-  const story = buildResultStory(buildResultAnalysis(resultFixture()))
-  const divergence = story.stages[1]
-  const mechanisms = story.stages[2]
-  const recommendations = story.stages[5]
-  assert.equal(story.deltaDefinition.formula, 'Δ = D − Natural')
-  assert.equal(divergence.provenance, 'derived_fact')
-  assert.match(divergence.boundary, /not a causal estimate/)
-  assert.ok(divergence.evidenceRefs.every((ref) => ref.route && ref.manifestId))
-  assert.equal(mechanisms.provenance, 'candidate_mechanism')
-  assert.match(mechanisms.boundary, /候选机制/)
-  assert.equal(recommendations.status, 'unavailable')
-  assert.equal(recommendations.provenance, 'unavailable')
-  assert.equal(recommendations.facts.length, 0)
-  assert.equal(recommendations.finding, 'No verified strategic recommendation was published for this result.')
-})
-
-test('M04 six-stage English copy is explicit and does not depend on mixed-language replacements', () => {
-  const cases = [
-    resultFixture({
-      key: HERO_RESULT_KEY,
-      source: { ...resultFixture().source, key: HERO_SOURCE_KEY },
-      resourcePolicy: { scenarioFacts: { bedsBefore: 520, bedsAfter: 320, validApplications: 536, announcementGaps: ['类别间与同类内排序', '材料复核责任人', '申诉入口', '答复时限'] }, sharedThroughTick: 4 },
-    }),
-    resultFixture({
-      key: LECTURE_HERO_RESULT_KEY,
-      source: { ...resultFixture().source, key: LECTURE_HERO_SOURCE_KEY },
-      scope: { ...resultFixture().scope, scenarios: ['lecture_external_incident_shock'], scenarioDescription: '讲座案例说明' },
-    }),
-  ]
-  for (const result of cases) {
-    const story = buildResultStory(buildResultAnalysis(result))
-    const english = story.stages.flatMap((stage) => [
-      stage.findingEn,
-      stage.boundaryEn,
-      ...stage.facts.flatMap((fact) => [fact.labelEn, fact.valueEn]),
-      ...stage.drilldowns.map((item) => item.labelEn),
-    ]).join('\n')
-    assert.doesNotMatch(english, /[\u3400-\u9fff]/)
-    assert.doesNotMatch(english, /\d(public|governance)|messageshave/)
-  }
-  const component = read('src/campus-pulse/results/ResultStorySequence.vue')
-  assert.doesNotMatch(component, /replaceAll\(/)
-})
-
-test('M04 story drill-downs preserve result and registered source context', () => {
-  const result = resultFixture({ key: LECTURE_HERO_RESULT_KEY, source: { ...resultFixture().source, key: LECTURE_HERO_SOURCE_KEY } })
-  const story = buildResultStory(buildResultAnalysis(result))
-  const routes = story.stages.flatMap((stage) => stage.drilldowns.map((item) => item.route))
-  assert.ok(routes.some((route) => route.name === 'campus-pulse-result-forum'))
-  assert.ok(routes.some((route) => route.name === 'campus-pulse-result-mechanisms'))
-  assert.ok(routes.some((route) => route.name === 'campus-pulse-result-governance'))
-  assert.ok(routes.some((route) => route.name === 'campus-pulse-result-evidence'))
-  for (const route of routes) {
-    assert.equal(route.params.resultKey, LECTURE_HERO_RESULT_KEY)
-    assert.equal(route.query.source, LECTURE_HERO_SOURCE_KEY)
-  }
-})
-
 test('M04 URL restores result/source/tab/metric/tick and keeps list filters', () => {
   const router = read('src/router/index.js')
   for (const tab of ['summary', 'mechanisms', 'governance', 'evidence']) {
@@ -318,13 +228,6 @@ test('M04 presentation-only tick changes do not reload the result boundary', () 
   assert.match(boundary, /watch\(resolutionIdentity, resolve\)/)
   assert.match(boundary, /publishResolvedSourceForPresentationRoute/)
   assert.doesNotMatch(boundary, /watch\(\(\) => route\.fullPath, resolve\)/)
-})
-
-test('M04 shared Lecture evidence boundary has an explicit English authored equivalent', () => {
-  const boundary = read('src/campus-pulse/pages/ResultSummaryBoundary.vue')
-  assert.match(boundary, /const LECTURE_BOUNDARY_EN = 'Single-scenario, single fixed-seed, Natural\/D live-LLM open-choice governance rehearsal for Tick 3–10\.'/)
-  assert.match(boundary, /result\.value\?\.source\.key === LECTURE_HERO_SOURCE_KEY/)
-  assert.match(boundary, /if \(!isEnglish\.value\) return value/)
 })
 
 test('M04 result body keeps mobile padding inside the viewport', () => {
@@ -369,10 +272,7 @@ test('M04 tabs, headings and actions keep an accessibility contract', () => {
   assert.match(tabs, /nav class="result-route-tabs" aria-label="结果分析视图"/)
   assert.match(tabs, /aria-current="current\(tab\.id\) \? 'page' : undefined"/)
   const summary = read('src/campus-pulse/results/ResultSummaryPage.vue')
-  assert.match(summary, /<ResultStorySequence/)
-  const story = read('src/campus-pulse/results/ResultStorySequence.vue')
-  assert.match(story, /:aria-labelledby="`story-stage-\$\{stage\.number\}`"/)
-  assert.match(story, /<h2 :id="`story-stage-\$\{stage\.number\}`">/)
+  assert.match(summary, /<h2 id="summary-observation-title">核心观察<\/h2>/)
   const evidence = read('src/campus-pulse/results/ResultEvidencePage.vue')
   assert.match(evidence, /下载 JSON 报告/)
   assert.match(evidence, /下载 HTML 报告/)
@@ -412,16 +312,6 @@ test('M04 list view model treats both audited cases as explicit registered offli
   ], true)
   assert.equal(rows.length, 3)
   assert.equal(rows[0].resultKey, 'run_1234567890abcdef12345678')
-})
-
-test('M04 Case Center keeps Housing and Lecture templates but excludes Century Gym', () => {
-  const gallery = read('src/campus-pulse/results/CaseStudyGallery.vue')
-  assert.match(gallery, /template:'housing'/)
-  assert.match(gallery, /template:'lecture'/)
-  assert.doesNotMatch(gallery, /template:'century_gym'/)
-  assert.match(gallery, /resourceResult\.value && lectureResult\.value/)
-  assert.doesNotMatch(gallery, /resourceResult\.value && lectureResult\.value && flagshipSummary\.value/)
-  assert.match(gallery, /resource-policy-r1\+lecture-open-choice-r4/)
 })
 
 test('M04 list filters, search, sort and pagination are URL-driven and deterministic', () => {
@@ -479,7 +369,6 @@ test('M04 result components parse and compile', () => {
     'src/campus-pulse/results/ResultContextHeader.vue',
     'src/campus-pulse/results/ResultRouteTabs.vue',
     'src/campus-pulse/results/ResultSummaryPage.vue',
-    'src/campus-pulse/results/ResultStorySequence.vue',
     'src/campus-pulse/results/ResourcePrivateChannelPanel.vue',
     'src/campus-pulse/results/MechanismsPage.vue',
     'src/campus-pulse/results/GovernancePage.vue',

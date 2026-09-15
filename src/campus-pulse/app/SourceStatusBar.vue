@@ -11,7 +11,7 @@ const props = defineProps({
 defineEmits(['open-details', 'refresh'])
 
 const modeLabels = {
-  live_api: 'Live API', audited_replay: '审计回放',
+  live_api: 'Live API', audited_replay: '回放',
   offline_hero: '离线审计案例', static_archive: '静态归档', unknown: '来源未知',
 }
 const verification = computed(() => ({

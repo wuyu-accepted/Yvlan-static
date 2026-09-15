@@ -8,22 +8,11 @@
   --neutral-light-brand-ref: #b3b3b3;
   --neutral-dark-brand-ref: #595959;
 
-  /* CampusPulse application chrome. Page-local light surfaces remain mapped
-   * below until those pages are migrated deliberately. */
-  --cp-canvas-obsidian: #0b090a;
-  --cp-surface-charcoal: #151113;
-  --cp-surface-charcoal-raised: #1c1719;
-  --cp-border-graphite: #2a2428;
-  --cp-text-warm: #f1ece7;
-  --cp-text-warm-muted: #9e958f;
-  --cp-accent-crimson: #c51642;
-  --cp-accent-crimson-hover: #a91137;
-
   /* Semantic color tokens */
-  --cp-surface-canvas: #f3f6f8;
+  --cp-surface-canvas: #f4f4f2;
   --cp-surface-default: #ffffff;
-  --cp-surface-subtle: #eef3f6;
-  --cp-surface-raised: rgba(255, 255, 255, 0.92);
+  --cp-surface-subtle: #f1f1ef;
+  --cp-surface-raised: #ffffff;
   --cp-surface-inverse: #151414;
   --cp-surface-selected: #f8e9ec;
   --cp-text-primary: #191919;
@@ -42,10 +31,10 @@
   --cp-evidence-text: #55471f;
   --cp-info: #245a78;
   --cp-info-surface: #eaf3f7;
-  --cp-tech: #59656a;
-  --cp-tech-bright: #6e7b80;
-  --cp-tech-surface: #f0f2f2;
-  --cp-tech-line: #c9cecf;
+  --cp-tech: var(--brand-red);
+  --cp-tech-bright: #c3153a;
+  --cp-tech-surface: #f8e9ec;
+  --cp-tech-line: #e4c6cc;
   --cp-tech-glow: none;
   --cp-success: #286140;
   --cp-success-surface: #ebf5ee;
@@ -73,9 +62,9 @@
   --cp-hero-action-border: #c8173b;
   --cp-overlay: rgba(0, 0, 0, 0.56);
   --cp-shadow-drawer: 12px 0 36px rgba(0, 0, 0, 0.24);
-  --cp-shadow-card: 0 1px 2px rgba(24, 20, 18, 0.08);
-  --cp-shadow-card-hover: 0 1px 2px rgba(24, 20, 18, 0.11);
-  --cp-shadow-floating: 0 8px 24px rgba(21, 17, 15, 0.12);
+  --cp-shadow-card: 0 12px 34px rgba(24, 20, 18, 0.075);
+  --cp-shadow-card-hover: 0 22px 54px rgba(24, 20, 18, 0.13);
+  --cp-shadow-floating: 0 18px 50px rgba(21, 17, 15, 0.12);
 
   /* Typography */
   --cp-font-sans: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -99,10 +88,9 @@
   --cp-space-6: 1.5rem;
   --cp-space-7: 1.75rem;
   --cp-space-8: 2rem;
-  --cp-radius-xs: 4px;
   --cp-radius-sm: 6px;
-  --cp-radius-md: 8px;
-  --cp-radius-lg: 8px;
+  --cp-radius-md: 12px;
+  --cp-radius-lg: 12px;
   --cp-control-height: 2.25rem;
   --cp-touch-target: 2.75rem;
 
@@ -113,37 +101,37 @@
   --cp-sourcebar-min-height: 2.5rem;
   --cp-content-gutter: 1.5rem;
   --cp-content-max: 105rem;
-  --cp-branch-natural: #2b6cb0;
-  --cp-branch-governance: #319795;
-  --cp-risk-medium: #dd6b20;
-  --cp-risk-high: #e53e3e;
+  --cp-branch-natural: #30343a;
+  --cp-branch-governance: var(--brand-red);
   --cp-z-shell: 20;
   --cp-z-drawer-backdrop: 80;
   --cp-z-drawer: 90;
   --cp-z-skip-link: 120;
   --cp-motion-fast: 120ms;
   --cp-motion-standard: 180ms;
+  --cp-ease-out: cubic-bezier(.22,1,.36,1);
 
   color: var(--cp-text-primary);
-  background:
-    radial-gradient(circle at 82% 4%, rgba(13,145,181,.07), transparent 28rem),
-    linear-gradient(180deg, #f8fafb 0, var(--cp-surface-canvas) 22rem);
+  background: var(--cp-surface-canvas);
   font-family: var(--cp-font-sans);
   line-height: 1.6;
   color-scheme: light;
 }
 
 :where(.campus-pulse-app) :where(.case-card, .forum-lane, .feed-card, .result-card, .workbench-panel) {
-  transition: background-color var(--cp-motion-standard) ease, border-color var(--cp-motion-standard) ease;
+  transition: transform 220ms cubic-bezier(.2,.75,.25,1), box-shadow 220ms ease, border-color 220ms ease;
 }
 
-:where(.campus-pulse-app) :where(.case-card, .forum-lane, .result-card):hover {
-  border-color: var(--cp-border-strong);
+@media (hover: hover) and (pointer: fine) {
+  :where(.campus-pulse-app) :where(.case-card, .result-card):hover {
+    border-color: var(--cp-border-strong);
+    transform: translateY(-2px);
+  }
 }
 
 :where(.campus-pulse-app) :where(.feed-card):hover {
   border-color: color-mix(in srgb, var(--cp-action-primary) 34%, var(--cp-border-default));
-  box-shadow: var(--cp-shadow-card);
+  box-shadow: none;
 }
 
 .campus-pulse-app :is(a, button, input, select, textarea, summary, [tabindex], [role="button"]):focus-visible,
@@ -183,4 +171,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+:where(.campus-pulse-app,.campus-pulse-portal) :where(button,a,input,select,textarea) {
+  transition: background-color var(--cp-motion-standard) var(--cp-ease-out), border-color var(--cp-motion-standard) var(--cp-ease-out), color var(--cp-motion-standard) var(--cp-ease-out), transform var(--cp-motion-fast) var(--cp-ease-out);
+}
+:where(.campus-pulse-app,.campus-pulse-portal) button:active:not(:disabled) { transform:translateY(1px); }
+:where(.campus-pulse-app,.campus-pulse-portal) :where(input,textarea)::placeholder { color:var(--cp-text-secondary); opacity:1; }
+@media(prefers-reduced-motion:reduce) {
+  :where(.campus-pulse-app,.campus-pulse-portal) :where(button,a,.case-card,.result-card):is(:active,:hover) { transform:none; }
 }

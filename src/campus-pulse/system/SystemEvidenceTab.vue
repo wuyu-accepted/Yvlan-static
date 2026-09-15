@@ -75,25 +75,23 @@ function confirmRegister() {
     </div>
 
     <section aria-labelledby="releases-title">
-      <h3 id="releases-title">证据版本</h3>
-      <div v-if="releasesLoading" class="loading">正在加载证据版本…</div>
+      <h3 id="releases-title">证据数据</h3>
+      <div v-if="releasesLoading" class="loading">正在加载证据数据…</div>
       <div v-else-if="releasesError" class="inline-error" role="alert">
         {{ releasesError.summary }}：{{ releasesError.detail }}
         <button type="button" @click="emit('refresh')">重试</button>
       </div>
       <div v-else-if="(releases ?? []).length" class="table-scroll">
         <table class="data-table">
-          <caption class="sr-only">已安装证据 release 列表</caption>
+          <caption class="sr-only">已安装证据列表</caption>
           <thead>
-            <tr><th scope="col">Release</th><th scope="col">Schema</th><th scope="col">状态</th><th scope="col">隐私模式</th><th scope="col">源数据</th><th scope="col">分析产物</th><th scope="col">操作</th></tr>
+            <tr><th scope="col">数据集</th><th scope="col">状态</th><th scope="col">隐私模式</th><th scope="col">源数据</th><th scope="col">分析产物</th><th scope="col">操作</th></tr>
           </thead>
           <tbody>
             <tr v-for="release in releases ?? []" :key="release.releaseKey">
               <th scope="row">
                 <strong>{{ release.label }}</strong>
-                <small><code>{{ release.releaseKey }}</code></small>
               </th>
-              <td><code>{{ release.manifestSchemaVersion }}</code></td>
               <td><CpStatusBadge :tone="statusTone(release.status)">{{ release.status }}</CpStatusBadge></td>
               <td>{{ release.privacyMode }}</td>
               <td>{{ release.sourceRows ?? '—' }} 行 · {{ release.sourceBytes ?? '—' }} B</td>
@@ -112,7 +110,7 @@ function confirmRegister() {
         </table>
         <p class="privacy-note">零原始行持久化：{{ (releases ?? []).every((item) => item.zeroRawRowsPersisted === true) ? '是（不保留原始帖子/评论正文）' : '未全部确认' }}</p>
       </div>
-      <div v-else class="panel-empty">{{ apiStatus === 'unavailable' ? '后端不可用：release 列表未知。' : '暂无已登记 release。' }}</div>
+      <div v-else class="panel-empty">{{ apiStatus === 'unavailable' ? '请连接后端以查看数据集。' : '暂无已登记数据集。' }}</div>
     </section>
 
     <section aria-labelledby="snapshots-title">
@@ -126,7 +124,7 @@ function confirmRegister() {
         <table class="data-table">
           <caption class="sr-only">证据快照列表</caption>
           <thead>
-            <tr><th scope="col">快照</th><th scope="col">Schema</th><th scope="col">状态</th><th scope="col">Manifest SHA-256</th><th scope="col">源/产物</th><th scope="col">操作</th></tr>
+            <tr><th scope="col">快照</th><th scope="col">状态</th><th scope="col">源/产物</th><th scope="col">操作</th></tr>
           </thead>
           <tbody>
             <tr v-for="snapshot in snapshots ?? []" :key="snapshot.snapshotId">
@@ -134,9 +132,7 @@ function confirmRegister() {
                 <strong>{{ snapshot.label || snapshot.snapshotId }}</strong>
                 <small><code>{{ snapshot.snapshotId }}</code></small>
               </th>
-              <td><code>{{ snapshot.schemaVersion || '—' }}</code></td>
               <td><CpStatusBadge :tone="statusTone(snapshot.status)">{{ snapshot.status }}</CpStatusBadge></td>
-              <td><code>{{ short(snapshot.manifestSha256) }}</code></td>
               <td>{{ snapshot.sourceCount ?? '—' }} 源 · {{ snapshot.artifactCount ?? '—' }} 产物</td>
               <td>
                 <button
@@ -168,24 +164,22 @@ function confirmRegister() {
           <div><dt>标签</dt><dd>{{ detail.label || '—' }}</dd></div>
           <div><dt>状态</dt><dd>{{ detail.status }}</dd></div>
           <div><dt>生成时间</dt><dd>{{ detail.generatedAtUtc || '—' }}</dd></div>
-          <div><dt>Manifest SHA-256</dt><dd><code>{{ detail.manifestSha256 }}</code></dd></div>
           <div><dt>零原始行持久化</dt><dd>{{ detail.zeroRawRowsPersisted === true ? '是' : detail.zeroRawRowsPersisted === false ? '否' : '未声明' }}</dd></div>
           <div><dt>源快照</dt><dd><code>{{ detail.sourceSnapshotId || '—' }}</code></dd></div>
         </dl>
         <section aria-labelledby="sources-title">
-          <h4 id="sources-title">源文件（哈希与规模，无正文）</h4>
+          <h4 id="sources-title">源数据规模</h4>
           <div class="table-scroll">
             <table class="data-table">
               <thead>
-                <tr><th scope="col">角色</th><th scope="col">SHA-256</th><th scope="col">规模</th></tr>
+                <tr><th scope="col">角色</th><th scope="col">规模</th></tr>
               </thead>
               <tbody>
                 <tr v-for="source in detail.sources" :key="source.role">
                   <th scope="row">{{ source.role }}</th>
-                  <td><code>{{ source.sha256 }}</code></td>
                   <td>{{ source.rows ?? '—' }} 行 · {{ source.bytes ?? '—' }} B</td>
                 </tr>
-                <tr v-if="detail.sources.length === 0"><td colspan="3" class="panel-empty">无源文件信息</td></tr>
+                <tr v-if="detail.sources.length === 0"><td colspan="2" class="panel-empty">无源文件信息</td></tr>
               </tbody>
             </table>
           </div>
@@ -195,7 +189,7 @@ function confirmRegister() {
           <div class="table-scroll">
             <table class="data-table">
               <thead>
-                <tr><th scope="col">分析</th><th scope="col">类型</th><th scope="col">阶段</th><th scope="col">质量</th><th scope="col">因果状态</th><th scope="col">SHA-256</th></tr>
+                <tr><th scope="col">分析</th><th scope="col">类型</th><th scope="col">阶段</th><th scope="col">质量</th><th scope="col">因果状态</th></tr>
               </thead>
               <tbody>
                 <tr v-for="artifact in detail.artifacts" :key="artifact.analysisId">
@@ -204,9 +198,8 @@ function confirmRegister() {
                   <td>{{ artifact.evidenceStage }}</td>
                   <td>{{ artifact.qualityGrade }}</td>
                   <td>{{ artifact.causalStatus }}</td>
-                  <td><code>{{ short(artifact.artifactSha256) }}</code></td>
                 </tr>
-                <tr v-if="detail.artifacts.length === 0"><td colspan="6" class="panel-empty">无分析产物</td></tr>
+                <tr v-if="detail.artifacts.length === 0"><td colspan="5" class="panel-empty">无分析产物</td></tr>
               </tbody>
             </table>
           </div>
@@ -214,8 +207,8 @@ function confirmRegister() {
         <section class="boundary-panel" aria-labelledby="boundary-title">
           <h4 id="boundary-title">公开边界</h4>
           <ul>
-            <li>快照只暴露哈希、规模与审阅阶段；不包含原始帖子/评论正文。</li>
-            <li>不展示 source ID、私有向量索引或 API 凭据；注册只接受受审阅的 release 标识。</li>
+            <li>快照记录数据规模、审阅阶段和分析来源。</li>
+            <li>登记后可在项目中选择这些已审阅数据。</li>
             <li>证据支持描述性边界与仿真压力测试记录；因果结论仅在独立试点数据审查后成立。</li>
           </ul>
         </section>
@@ -240,12 +233,10 @@ function confirmRegister() {
       @keydown.esc="closeConfirm"
     >
       <div class="register-dialog" role="dialog" aria-modal="true" aria-labelledby="register-title">
-        <h4 id="register-title">登记审阅证据 release</h4>
-        <p>将把以下审阅 release 登记到工作台存储（无请求体；仅接受受审阅标识）：</p>
+        <h4 id="register-title">登记审阅数据</h4>
+        <p>将以下数据集登记到工作台，供项目配置使用：</p>
         <dl class="register-facts">
-          <div><dt>Release</dt><dd><code>{{ selectedRelease?.releaseKey || confirmRegisterKey }}</code></dd></div>
           <div><dt>标签</dt><dd>{{ selectedRelease?.label || '—' }}</dd></div>
-          <div><dt>Manifest SHA-256</dt><dd><code>{{ selectedRelease?.manifestSha256 || '—' }}</code></dd></div>
         </dl>
         <div class="dialog-actions">
           <button ref="confirmCancelButton" type="button" class="secondary" :disabled="registering" @click="closeConfirm">取消</button>

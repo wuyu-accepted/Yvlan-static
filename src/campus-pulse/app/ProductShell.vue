@@ -36,22 +36,29 @@ const sourceState = sourceContext.sourceState
 const readonly = computed(() => serviceState.value === 'unavailable' || sourceState.value.availability.access !== 'interactive')
 const documentTitle = computed(() => `${translateInterfaceText(String(route.meta.documentTitle || route.meta.title || 'CampusPulse'))} · CampusPulse`)
 
-provide(productShellContextKey, { serviceState, sourceState, sourceProblem: sourceContext.problem, readonly })
+provide(productShellContextKey, { serviceState, sourceState, sourceProblem: sourceContext.problem, readonly, refreshHealth })
 
+let healthRequest = null
 async function refreshHealth() {
+  if (healthRequest) return healthRequest
   serviceState.value = 'checking'
+  healthRequest = (async () => {
   try {
-    await getWorkbenchHealth()
+    const health = await getWorkbenchHealth()
     if (mounted) {
       serviceState.value = 'available'
       sourceContext.publishBackendAvailability('available')
     }
+    return health
   } catch {
     if (mounted) {
       serviceState.value = 'unavailable'
       sourceContext.publishBackendAvailability('unavailable')
     }
+    return null
   }
+  })().finally(() => { healthRequest = null })
+  return healthRequest
 }
 
 async function openDrawer() {
@@ -104,7 +111,7 @@ watch(() => route.path, async (nextPath, previousPath) => {
   if (!previousPath || nextPath === previousPath) return
   closeDrawer({ restoreFocus: false })
   await nextTick()
-  mainElement.value?.focus()
+  mainElement.value?.focus({ preventScroll: true })
   motion.playPageIntro()
 })
 
@@ -142,8 +149,8 @@ onBeforeUnmount(() => {
       </RouterLink>
       <ProductNav :items="productNavigation" :current-id="currentNavId" />
       <div class="product-sidebar__footer">
-        <span><i class="fa-solid fa-shield-halved" aria-hidden="true" /> {{ l('案例资料', 'CASE MATERIALS') }}</span>
-        <p>{{ l('校园论坛模拟与治理案例展示', 'Campus forum simulation and governance case showcase') }}</p>
+        <span><i class="fa-solid fa-shield-halved" aria-hidden="true" /> 可审计运行</span>
+        <p>{{ l('大语言模型驱动的校园论坛模拟', 'LLM-powered campus forum simulation') }}<br>{{ l('与治理预演平台', 'and governance rehearsal platform') }}</p>
       </div>
     </aside>
 
@@ -157,8 +164,7 @@ onBeforeUnmount(() => {
           <span class="product-topbar__separator" aria-hidden="true" />
           <strong>{{ routeTitle }}</strong>
         </div>
-        <span v-if="publicDemo" class="product-topbar__showcase"><i class="fa-solid fa-book-open" aria-hidden="true" /> {{ l('公开展示', 'SHOWCASE') }}</span>
-        <span v-else class="product-topbar__live"><i class="fa-solid fa-circle" aria-hidden="true" /> {{ l('本机运行', 'LOCAL') }}</span>
+        <span v-if="!publicDemo" class="product-topbar__live"><i class="fa-solid fa-circle" aria-hidden="true" /> {{ l('本机运行', 'LOCAL') }}</span>
         <LanguageToggle />
         <RouterLink v-if="!publicDemo" class="product-topbar__provider" to="/campus-pulse/system?tab=provider" :title="l('配置模型连接与访问凭据','Configure the model connection and credentials')">
           <i class="fa-solid fa-key" aria-hidden="true" />
@@ -194,7 +200,7 @@ onBeforeUnmount(() => {
             <CpIconButton label="关闭主导航" @click="closeDrawer()"><i class="fa-solid fa-xmark" aria-hidden="true" /></CpIconButton>
           </header>
           <ProductNav :items="productNavigation" :current-id="currentNavId" @navigate="handleMobileNavigate" />
-          <p>模拟器用于政策预演；合成 Agent 不代表真实学生。</p>
+          <p>校园社会治理模拟与方案对比</p>
         </aside>
       </div>
     </Teleport>
@@ -205,49 +211,38 @@ onBeforeUnmount(() => {
 .campus-pulse-app { display:grid; width:100%; height:100dvh; min-height:0; grid-template-columns:var(--cp-sidebar-width) minmax(0,1fr); overflow:hidden; }
 .cp-skip-link { position:fixed; top:var(--cp-space-2); left:var(--cp-space-2); z-index:var(--cp-z-skip-link); padding:var(--cp-space-2) var(--cp-space-3); border-radius:var(--cp-radius-sm); background:var(--color-white); color:var(--color-black); font-weight:700; transform:translateY(-160%); }
 .cp-skip-link:focus { transform:translateY(0); }
-.product-sidebar { position:relative; z-index:var(--cp-z-shell); display:flex; min-width:0; flex-direction:column; border-right:1px solid var(--cp-border-graphite); background:var(--cp-canvas-obsidian); color:var(--cp-text-inverse); }
+.product-sidebar { position:relative; z-index:var(--cp-z-shell); display:flex; min-width:0; flex-direction:column; border-right:1px solid #302d2d; background:radial-gradient(circle at 20% 0,rgba(174,11,42,.15),transparent 19rem),linear-gradient(180deg,#171616,#111); color:var(--cp-text-inverse); }
+.product-sidebar::after { position:absolute; inset:0 0 0 auto; width:1px; background:linear-gradient(transparent,rgba(155,138,92,.46),transparent); content:''; opacity:.55; pointer-events:none; }
 .product-brand { display:flex; min-height:4.5rem; align-items:center; gap:var(--cp-space-3); padding:0 var(--cp-space-4); border-bottom:1px solid rgba(255,255,255,.08); color:var(--cp-text-inverse); text-decoration:none; }
 .product-brand:hover { text-decoration:none; }
-.product-brand__mark { display:grid; width:2.35rem; height:2.35rem; flex:none; place-items:center; border:1px solid #dc3159; border-radius:var(--cp-radius-md); background:var(--cp-accent-crimson); color:var(--cp-text-inverse); font-size:.9rem; }
+.product-brand__mark { display:grid; width:2.35rem; height:2.35rem; flex:none; place-items:center; border:1px solid rgba(255,255,255,.16); border-radius:11px; background:linear-gradient(145deg,#bf1235,#83071f); color:var(--cp-text-inverse); box-shadow:0 8px 24px rgba(174,11,42,.28); font-size:.9rem; }
 .product-brand__text { display:grid; line-height:1.15; }
 .product-brand__text strong { font-size:1rem; letter-spacing:.01em; }
 .product-brand__text small { margin-top:.2rem; color:#9f9a98; font-size:.66rem; letter-spacing:.06em; }
-.product-sidebar__footer { margin:auto var(--cp-space-3) var(--cp-space-4); padding:var(--cp-space-3); border-top:1px solid var(--cp-border-graphite); color:var(--cp-text-warm-muted); }
+.product-sidebar__footer { margin:auto var(--cp-space-3) var(--cp-space-4); padding:var(--cp-space-3); border:1px solid rgba(255,255,255,.08); border-radius:var(--cp-radius-md); background:rgba(255,255,255,.035); }
 .product-sidebar__footer span { display:flex; align-items:center; gap:var(--cp-space-2); color:#d6c8a1; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
 .product-sidebar__footer p { margin:var(--cp-space-2) 0 0; color:#96918f; font-size:var(--cp-text-xs); line-height:var(--cp-leading-normal); }
 .product-stage { position:relative; isolation:isolate; display:grid; min-width:0; min-height:0; grid-template-rows:auto auto auto minmax(0,1fr); overflow:hidden; background:var(--cp-surface-canvas); }
-.product-topbar { display:flex; min-height:4.5rem; align-items:center; gap:var(--cp-space-3); padding:0 var(--cp-content-gutter); border-bottom:1px solid var(--cp-border-graphite); background:var(--cp-surface-charcoal); color:var(--cp-text-warm); }
+.campus-pulse-app--public .product-stage { grid-template-rows:auto minmax(0,1fr); }
+.product-stage::before { position:absolute; inset:-20% -10% auto 30%; z-index:-1; height:30rem; background:radial-gradient(circle at 50% 20%,rgba(174,11,42,.09),rgba(155,138,92,.04) 42%,transparent 70%); content:''; pointer-events:none;  }
+.product-topbar { display:flex; min-height:4.5rem; align-items:center; gap:var(--cp-space-3); padding:0 var(--cp-content-gutter); border-bottom:1px solid rgba(215,212,206,.86); background:var(--cp-surface-default); }
 .product-topbar__menu { display:none; }
 .product-topbar__context { display:flex; min-width:0; align-items:center; gap:var(--cp-space-3); }
-.product-topbar__eyebrow { color:var(--cp-text-warm-muted); font-size:.63rem; font-weight:700; letter-spacing:.11em; }
-.product-topbar__separator { width:1px; height:1rem; background:var(--cp-border-graphite); }
+.product-topbar__eyebrow { color:var(--cp-text-muted); font-size:.63rem; font-weight:700; letter-spacing:.11em; }
+.product-topbar__separator { width:1px; height:1rem; background:var(--cp-border-default); }
 .product-topbar__context strong { overflow:hidden; font-size:var(--cp-text-md); text-overflow:ellipsis; white-space:nowrap; }
 .product-topbar__context { flex:1; }
-.product-topbar__live { display:inline-flex; align-items:center; gap:.38rem; padding:.35rem .55rem; border:1px solid #355746; border-radius:999px; background:#18251e; color:#8ac9a2; font-size:.62rem; font-weight:800; letter-spacing:.09em; }
+.product-topbar__live { display:inline-flex; align-items:center; gap:.38rem; padding:.35rem .55rem; border:1px solid #c7decf; border-radius:999px; background:#eff7f2; color:var(--cp-success); font-size:.62rem; font-weight:800; letter-spacing:.09em; }
 .product-topbar__live i { font-size:.38rem; }
-.product-topbar__showcase { display:inline-flex; align-items:center; gap:.4rem; padding:.35rem .55rem; border:1px solid #d9d2ce; border-radius:999px; background:#faf8f7; color:#70666a; font-size:.62rem; font-weight:800; letter-spacing:.08em; }
-.product-topbar__provider { display:inline-flex; min-height:2.25rem; align-items:center; gap:.45rem; padding:0 .7rem; border:1px solid #49343c; border-radius:var(--cp-radius-sm); background:var(--cp-surface-charcoal-raised); color:var(--cp-text-warm); font-size:var(--cp-text-xs); font-weight:700; text-decoration:none; }
-.product-topbar__provider:hover { border-color:var(--cp-accent-crimson); color:var(--cp-text-warm); text-decoration:none; }
-.product-topbar__provider i { color:#e24a6d; }
-.product-topbar :deep(.language-toggle) { border-color:var(--cp-border-graphite); background:var(--cp-surface-charcoal-raised); box-shadow:none; }
-.product-topbar :deep(.language-toggle button) { color:var(--cp-text-warm-muted); }
-.product-topbar :deep(.language-toggle button.active) { background:#2a2024; color:var(--cp-text-warm); box-shadow:none; }
-.product-stage :deep(.source-status-bar) { border-bottom-color:var(--cp-border-graphite); background:#110e0f; }
-.product-stage :deep(.source-status-bar__actions button) { border-color:var(--cp-border-graphite); background:var(--cp-surface-charcoal); color:var(--cp-text-warm); }
+.product-topbar__provider { display:inline-flex; min-height:2.25rem; align-items:center; gap:.45rem; padding:0 .7rem; border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-text-primary); font-size:var(--cp-text-xs); font-weight:700; text-decoration:none; box-shadow:0 4px 14px rgba(20,18,18,.04); }
+.product-topbar__provider:hover { border-color:var(--cp-action-primary); color:var(--cp-action-primary); text-decoration:none; }
+.product-topbar__provider i { color:var(--cp-action-primary); }
 .source-detail { display:flex; align-items:center; gap:var(--cp-space-3); padding:var(--cp-space-2) var(--cp-content-gutter); border-bottom:1px solid var(--cp-evidence); background:var(--cp-evidence-surface); color:var(--cp-evidence-text); font-size:var(--cp-text-xs); }
 .source-detail span:nth-of-type(1) { min-width:0; flex:1; }
 .source-detail button { min-height:2rem; padding:0 var(--cp-space-2); border:1px solid var(--cp-evidence); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-text-primary); }
-.product-main-content { min-width:0; min-height:0; overflow:auto; overscroll-behavior:contain; background:var(--cp-surface-canvas); }
-.product-main-content > :deep(*) { will-change:opacity,transform; }
+.product-main-content { min-width:0; min-height:0; overflow:auto; overscroll-behavior:contain; background:linear-gradient(180deg,rgba(255,255,255,.34),transparent 16rem),var(--cp-surface-canvas); }
+
 .product-main-content:focus { outline-offset:-3px; }
-.campus-pulse-app--public .product-stage { grid-template-rows:auto minmax(0,1fr); background:#fff; }
-.campus-pulse-app--public .product-topbar { border-bottom-color:#e4dfdc; background:#fff; color:#2c2628; }
-.campus-pulse-app--public .product-topbar__eyebrow { color:#8b8084; }
-.campus-pulse-app--public .product-topbar__separator { background:#ddd7d3; }
-.campus-pulse-app--public .product-main-content { background:#fff; }
-.campus-pulse-app--public .product-topbar :deep(.language-toggle) { border-color:#ded8d4; background:#f7f5f3; }
-.campus-pulse-app--public .product-topbar :deep(.language-toggle button) { color:#766c70; }
-.campus-pulse-app--public .product-topbar :deep(.language-toggle button.active) { background:#fff; color:#2c2628; }
 .product-route-loading { max-width:72rem; margin:0 auto; padding:var(--cp-space-6) var(--cp-content-gutter); }
 .product-route-loading__label { display:block; margin-bottom:var(--cp-space-3); color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .mobile-navigation-layer { position:fixed; inset:0; z-index:var(--cp-z-drawer-backdrop); }
@@ -255,7 +250,8 @@ onBeforeUnmount(() => {
 .mobile-navigation { position:absolute; inset:0 auto 0 0; z-index:var(--cp-z-drawer); display:flex; width:min(20rem,88vw); flex-direction:column; border-right:1px solid var(--cp-border-inverse); background:var(--cp-surface-inverse); color:var(--cp-text-inverse); box-shadow:var(--cp-shadow-drawer); }
 .mobile-navigation header { display:flex; min-height:var(--cp-topbar-height); align-items:center; justify-content:space-between; padding:0 var(--cp-space-3) 0 var(--cp-space-4); border-bottom:1px solid var(--cp-border-inverse); }
 .mobile-navigation p { margin:auto var(--cp-space-4) var(--cp-space-4); color:var(--neutral-light-brand-ref); font-size:var(--cp-text-xs); }
+@keyframes cp-ambient-drift { from { transform:translate3d(-2%,0,0) scale(.96); } to { transform:translate3d(3%,3%,0) scale(1.04); } }
 @media (max-width:1439px) and (min-width:1024px) { .campus-pulse-app { grid-template-columns:var(--cp-sidebar-compact-width) minmax(0,1fr); } .product-brand { justify-content:center; padding:0; } .product-brand__text,.product-sidebar__footer { display:none; } .product-sidebar :deep(.product-nav) { display:grid; } .product-sidebar :deep(.product-nav__link) { justify-content:center; padding-inline:0; } .product-sidebar :deep(.product-nav__copy) { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .product-sidebar :deep(.product-nav__link::after) { position:absolute; left:calc(100% + .5rem); z-index:3; display:none; padding:.35rem .5rem; border:1px solid var(--cp-border-inverse); border-radius:var(--cp-radius-sm); background:var(--cp-surface-inverse); color:var(--cp-text-inverse); content:attr(data-label); font-size:var(--cp-text-xs); white-space:nowrap; } .product-sidebar :deep(.product-nav__link:is(:hover,:focus-visible)::after) { display:block; } }
 @media (max-width:1023px) { .campus-pulse-app { grid-template-columns:minmax(0,1fr); } .product-sidebar { display:none; } .product-topbar__menu { display:inline-grid; } }
-@media (max-width:767px) { .product-topbar { min-height:var(--cp-topbar-height); padding-inline:var(--cp-space-2) var(--cp-space-4); } .product-topbar__context { display:grid; gap:0; } .product-topbar__eyebrow,.product-topbar__separator,.product-topbar__live,.product-topbar__showcase { display:none; } .product-topbar__provider { width:var(--cp-touch-target); min-width:var(--cp-touch-target); height:var(--cp-touch-target); justify-content:center; padding:0; } .product-topbar__provider span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .source-detail { align-items:flex-start; flex-wrap:wrap; padding-inline:var(--cp-space-4); } .source-detail span:nth-of-type(1) { min-width:100%; } .source-detail button { min-height:var(--cp-touch-target); } .product-route-loading { padding:var(--cp-space-4); } }
+@media (max-width:767px) { .product-topbar { min-height:var(--cp-topbar-height); padding-inline:var(--cp-space-2) var(--cp-space-4); } .product-topbar__context { display:grid; gap:0; } .product-topbar__eyebrow,.product-topbar__separator,.product-topbar__live { display:none; } .product-topbar__provider { width:var(--cp-touch-target); min-width:var(--cp-touch-target); height:var(--cp-touch-target); justify-content:center; padding:0; } .product-topbar__provider span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .source-detail { align-items:flex-start; flex-wrap:wrap; padding-inline:var(--cp-space-4); } .source-detail span:nth-of-type(1) { min-width:100%; } .source-detail button { min-height:var(--cp-touch-target); } .product-route-loading { padding:var(--cp-space-4); } }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch, watchEffect } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
 import type { ScenarioSummary, PolicySummary, RunSummary, WorkbenchAccess } from './workbenchViewModel.ts'
 import { planContractFromRun, runStateLabel } from './workbenchViewModel.ts'
@@ -13,7 +13,6 @@ import {
 } from './workbenchCapabilities.ts'
 import type { ApiProblem } from '../contracts/api.ts'
 import { fieldErrorsFromProblem } from './workbenchViewModel.ts'
-import type { WorkbenchPreflightSnapshot } from './WorkbenchPreflightPanel.vue'
 
 const props = defineProps<{
   projectId: string
@@ -37,7 +36,6 @@ const emit = defineEmits<{
   openRun: [runId: string]
   openSection: [section: 'evidence' | 'scenarios' | 'policies']
   bootstrapProject: []
-  preflightChange: [snapshot: WorkbenchPreflightSnapshot]
 }>()
 
 const form = reactive({
@@ -157,7 +155,7 @@ function validate(): boolean {
     let seeds: number[]
     try { seeds = parseSeeds() } catch { seeds = [] }
     if (seeds.join(',') !== GOVERNANCE_V2_SEEDS.join(',')) {
-      errors.seeds = ['Governance V2 必须使用冻结的 8 个配对种子']
+      errors.seeds = ['此治理模式需要预设的 8 个配对种子']
     }
   }
   if (form.execution_mode === 'llm_forum_twin_v2' && form.forum_activation_mode === 'full_population_keyframes') {
@@ -166,7 +164,7 @@ function validate(): boolean {
   if (isForumV2.value && form.forum_dynamic_group_enabled && !form.forum_friend_chat_enabled) {
     errors.forum_dynamic_group_enabled = ['动态小群依赖好友私聊通道']
   }
-  if (isForumV2.value && form.agent_count !== 1_000) errors.agent_count = ['ForumTwin v2 固定使用 1,000-Agent 世界；规模由激活模式控制']
+  if (isForumV2.value && form.agent_count !== 1_000) errors.agent_count = ['固定使用 1,000-Agent 世界；调用规模由激活模式控制']
   else if (form.agent_count < 1 || form.agent_count > 1000) errors.agent_count = ['agent 数量必须在 1–1000']
   if (form.max_workers < 1 || form.max_workers > 48) errors.max_workers = ['worker 数量必须在 1–48']
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{1,79}$/.test(form.model_name.trim())) errors.model_name = ['模型名称不符合合同格式']
@@ -287,24 +285,6 @@ const contract = computed(() => props.plannedRun ? planContractFromRun(props.pla
 const providerBatches = computed(() => {
   if (!contract.value?.primarySlots || form.max_workers < 1) return null
   return Math.ceil(contract.value.primarySlots / form.max_workers)
-})
-
-watchEffect(() => {
-  emit('preflightChange', {
-    projectId: props.projectId,
-    checks: readiness.value.map((step) => ({ ...step })),
-    ready: readiness.value.every((step) => step.ok),
-    tokenBudget: Number.isFinite(Number(form.token_budget)) ? Number(form.token_budget) : null,
-    tokenContractValid: budgetContract.value.ok,
-    tokenContractNote: budgetContract.value.ok ? '符合合同' : (budgetContract.value.reason || '不符合合同'),
-    selectedScenarioName: selectedScenario.value?.name || null,
-    sealedLineage: selectedScenario.value?.evidence_binding_status === 'sealed',
-    eligiblePolicyCount: selectablePolicies.value.length,
-    providerBatches: providerBatches.value,
-    modelName: form.model_name.trim(),
-    maxWorkers: Number.isFinite(Number(form.max_workers)) ? Number(form.max_workers) : null,
-    frozenTokenLimit: contract.value?.tokenLimit ?? null,
-  })
 })
 
 function formatBudget(value: number | null): string {
@@ -451,7 +431,7 @@ function formatBudget(value: number | null): string {
           </div>
         </section>
         <section class="activation-contract" aria-labelledby="activation-contract-title">
-          <header><div><p>ACTIVATION SCHEDULER</p><h3 id="activation-contract-title">风险感知 · 关系承接 · 分层轮换 PPS</h3></div><code>visibility-priority-rotation-pps-v3</code></header>
+          <header><div><p>ACTIVATION SCHEDULER</p><h3 id="activation-contract-title">风险感知 · 关系承接 · 分层轮换 PPS</h3></div></header>
           <div class="activation-pipeline"><span><b>01</b>16 个纵向锚点</span><i class="fa-solid fa-arrow-right"/><span><b>02</b>回复 / 纠错 / 求助 / 私聊队列</span><i class="fa-solid fa-arrow-right"/><span><b>03</b>设计权重 × 不确定性 × 轮换</span></div>
           <div class="budget-strip" aria-label="24 个时间步的居民 LLM 激活上限">
             <i v-for="(budget,tick) in forumV2TickBudgets" :key="tick" :style="{ height:`${Math.max(10, budget / forumV2PeakBudget * 100)}%` }" :title="`Tick ${tick}: ${budget} Agent`"><span>{{ tick }}</span></i>
@@ -539,7 +519,7 @@ function formatBudget(value: number | null): string {
         <div v-if="contract.publicRankingGlobal !== null"><dt>公共榜单</dt><dd>{{ contract.publicRankingGlobal ? '全局热榜前十 + 最新帖' : '合同不匹配' }}</dd></div>
         <div><dt>输入指纹</dt><dd><code>{{ contract.fingerprint ? contract.fingerprint.slice(0, 16) + '…' : '—' }}</code></dd></div>
       </dl>
-      <aside v-if="contract.activationMode" class="v2-contract-detail" aria-label="ForumTwin v2 输出与执行边界">
+      <aside v-if="contract.activationMode" class="v2-contract-detail" aria-label="输出与执行设置">
         <div>
           <strong>语言输出合同</strong>
           <span v-if="contract.publicMessagesPerAgentTickMax !== null && contract.privateActionsPerAgentTickMax !== null && contract.publicInteractionsPerAgentTickMax !== null">每名 Agent 每 Tick 最多 {{ contract.publicMessagesPerAgentTickMax }} 条公开消息、{{ contract.privateActionsPerAgentTickMax }} 个私聊动作和 {{ contract.publicInteractionsPerAgentTickMax }} 个独立互动。</span>

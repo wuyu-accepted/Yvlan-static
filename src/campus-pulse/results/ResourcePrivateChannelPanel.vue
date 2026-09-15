@@ -144,7 +144,7 @@ onBeforeUnmount(stop)
         <aside class="private-inspector">
           <section class="mechanism-card">
             <p>{{ l('动态小群生命周期', 'Dynamic-group lifecycle') }}</p>
-            <h3>{{ l('邀请不是自动接受，群也不保证存续', 'Invitations are choices; groups are not guaranteed to persist') }}</h3>
+            <h3>{{ l('邀请、加入与退出', 'Inviting, joining and leaving') }}</h3>
             <div class="lifecycle-flow"><span>{{ l('创建 2 个群','2 groups created') }}</span><i>→</i><span>{{ groupLifecycle?.membership_decisions.accept || 0 }} {{ l('接受','accepted') }} / {{ groupLifecycle?.membership_decisions.decline || 0 }} {{ l('拒绝','declined') }}</span><i>→</i><span>{{ groupLifecycle?.status_counts.active || 0 }} {{ l('活跃','active') }} / {{ groupLifecycle?.status_counts.expired || 0 }} {{ l('过期','expired') }}</span></div>
           </section>
 
@@ -173,7 +173,7 @@ onBeforeUnmount(stop)
             <i class="governed" :style="{ height:`${summary.panels.broad_private_panel.branches.D.messages_by_tick.find(item=>item.tick===row.tick)!.message_count / maxTimeline * 100}%` }"><b>{{ summary.panels.broad_private_panel.branches.D.messages_by_tick.find(item=>item.tick===row.tick)!.message_count }}</b></i>
           </button>
         </div>
-        <footer><span><i class="natural"/>{{ l('不追加治理回应（Natural）','No added response (Natural)') }}</span><span><i class="governed"/>{{ l('组合治理（方案 D）','Combined governance (Plan D)') }}</span><em>{{ l('两条曲线接近不是失败：关键差异出现在群聊中的证据状态与治理对象穿透，而非简单压低聊天量。', 'Similar volumes are not a failure: the key difference is evidence status and governance-object penetration inside groups, not suppressing conversation.') }}</em></footer>
+        <footer><span><i class="natural"/>{{ l('不追加治理回应（Natural）','No added response (Natural)') }}</span><span><i class="governed"/>{{ l('组合治理（方案 D）','Combined governance (Plan D)') }}</span><em>{{ l('除聊天量外，还可比较群聊中的证据状态与治理信息触达。', 'Compare conversation volume alongside evidence status and governance information reaching groups.') }}</em></footer>
       </section>
     </template>
   </section>

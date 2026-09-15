@@ -4,21 +4,21 @@ const PRODUCT_ROUTE_IDS = new Set([
   'results',
   'workbench',
   'system',
+  'acknowledgements',
 ])
 
 const completeProductNavigation = [
-  Object.freeze({ id: 'overview', label: '产品首页', description: 'CampusPulse 能力总览', to: '/campus-pulse', icon: 'fa-house' }),
-  Object.freeze({ id: 'workbench', label: '项目工作台', description: '项目注册与治理编排', to: '/campus-pulse/workbench', icon: 'fa-sliders' }),
-  Object.freeze({ id: 'forum', label: '实时演化', description: '逐时间步观察平行论坛', to: Object.freeze({ name: 'campus-pulse-live-evolution' }), icon: 'fa-comments' }),
+  Object.freeze({ id: 'overview', label: '产品首页', description: 'CampusPulse 能力总览', to: '/campus-pulse/overview', icon: 'fa-house' }),
+  Object.freeze({ id: 'workbench', label: '项目工作台', description: '事件、人口与治理编排', to: '/campus-pulse/workbench', icon: 'fa-sliders' }),
+  Object.freeze({ id: 'forum', label: '实时演化', description: '逐时间步观察平行论坛', to: '/campus-pulse/forum', icon: 'fa-comments' }),
   Object.freeze({ id: 'results', label: '案例中心', description: '机制链与分支差异', to: '/campus-pulse/results', icon: 'fa-chart-column' }),
   Object.freeze({ id: 'system', label: '系统与数据', description: '模型、证据与就绪状态', to: '/campus-pulse/system', icon: 'fa-shield-halved' }),
+  Object.freeze({ id: 'acknowledgements', label: '团队与致谢', description: 'CampusPulse 与开源贡献', to: '/campus-pulse/acknowledgements', icon: 'fa-people-group' }),
 ]
 
-const publicProductNavigation = [
-  Object.freeze({ id: 'overview', label: '项目介绍', description: 'CampusPulse 能力总览', to: '/campus-pulse', icon: 'fa-house' }),
-  Object.freeze({ id: 'forum', label: '演化展示', description: '观察讨论与回应过程', to: Object.freeze({ name: 'campus-pulse-live-evolution' }), icon: 'fa-comments' }),
-  Object.freeze({ id: 'results', label: '案例中心', description: '阅读案例与分支差异', to: '/campus-pulse/results', icon: 'fa-chart-column' }),
-]
+const publicProductNavigation = completeProductNavigation
+  .filter((item) => ['overview', 'forum', 'results', 'acknowledgements'].includes(item.id))
+  .map((item) => item.id === 'overview' ? { ...item, to: '/campus-pulse' } : item)
 
 export const productNavigation = Object.freeze(
   import.meta.env.VITE_PUBLIC_DEMO === 'true' ? publicProductNavigation : completeProductNavigation,
@@ -75,11 +75,6 @@ export const productRouteMeta = Object.freeze({
     navId: 'forum',
     title: '实时演化',
     source: offlineHeroSource,
-  }),
-  liveEvolution: defineProductRouteMeta({
-    navId: 'forum',
-    title: '实时演化',
-    source: simulatorSource,
   }),
   centuryGymLive: defineProductRouteMeta({
     navId: 'forum',

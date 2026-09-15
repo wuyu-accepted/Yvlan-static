@@ -33,12 +33,10 @@ const resolver = new ResultResolver()
 const state = ref<ResolveState>({ status: 'idle' })
 const analysis = shallowRef<ResultAnalysisVM | null>(null)
 const isEnglish = computed(() => currentLocale.value === 'en-US')
-const LECTURE_BOUNDARY_EN = 'Single-scenario, single fixed-seed, Natural/D live-LLM open-choice governance rehearsal for Tick 3–10.'
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 const sourceBoundarySummary = computed(() => {
   const value = result.value?.source.boundarySummary || ''
-  if (!isEnglish.value) return value
-  if (result.value?.source.key === LECTURE_HERO_SOURCE_KEY) return LECTURE_BOUNDARY_EN
-  return translateInterfaceText(value)
+  return isEnglish.value ? translateInterfaceText(value) : value
 })
 const visibleBranches = computed<GovernanceBranchId[]>(() => result.value?.summary.explanationMessages === null
   ? ['Natural','D']
@@ -58,8 +56,11 @@ const resolutionIdentity = computed(() => JSON.stringify({
   fallbackFrom: route.query.fallback_from,
 }))
 let resolvedIdentity = ''
-const sourceOptions = computed(() => sourceDescriptorsForRun(request.value.runId))
-const disabledReasons = computed(() => request.value.runId ? {} : {
+const sourceOptions = computed(() => {
+  const descriptors = sourceDescriptorsForRun(request.value.runId)
+  return publicDemo ? descriptors.filter((item) => item.mode !== 'live_api') : descriptors
+})
+const disabledReasons = computed(() => publicDemo || request.value.runId ? {} : {
   [LIVE_SOURCE_KEY]: 'Live API 需要 run id 才能直接打开结果。',
 })
 const result = computed<ResultViewModel | null>(() => state.value.status === 'success' || state.value.status === 'partial'
@@ -238,7 +239,7 @@ onBeforeUnmount(() => resolver.dispose())
 </template>
 
 <style scoped>
-.result-detail-layout { --cp-surface-canvas:#fff; --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-surface-raised:#fff; --cp-surface-selected:#fff2f5; --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-text-inverse:#fff; --cp-border-default:#ded8d4; --cp-border-subtle:#ebe7e4; --cp-border-strong:#bdb4b0; --cp-action-primary:#b20f3d; --cp-action-primary-hover:#941032; --cp-tech:#776c70; --cp-evidence-surface:#fff9e9; --cp-evidence-text:#765819; width:100%; min-width:0; min-height:100%; max-width:100%; overflow-x:hidden; background:var(--cp-surface-canvas); color:var(--cp-text-primary); color-scheme:light; }
+.result-detail-layout { width:100%; min-width:0; max-width:100%; overflow-x:hidden; color:var(--cp-text-primary); }
 .result-detail-layout__loading { max-width:76rem; margin:var(--cp-space-6) auto; }
 .result-detail-layout__loading > span { display:block; margin:var(--cp-space-4) var(--cp-space-4) 0; color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .fallback-notice { display:flex; gap:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-content-gutter); border-bottom:1px solid var(--cp-warning); background:var(--cp-warning-surface); color:var(--cp-text-primary); }
@@ -256,7 +257,7 @@ onBeforeUnmount(() => resolver.dispose())
 .result-source-line__boundary p { display:grid; min-width:0; gap:.12rem; margin:0; }
 .result-source-line__boundary strong { color:var(--cp-text-primary); font-size:var(--cp-text-xs); }
 .result-source-line__boundary span { overflow:hidden; color:var(--cp-text-muted); font-size:var(--cp-text-xs); line-height:var(--cp-leading-normal); text-overflow:ellipsis; white-space:nowrap; }
-.result-source-line__boundary a { padding:var(--cp-space-2); border-radius:var(--cp-radius-sm); color:var(--cp-action-primary); font-size:var(--cp-text-xs); font-weight:700; text-decoration:none; white-space:nowrap; }
+.result-source-line__boundary a { padding:var(--cp-space-2); border-radius:var(--cp-radius-sm); color:var(--brand-red); font-size:var(--cp-text-xs); font-weight:700; text-decoration:none; white-space:nowrap; }
 .result-source-line__boundary a:hover { background:var(--cp-surface-selected); }
 .result-detail-layout__body { box-sizing:border-box; width:min(100%,var(--cp-content-max)); min-width:0; margin:0 auto; padding:var(--cp-space-5) var(--cp-content-gutter) var(--cp-space-8); }
 @media (max-width:1023px) { .result-source-line { grid-template-columns:1fr; } }

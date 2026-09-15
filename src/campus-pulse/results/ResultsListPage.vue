@@ -5,7 +5,7 @@ import ApiProblemPanel from '../components/ApiProblemPanel.vue'
 import CpSkeleton from '../components/CpSkeleton.vue'
 import CpStatePanel from '../components/CpStatePanel.vue'
 import CpStatusBadge from '../components/CpStatusBadge.vue'
-import { listProjectRuns, listProjects } from '../../services/campusPulseApi.js'
+import { getProjectReplay, listProjectScenarios, listProjectRuns, listProjects } from '../../services/campusPulseApi.js'
 import {
   applyResultFilters,
   filtersFromQuery,
@@ -17,15 +17,17 @@ import { loadResultsList, type ResultsListComposition } from './resultsListQuery
 import { HERO_RESULT_KEY, HERO_SOURCE_KEY } from '../source/registry.ts'
 import { publishSourceProblem } from '../source/sourceContext.ts'
 import CaseStudyGallery from './CaseStudyGallery.vue'
-import { currentLocale } from '../i18n/locale.ts'
+import { currentLocale, localizeStoredText } from '../i18n/locale.ts'
 
 const route = useRoute()
 const router = useRouter()
-const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 const isEnglish = computed(() => currentLocale.value === 'en-US')
 const l = (zh:string,en:string) => isEnglish.value ? en : zh
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 const loading = ref(true)
 const composition = ref<ResultsListComposition | null>(null)
+const replayRecords = ref<Array<{projectId:string; name:string; tick:number; branch:string; status:string}>>([])
+const replayLoadError = ref(false)
 let loadGeneration = 0
 
 const filters = computed<ResultFiltersVM>(() => filtersFromQuery(route.query as Record<string, unknown>))
@@ -115,6 +117,15 @@ async function load() {
   })
   if (generation !== loadGeneration) return
   composition.value = next
+  const replayResults = await Promise.allSettled(next.projects.map(async item => {
+    const scenarios = await listProjectScenarios(item.projectId)
+    if (!scenarios.some((scenario:any) => ['project_setup_century_gym_v1','century_gym_ghost_booking_v1'].includes(scenario.template_key))) return null
+    const saved = await getProjectReplay(item.projectId)
+    return saved ? { projectId:item.projectId, name:item.name, tick:saved.tick, branch:saved.branch, status:saved.status } : null
+  }))
+  if (generation !== loadGeneration) return
+  replayRecords.value = replayResults.flatMap(item => item.status === 'fulfilled' && item.value ? [item.value] : [])
+  replayLoadError.value = replayResults.some(item => item.status === 'rejected' && Number(item.reason?.status || item.reason?.response?.status) !== 404)
   if (next.problem) publishSourceProblem(route.fullPath, next.problem)
   await normalizeProjectUrl(next)
   await normalizePage(next.rows)
@@ -158,7 +169,7 @@ watch(
 )
 
 onMounted(() => {
-  load()
+  if (!publicDemo) load()
 })
 onBeforeUnmount(() => { loadGeneration += 1 })
 </script>
@@ -169,7 +180,7 @@ onBeforeUnmount(() => { loadGeneration += 1 })
       <div>
         <p class="page-eyebrow">RESULT INTELLIGENCE · AUDITED RUNS</p>
         <h1>{{ publicDemo ? '公开案例与实验结果' : '案例与运行结果' }}</h1>
-        <p>{{ publicDemo ? '浏览脱敏、哈希校验的封存案例，比较 Natural 与治理分支。' : '先继续最近的预演，再通过精选案例对比治理分支；需要核验时进入完整归档。' }}</p>
+        <p>{{ publicDemo ? '浏览脱敏、哈希校验的封存案例，比较自然演化与治理分支。' : '先继续最近的预演，再通过精选案例对比治理分支；需要核验时进入完整归档。' }}</p>
       </div>
       <div v-if="projects.length > 1" class="project-select">
         <label for="results-project">项目上下文</label>
@@ -192,7 +203,16 @@ onBeforeUnmount(() => { loadGeneration += 1 })
           <RouterLink :to="actionLocation(row)">{{ actionLabel(row) }}</RouterLink>
         </article>
       </div>
-      <CpStatePanel v-else variant="empty" title="还没有项目运行" detail="从项目工作台创建预演后，最近记录会出现在这里。" primary-label="创建第一次预演" @primary="router.push('/campus-pulse/workbench')" />
+      <div v-if="replayRecords.length" class="recent-runs__grid">
+        <article v-for="record in replayRecords" :key="record.projectId" class="recent-run-card">
+          <div class="recent-run-card__top"><CpStatusBadge :tone="record.status==='completed' ? 'success' : 'neutral'">{{ record.status==='completed' ? l('已完成','Completed') : l('可继续','Ready to continue') }}</CpStatusBadge><small>Tick {{ record.tick }} · {{ record.branch }}</small></div>
+          <h3 data-no-localize>{{ localizeStoredText(record.name) }}</h3>
+          <p>{{ l('世纪馆预约服务 · Natural / D 平行演化','Century Gym booking services · Natural / D comparison') }}</p>
+          <RouterLink :to="{name:'campus-pulse-century-gym-live',query:{session:'century-gym-demo',replay_project:record.projectId,project_id:record.projectId}}">{{ record.status==='completed' ? l('查看演化与结果对比','View evolution and comparison') : l('继续预演','Continue rehearsal') }}</RouterLink>
+        </article>
+      </div>
+      <p v-if="replayLoadError" role="alert">{{ l('部分项目进度读取失败，请刷新重试。','Some project progress could not be loaded. Refresh to retry.') }}</p>
+      <CpStatePanel v-if="!loading && !recentRuns.length && !replayRecords.length && !replayLoadError" variant="empty" title="还没有项目运行" detail="从项目工作台创建预演后，最近记录会出现在这里。" primary-label="创建第一次预演" @primary="router.push('/campus-pulse/workbench')" />
     </section>
 
     <CaseStudyGallery />
@@ -310,29 +330,20 @@ onBeforeUnmount(() => { loadGeneration += 1 })
 </template>
 
 <style scoped>
-.results-list-page {
-  --cp-surface-canvas:#fff; --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-surface-raised:#fff; --cp-surface-inverse:#171315; --cp-surface-selected:#fff2f5;
-  --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-text-inverse:#fff;
-  --cp-border-default:#ded8d4; --cp-border-subtle:#ebe7e4; --cp-border-strong:#bdb4b0; --cp-border-inverse:#30292c;
-  --cp-action-primary:#c51642; --cp-action-primary-hover:#a91137;
-  --cp-evidence:#9b7530; --cp-evidence-surface:#fff9e9; --cp-evidence-text:#765819;
-  --cp-info:#2b6cb0; --cp-info-surface:#edf6ff; --cp-warning:#b45f16; --cp-warning-surface:#fff6e8; --cp-danger:#c53030; --cp-danger-surface:#fff0f0;
-  --cp-tech:#776c70; --cp-tech-bright:#554c4f; --cp-tech-surface:#f4f1ef; --cp-tech-line:#ded8d4; --cp-tech-glow:none; --cp-shadow-card:none;
-  width:100%; min-height:calc(100vh - 7.5rem); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) 4rem; background:var(--cp-surface-canvas); color:var(--cp-text-primary);
-}
+.results-list-page { width:min(100%,var(--cp-content-max)); margin:0 auto; padding:clamp(1.75rem,3vw,3rem) var(--cp-content-gutter) 4rem; color:var(--cp-text-primary); }
 .results-list-page__head { display:flex; align-items:flex-end; justify-content:space-between; gap:var(--cp-space-6); margin-bottom:var(--cp-space-7); }
 .results-list-page__head p { margin:0; color:var(--cp-text-muted); font-size:var(--cp-text-xs); }
 .results-list-page__head .page-eyebrow { margin-bottom:var(--cp-space-2); color:var(--cp-tech); font-weight:800; letter-spacing:.12em; }
 .results-list-page__head h1 { margin:0 0 var(--cp-space-2); font-size:clamp(2rem,3vw,var(--cp-text-3xl)); line-height:1.15; letter-spacing:-.03em; }
 .results-list-page__head > div > p:last-child { max-width:48rem; color:var(--cp-text-secondary); font-size:var(--cp-text-md); }
-.recent-runs { display:grid; gap:var(--cp-space-4); margin-bottom:var(--cp-space-6); padding:var(--cp-space-4); border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-lg); background:var(--cp-surface-default); box-shadow:none; }
+.recent-runs { display:grid; gap:var(--cp-space-4); margin-bottom:3.5rem; padding:clamp(1.25rem,2vw,2rem); border:1px solid var(--cp-tech-line); border-radius:var(--cp-radius-lg); background:linear-gradient(135deg,var(--cp-surface-default),var(--cp-tech-surface)); box-shadow:var(--cp-tech-glow); }
 .recent-runs__head { display:flex; align-items:end; justify-content:space-between; gap:var(--cp-space-3); }
 .recent-runs__head span,.run-library__head span { color:var(--cp-tech); font-size:var(--cp-text-xs); font-weight:800; letter-spacing:.11em; }
 .recent-runs__head h2 { margin:var(--cp-space-2) 0 0; font-size:var(--cp-text-xl); letter-spacing:-.015em; }
-.recent-runs__head > a { color:var(--cp-action-primary); font-weight:700; text-decoration:none; }
+.recent-runs__head > a { color:var(--brand-red); font-weight:700; text-decoration:none; }
 .recent-runs__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(13rem,1fr)); gap:var(--cp-space-3); }
-.recent-run-card { position:relative; display:grid; align-content:start; gap:var(--cp-space-2); min-width:0; padding:var(--cp-space-4); overflow:hidden; border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-md); background:var(--cp-surface-subtle); }
-.recent-run-card::before { position:absolute; inset:0 auto 0 0; width:3px; background:var(--cp-action-primary); content:''; }
+.recent-run-card { position:relative; display:grid; align-content:start; gap:var(--cp-space-2); min-width:0; padding:var(--cp-space-4); overflow:hidden; border:1px solid var(--cp-border-default); border-radius:var(--cp-radius-md); background:rgba(255,255,255,.82); }
+.recent-run-card::before { position:absolute; inset:0 auto 0 0; width:3px; background:linear-gradient(var(--cp-tech-bright),var(--brand-red)); content:''; }
 .recent-run-card__top { display:flex; align-items:center; justify-content:space-between; gap:var(--cp-space-2); }
 .recent-run-card__top small { color:var(--cp-text-muted); font-size:var(--cp-text-xs); }
 .recent-run-card h3 { margin:0; font-size:var(--cp-text-md); line-height:var(--cp-leading-tight); }
@@ -364,11 +375,8 @@ onBeforeUnmount(() => { loadGeneration += 1 })
 .results-table__row:hover { background:var(--cp-surface-subtle); }
 .result-key { color:var(--cp-text-primary); font-weight:650; text-decoration:none; }
 .result-key code { font-family:var(--cp-font-mono); font-size:var(--cp-text-xs); }
-.results-table .open { color:var(--cp-action-primary); font-weight:700; text-decoration:none; white-space:nowrap; }
+.results-table .open { color:var(--brand-red); font-weight:700; text-decoration:none; white-space:nowrap; }
 .pagination { display:flex; align-items:center; gap:var(--cp-space-3); padding:var(--cp-space-3) var(--cp-space-4); border-top:1px solid var(--cp-border-default); }
-.results-list-page :deep(.case-card__actions a:not(.secondary)),
-.results-list-page :deep(.case-card__actions > button),
-.results-list-page :deep(.case-card__story > div > span) { color:var(--cp-text-inverse); }
 .pagination button { min-height:var(--cp-control-height); padding:0 var(--cp-space-3); border:1px solid var(--cp-border-strong); border-radius:var(--cp-radius-sm); background:var(--cp-surface-default); color:var(--cp-text-primary); font-weight:650; }
 .pagination button:disabled { opacity:.5; cursor:not-allowed; }
 .pagination span { color:var(--cp-text-secondary); font-size:var(--cp-text-xs); }

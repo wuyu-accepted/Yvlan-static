@@ -16,13 +16,17 @@ test('M2 exposes the project center and canonical project routes', () => {
   ]) assert.match(router, new RegExp(route.replaceAll('/', '\\/').replace(':', '\\:')))
 })
 
-test('M2 wizard contains all six stages and persists its draft', () => {
+test('M2 project setup has three saved steps; execution settings remain in the project', () => {
   const wizard = read('src/campus-pulse/projects/ProjectCreationWizard.vue')
-  for (const label of ['基础信息', 'Agent 世界', '事件情景', '治理分支', '运行合同', 'Preflight']) {
+  for (const label of ['项目信息', '事件与方案', '确认创建', 'saveProjectSetup', 'campus-pulse-project-overview']) {
     assert.match(wizard, new RegExp(label))
   }
   assert.match(wizard, /localStorage\.setItem/)
-  assert.match(wizard, /query:\{ \.\.\.route\.query, step:/)
+  assert.doesNotMatch(wizard, /openRecordedRun|name: 'campus-pulse-century-gym-live'/)
+  const overview = read('src/campus-pulse/workbench/WorkbenchOverviewPanel.vue')
+  assert.match(overview, /startProjectReplay/)
+  assert.match(overview, /replay_project:props.project.project_id/)
+  assert.match(wizard, /query:\s*\{ \.\.\.route\.query, step:/)
 })
 
 test('M2 client exposes all generic committed-run readers', () => {
