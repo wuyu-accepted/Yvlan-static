@@ -1,0 +1,4626 @@
+{
+  "claim_evidence_matrix": [
+    {
+      "claim": "Conditional within-event normalized forum post arrival shape",
+      "claim_id": "conditional_event_arrival_shape",
+      "next_evidence": "Validate keyword event definitions and map synthetic decision rounds to an operational service cadence before forecasting absolute workload.",
+      "reason": "Daily proxy-share arrival shape is tested with deterministic separated events and leave-one-event-out folds for both focus scenarios.",
+      "status": "repeated_window_tested"
+    },
+    {
+      "claim": "Event occurrence and absolute forum post volume",
+      "claim_id": "event_occurrence_and_absolute_volume",
+      "next_evidence": "Declare an operational time unit and prospectively test occurrence and count forecasts.",
+      "reason": "Conditioning on observed peaks cannot test when an event will occur or its absolute workload.",
+      "status": "not_supported"
+    },
+    {
+      "claim": "Probability that a thread receives any comment",
+      "claim_id": "thread_comment_probability",
+      "next_evidence": "Add human-reviewed need labels to replace overlapping keyword proxies.",
+      "reason": "Final linked-comment presence is observable and is tested on a later holdout window.",
+      "status": "temporally_tested"
+    },
+    {
+      "claim": "Cumulative thread comment-count distribution",
+      "claim_id": "thread_comment_count_distribution",
+      "next_evidence": "Add unique responder counts if the source system can expose them safely.",
+      "reason": "Final linked-comment counts are observable; binned CDF and positive-count mean are checked.",
+      "status": "temporally_tested"
+    },
+    {
+      "claim": "Urgency mix and high-risk identification",
+      "claim_id": "urgency_and_risk",
+      "next_evidence": "Create a double-annotated, adjudicated urgency sample.",
+      "reason": "No human-reviewed urgency or risk labels exist in the supplied data.",
+      "status": "not_supported"
+    },
+    {
+      "claim": "Real response speed or information diffusion",
+      "claim_id": "response_speed_and_diffusion",
+      "next_evidence": "Collect genuine comment creation timestamps and reply-to structure.",
+      "reason": "Linked comment real_date inherits the parent post time and cannot measure response latency.",
+      "status": "not_supported"
+    },
+    {
+      "claim": "FAQ, peer, routing, and capacity intervention effects",
+      "claim_id": "intervention_effects",
+      "next_evidence": "Run a staged pilot with intervention logs and pre-registered operational outcomes.",
+      "reason": "The supplied forum data contain no intervention assignment or operational outcome logs.",
+      "status": "not_supported"
+    },
+    {
+      "claim": "Institutional resolution, cost, and service capacity",
+      "claim_id": "resolution_cost_and_capacity",
+      "next_evidence": "Obtain de-identified service ticket and staffing aggregates.",
+      "reason": "No service ticket completion, staffing, or cost records are linked to forum posts.",
+      "status": "not_supported"
+    },
+    {
+      "claim": "Demographic fairness or population impact",
+      "claim_id": "demographic_fairness",
+      "next_evidence": "Use consented aggregate survey or administrative statistics with privacy review.",
+      "reason": "No persistent identity or demographic attributes exist, by design.",
+      "status": "not_supported"
+    }
+  ],
+  "data_audit": {
+    "excluded_gap_posts": 325,
+    "linked_comments_across_proxy_memberships": {
+      "holdout": 29465,
+      "train": 27022
+    },
+    "proxy_memberships": {
+      "holdout": 7652,
+      "train": 8735
+    },
+    "unique_matched_posts": 15280
+  },
+  "empirical_claim_coverage": {
+    "temporally_tested_claim_families": 3,
+    "total_claim_families": 9,
+    "warning": "Coverage is a scope count, not a model-accuracy score."
+  },
+  "focus_evidence": {
+    "event_discovery_audit": {
+      "course_selection": {
+        "candidate_local_peaks": 12,
+        "daily_count_median": 2.0,
+        "daily_count_p75": 4.0,
+        "daily_proxy_share_median": 0.0041641140637823214,
+        "daily_proxy_share_p75_descriptive": 0.008216241962371994,
+        "minimum_peak_lift_vs_prior_baseline": 1.25,
+        "minimum_peak_posts": 5,
+        "retained_events": 4,
+        "selected_peak_lifts": {
+          "2025-12-12": 20.88052161654135,
+          "2026-03-05": 10.09242144177449,
+          "2026-05-18": 10.658610271903324,
+          "2026-06-03": 5.144023954072573,
+          "2026-07-06": 10.663868485484434
+        },
+        "selected_peaks_before_window_minimum": 5,
+        "selection_rule": "Local maxima must meet the declared absolute proxy-post and prior-baseline lift minima; the proxy-share p75 above is descriptive and is not a filter.",
+        "valid_days": 222
+      },
+      "exam_pressure": {
+        "candidate_local_peaks": 18,
+        "daily_count_median": 40.0,
+        "daily_count_p75": 68.5,
+        "daily_proxy_share_median": 0.07907676367404068,
+        "daily_proxy_share_p75_descriptive": 0.12971267715006796,
+        "minimum_peak_lift_vs_prior_baseline": 1.25,
+        "minimum_peak_posts": 5,
+        "retained_events": 5,
+        "selected_peak_lifts": {
+          "2025-12-28": 1.8927353988334217,
+          "2026-02-27": 10.49673202614379,
+          "2026-04-07": 2.018674136321195,
+          "2026-04-26": 2.4585420841683367,
+          "2026-06-08": 2.3937874356583033
+        },
+        "selected_peaks_before_window_minimum": 5,
+        "selection_rule": "Local maxima must meet the declared absolute proxy-post and prior-baseline lift minima; the proxy-share p75 above is descriptive and is not a filter.",
+        "valid_days": 222
+      }
+    },
+    "field_audit": {
+      "comments": {
+        "eligible_rows": 398257,
+        "fields": [
+          {
+            "field": "id",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 7,
+            "mean_characters_if_nonempty": 6.37401360634111,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454053,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Source row identifier; excluded from every persisted artifact.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "comment_id",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 10,
+            "mean_characters_if_nonempty": 7.734942837069681,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454053,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Direct comment identifier is unnecessary for aggregate validation.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "post_code",
+            "field_gate": "supporting_only",
+            "format_counts": {},
+            "max_characters": 20,
+            "mean_characters_if_nonempty": 17.233012445683652,
+            "model_use": "linkage_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454053,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Used in memory to count comments per eligible post, then discarded.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "real_date",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 19,
+            "mean_characters_if_nonempty": 19.0,
+            "model_use": "not_latency_usable",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454052,
+            "nonempty_rate": 0.9999977976139349,
+            "parseable_date_count": 454052,
+            "parseable_date_rate": 0.9999977976139349,
+            "present": true,
+            "reason": "The export inherits the parent post date and cannot identify response latency.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "floor",
+            "field_gate": "supporting_only",
+            "format_counts": {},
+            "max_characters": 4,
+            "mean_characters_if_nonempty": 1.2428218732174439,
+            "model_use": "descriptive_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454053,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Thread position is available but does not identify unique responders or solution quality.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "content",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 2572,
+            "mean_characters_if_nonempty": 19.994216203001145,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 0.9956896551724138,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 0.997229916897507,
+              "2025-09": 0.9993990384615384,
+              "2025-10": 1.0,
+              "2025-11": 0.9999463144897193,
+              "2025-12": 0.9999767403995999,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.999981234753237,
+              "2026-05": 0.9999619779091652,
+              "2026-06": 0.9999233647963419,
+              "2026-07": 0.9998893642130108
+            },
+            "nonempty_count": 454027,
+            "nonempty_rate": 0.9999427379623084,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Comment text is not required for cumulative linked-comment counts.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "sentiment",
+            "field_gate": "reject_temporal_missingness",
+            "format_counts": {
+              "scalar_text": 220235
+            },
+            "max_characters": 3,
+            "mean_characters_if_nonempty": 3.0,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 0.9,
+              "2023-01": 0.005045408678102927,
+              "2023-02": 0.0,
+              "2023-03": 1.0,
+              "2023-04": 0.9166666666666666,
+              "2023-05": 1.0,
+              "2023-06": 0.0,
+              "2023-07": 0.75,
+              "2023-08": 0.2,
+              "2023-09": 0.9383886255924171,
+              "2023-10": 1.0,
+              "2023-12": 0.2,
+              "2024-01": 0.7222222222222222,
+              "2024-02": 0.9629629629629629,
+              "2024-03": 0.0,
+              "2024-04": 0.8666666666666667,
+              "2024-05": 0.8939393939393939,
+              "2024-06": 0.3153409090909091,
+              "2024-07": 0.3645833333333333,
+              "2024-08": 0.8571428571428571,
+              "2024-09": 0.35365853658536583,
+              "2024-10": 0.8833333333333333,
+              "2024-11": 0.9285714285714286,
+              "2024-12": 0.7931034482758621,
+              "2025-01": 0.8820754716981132,
+              "2025-02": 0.6971830985915493,
+              "2025-03": 0.9861504564054139,
+              "2025-04": 0.1311576354679803,
+              "2025-05": 0.7663043478260869,
+              "2025-06": 0.25625,
+              "2025-07": 0.6815068493150684,
+              "2025-08": 0.8421052631578947,
+              "2025-09": 0.96875,
+              "2025-10": 0.9984375,
+              "2025-11": 0.9965641273420304,
+              "2025-12": 0.9923475914683786,
+              "2026-01": 0.9816163459926615,
+              "2026-02": 0.9999180630095457,
+              "2026-03": 0.9896104454817268,
+              "2026-04": 0.18069056108087822,
+              "2026-05": 0.010189920343719702,
+              "2026-06": 0.0,
+              "2026-07": 0.0023233515267738606
+            },
+            "nonempty_count": 220235,
+            "nonempty_rate": 0.4850424950391254,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Completeness can be audited, but the field is not a reviewed governance outcome.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "tags",
+            "field_gate": "reject_temporal_missingness",
+            "format_counts": {
+              "json_array": 335333
+            },
+            "max_characters": 68,
+            "mean_characters_if_nonempty": 15.590675537450833,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 0.005045408678102927,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 0.8928571428571429,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 0.9147727272727273,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 0.9390243902439024,
+              "2024-10": 1.0,
+              "2024-11": 0.9725274725274725,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 0.9859154929577465,
+              "2025-03": 0.9940195152659742,
+              "2025-04": 0.7142857142857143,
+              "2025-05": 0.9836956521739131,
+              "2025-06": 0.9229166666666667,
+              "2025-07": 0.9383561643835616,
+              "2025-08": 0.9168975069252078,
+              "2025-09": 0.9885817307692307,
+              "2025-10": 0.9860991379310344,
+              "2025-11": 0.9972083534653997,
+              "2025-12": 0.9930918986811806,
+              "2026-01": 0.981765352306804,
+              "2026-02": 0.9999180630095457,
+              "2026-03": 0.990363311751167,
+              "2026-04": 0.5870144492400075,
+              "2026-05": 0.43179787456512236,
+              "2026-06": 0.510748087313042,
+              "2026-07": 0.5418940846732556
+            },
+            "nonempty_count": 335333,
+            "nonempty_rate": 0.7385327263557337,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Potential feature only after label-definition and stability review.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "analysis",
+            "field_gate": "reject_temporal_missingness",
+            "format_counts": {
+              "json_object": 335572
+            },
+            "max_characters": 172,
+            "mean_characters_if_nonempty": 58.33986745020443,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 0.005045408678102927,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 0.8928571428571429,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 0.9147727272727273,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 0.9390243902439024,
+              "2024-10": 1.0,
+              "2024-11": 0.9725274725274725,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 0.9859154929577465,
+              "2025-03": 0.9940195152659742,
+              "2025-04": 0.7155172413793104,
+              "2025-05": 0.9836956521739131,
+              "2025-06": 0.9229166666666667,
+              "2025-07": 0.9383561643835616,
+              "2025-08": 0.9168975069252078,
+              "2025-09": 0.9885817307692307,
+              "2025-10": 0.9984913793103448,
+              "2025-11": 0.9972083534653997,
+              "2025-12": 0.9930918986811806,
+              "2026-01": 0.981765352306804,
+              "2026-02": 0.9999180630095457,
+              "2026-03": 0.9903848222160081,
+              "2026-04": 0.5870332144867705,
+              "2026-05": 0.4318168856105397,
+              "2026-06": 0.510786404914871,
+              "2026-07": 0.5419125239710871
+            },
+            "nonempty_count": 335572,
+            "nonempty_rate": 0.7390590966252838,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Model-produced or free-form analysis is not accepted as validation ground truth.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "comment_hash",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 64,
+            "mean_characters_if_nonempty": 48.943187123941755,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.999981234753237,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454052,
+            "nonempty_rate": 0.9999977976139349,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Row-level hash is excluded from all evidence artifacts.",
+            "rows_audited": 454053
+          },
+          {
+            "field": "created_at",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 19,
+            "mean_characters_if_nonempty": 19.0,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 454053,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Database ingestion metadata is not interpreted as response time.",
+            "rows_audited": 454053
+          }
+        ],
+        "linked_comment_date_equals_parent_rate": 1.0,
+        "linked_to_supplied_post_rate": 0.9919150407551541,
+        "linked_to_supplied_post_rows": 450382,
+        "source_rows": 454053
+      },
+      "decision": "Only post dates, in-memory post-comment linkage, scenario keyword proxies, and final linked-comment counts enter current scoring. Annotation fields remain exploratory because completeness does not establish label validity.",
+      "gate_counts": {
+        "auxiliary_only": 4,
+        "excluded": 10,
+        "pass": 1,
+        "proxy_only": 1,
+        "reject_temporal_missingness": 3,
+        "supporting_only": 5
+      },
+      "identifier_integrity": {
+        "decision": "Comments are counted by source rows after post linkage; comment_id is not used as a global deduplication key.",
+        "duplicate_comment_hash_rows": 0,
+        "duplicate_comment_id_rows": 14778,
+        "duplicate_post_code_comment_id_rows": 9458,
+        "duplicate_post_code_rows": 0,
+        "duplicate_post_hash_rows": 0
+      },
+      "posts": {
+        "eligible_rows": 112698,
+        "fields": [
+          {
+            "field": "id",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 6,
+            "mean_characters_if_nonempty": 5.7018816253752345,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Source row identifier; excluded from calibration and every persisted artifact.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "post_code",
+            "field_gate": "supporting_only",
+            "format_counts": {},
+            "max_characters": 20,
+            "mean_characters_if_nonempty": 17.35418343778448,
+            "model_use": "linkage_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Used in memory to link final comment counts, then discarded.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "real_date",
+            "field_gate": "pass",
+            "format_counts": {},
+            "max_characters": 19,
+            "mean_characters_if_nonempty": 19.0,
+            "model_use": "direct_observable",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132913,
+            "nonempty_rate": 0.9999699060315836,
+            "parseable_date_count": 132913,
+            "parseable_date_rate": 0.9999699060315836,
+            "present": true,
+            "reason": "Used for post-arrival dates and event windows after crawl-gap exclusion.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "content",
+            "field_gate": "proxy_only",
+            "format_counts": {},
+            "max_characters": 2248,
+            "mean_characters_if_nonempty": 45.089229287670406,
+            "model_use": "keyword_proxy_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 0.9998676723567553,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132916,
+            "nonempty_rate": 0.9999924765078959,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Scanned in memory for declared scenario keywords; never persisted or treated as ground truth.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "sentiment",
+            "field_gate": "auxiliary_only",
+            "format_counts": {
+              "scalar_text": 132486
+            },
+            "max_characters": 5,
+            "mean_characters_if_nonempty": 2.999962260163338,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 0.9555555555555556,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.9973298599804624,
+              "2026-05": 0.9893060979273055,
+              "2026-06": 0.9955734879348167,
+              "2026-07": 0.9942096466093601
+            },
+            "nonempty_count": 132486,
+            "nonempty_rate": 0.996757374903135,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Completeness can be audited, but the field is not human-reviewed outcome evidence.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "tags",
+            "field_gate": "auxiliary_only",
+            "format_counts": {
+              "json_array": 132665
+            },
+            "max_characters": 99,
+            "mean_characters_if_nonempty": 20.718983906833,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 0.9956331877729258,
+              "2025-10": 0.9801508535132989,
+              "2025-11": 0.9997066158134077,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.9996743731683491,
+              "2026-05": 0.9950135175728447,
+              "2026-06": 0.9998824819805704,
+              "2026-07": 0.9995821394460362
+            },
+            "nonempty_count": 132665,
+            "nonempty_rate": 0.998104079989768,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Potential feature only after label-definition and stability review.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "analysis",
+            "field_gate": "auxiliary_only",
+            "format_counts": {
+              "json_object": 132829
+            },
+            "max_characters": 280,
+            "mean_characters_if_nonempty": 61.413516626640266,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.9998046239010094,
+              "2026-05": 0.9950735956743767,
+              "2026-06": 1.0,
+              "2026-07": 0.9998209169054442
+            },
+            "nonempty_count": 132829,
+            "nonempty_rate": 0.9993379326948396,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Model-produced or free-form analysis is not accepted as validation ground truth.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "enriched_content",
+            "field_gate": "excluded",
+            "format_counts": {
+              "invalid_structured_text": 1,
+              "scalar_text": 132822
+            },
+            "max_characters": 65235,
+            "mean_characters_if_nonempty": 74.97393523712007,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.9997394985346792,
+              "2026-05": 0.9950735956743767,
+              "2026-06": 0.9999608273268568,
+              "2026-07": 0.9995821394460362
+            },
+            "nonempty_count": 132823,
+            "nonempty_rate": 0.9992927917422151,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Derived text is privacy-sensitive and unnecessary for aggregate observable validation.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "post_hash",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 32,
+            "mean_characters_if_nonempty": 31.99966896634742,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Row-level hash is excluded from all evidence artifacts.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "created_at",
+            "field_gate": "excluded",
+            "format_counts": {},
+            "max_characters": 19,
+            "mean_characters_if_nonempty": 19.0,
+            "model_use": "not_used",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Database ingestion metadata is not interpreted as post occurrence time.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "tags_text",
+            "field_gate": "auxiliary_only",
+            "format_counts": {
+              "scalar_text": 131559
+            },
+            "max_characters": 255,
+            "mean_characters_if_nonempty": 32.538176787601,
+            "model_use": "exploratory_not_scored",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 0.9956331877729258,
+              "2025-10": 0.988222839751224,
+              "2025-11": 0.9997066158134077,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 0.9235428199283621,
+              "2026-05": 0.9950135175728447,
+              "2026-06": 0.9998824819805704,
+              "2026-07": 0.9997015281757402
+            },
+            "nonempty_count": 131559,
+            "nonempty_rate": 0.989783097722639,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "Denormalized tags require label review before analytical use.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "comments_missing",
+            "field_gate": "supporting_only",
+            "format_counts": {},
+            "max_characters": 1,
+            "mean_characters_if_nonempty": 1.0,
+            "model_use": "quality_flag_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "May diagnose collection completeness but is not a student or governance outcome.",
+            "rows_audited": 132917
+          },
+          {
+            "field": "missing_comment_count",
+            "field_gate": "supporting_only",
+            "format_counts": {},
+            "max_characters": 2,
+            "mean_characters_if_nonempty": 1.0000601879368327,
+            "model_use": "quality_flag_only",
+            "monthly_nonempty_rate": {
+              "2022-11": 1.0,
+              "2022-12": 1.0,
+              "2023-01": 1.0,
+              "2023-02": 1.0,
+              "2023-03": 1.0,
+              "2023-04": 1.0,
+              "2023-05": 1.0,
+              "2023-06": 1.0,
+              "2023-07": 1.0,
+              "2023-08": 1.0,
+              "2023-09": 1.0,
+              "2023-10": 1.0,
+              "2023-12": 1.0,
+              "2024-01": 1.0,
+              "2024-02": 1.0,
+              "2024-03": 1.0,
+              "2024-04": 1.0,
+              "2024-05": 1.0,
+              "2024-06": 1.0,
+              "2024-07": 1.0,
+              "2024-08": 1.0,
+              "2024-09": 1.0,
+              "2024-10": 1.0,
+              "2024-11": 1.0,
+              "2024-12": 1.0,
+              "2025-01": 1.0,
+              "2025-02": 1.0,
+              "2025-03": 1.0,
+              "2025-04": 1.0,
+              "2025-05": 1.0,
+              "2025-06": 1.0,
+              "2025-07": 1.0,
+              "2025-08": 1.0,
+              "2025-09": 1.0,
+              "2025-10": 1.0,
+              "2025-11": 1.0,
+              "2025-12": 1.0,
+              "2026-01": 1.0,
+              "2026-02": 1.0,
+              "2026-03": 1.0,
+              "2026-04": 1.0,
+              "2026-05": 1.0,
+              "2026-06": 1.0,
+              "2026-07": 1.0
+            },
+            "nonempty_count": 132917,
+            "nonempty_rate": 1.0,
+            "parseable_date_count": null,
+            "parseable_date_rate": null,
+            "present": true,
+            "reason": "May diagnose collection completeness but is not used to impute outcomes.",
+            "rows_audited": 132917
+          }
+        ],
+        "source_rows": 132917
+      }
+    },
+    "methodology": {
+      "eligible_scoring_window": {
+        "end_exclusive": "2026-07-21",
+        "start_inclusive": "2025-12-01"
+      },
+      "event_design": "deterministic separated local peaks with leave-one-event-out backtesting",
+      "event_search_window": {
+        "end_exclusive": "2026-07-16",
+        "start_inclusive": "2025-12-01"
+      },
+      "event_window_radius_days": 3,
+      "excluded_known_gap_dates": [
+        "2026-03-04",
+        "2026-04-03",
+        "2026-04-04",
+        "2026-04-20",
+        "2026-06-25"
+      ],
+      "field_audit_scope": "entire_source_files",
+      "maximum_events_per_focus": 5,
+      "minimum_event_posts": 40,
+      "minimum_event_separation_days": 14,
+      "minimum_peak_lift_vs_prior_baseline": 1.25,
+      "minimum_peak_posts": 5,
+      "selection_note": "Peak discovery conditions on observed proxy activity. The backtest evaluates within-event shape and natural comment attention, not event occurrence or volume forecasting."
+    },
+    "privacy": "Aggregate schema completeness and event summaries only; no text, row identifier, source hash, or source path is returned.",
+    "scenario_backtests": {
+      "course_selection": {
+        "event_count": 4,
+        "events": [
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 396,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 8,
+                "proxy_share": 0.020202020202020204
+              },
+              {
+                "all_posts": 387,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 8,
+                "proxy_share": 0.020671834625323
+              },
+              {
+                "all_posts": 372,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 6,
+                "proxy_share": 0.016129032258064516
+              },
+              {
+                "all_posts": 532,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 41,
+                "proxy_share": 0.07706766917293233
+              },
+              {
+                "all_posts": 352,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 9,
+                "proxy_share": 0.02556818181818182
+              },
+              {
+                "all_posts": 335,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 7,
+                "proxy_share": 0.020895522388059702
+              },
+              {
+                "all_posts": 422,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 16,
+                "proxy_share": 0.037914691943127965
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.09473684210526316,
+                "1": 0.37894736842105264,
+                "16": 0.968421052631579,
+                "2": 0.5578947368421052,
+                "32": 0.9894736842105263,
+                "4": 0.7789473684210526,
+                "8": 0.9052631578947369
+              },
+              "comment_quantiles": {
+                "p50": 2.0,
+                "p75": 4.0,
+                "p90": 8.0,
+                "p95": 12.299999999999997,
+                "p99": 43.16000000000065
+              },
+              "mean_comments_all": 6.6947368421052635,
+              "mean_comments_if_responded": 7.395348837209302,
+              "proxy_posts": 95,
+              "responded_posts": 86,
+              "response_rate": 0.9052631578947369,
+              "response_rate_wilson_95": [
+                0.8296695632641026,
+                0.9493557659723247
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2025-12-12",
+            "proxy_posts": 95,
+            "window_end_inclusive": "2025-12-15",
+            "window_start": "2025-12-09"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 545,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 12,
+                "proxy_share": 0.022018348623853212
+              },
+              {
+                "all_posts": 404,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 11,
+                "proxy_share": 0.027227722772277228
+              },
+              {
+                "all_posts": null,
+                "observed": false,
+                "offset_days": -1,
+                "proxy_posts": null,
+                "proxy_share": null
+              },
+              {
+                "all_posts": 541,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 15,
+                "proxy_share": 0.027726432532347505
+              },
+              {
+                "all_posts": 403,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 13,
+                "proxy_share": 0.03225806451612903
+              },
+              {
+                "all_posts": 330,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 2,
+                "proxy_share": 0.006060606060606061
+              },
+              {
+                "all_posts": 346,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 5,
+                "proxy_share": 0.014450867052023121
+              }
+            ],
+            "excluded_gap_offsets": [
+              -1
+            ],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.06896551724137931,
+                "1": 0.3275862068965517,
+                "16": 1.0,
+                "2": 0.6551724137931034,
+                "32": 1.0,
+                "4": 0.8448275862068966,
+                "8": 0.9827586206896551
+              },
+              "comment_quantiles": {
+                "p50": 2.0,
+                "p75": 3.75,
+                "p90": 5.300000000000004,
+                "p95": 7.149999999999999,
+                "p99": 8.43
+              },
+              "mean_comments_all": 2.603448275862069,
+              "mean_comments_if_responded": 2.7962962962962963,
+              "proxy_posts": 58,
+              "responded_posts": 54,
+              "response_rate": 0.9310344827586207,
+              "response_rate_wilson_95": [
+                0.8356633368561964,
+                0.9728557529824217
+              ]
+            },
+            "observed_days": 6,
+            "peak_date": "2026-03-05",
+            "proxy_posts": 58,
+            "window_end_inclusive": "2026-03-08",
+            "window_start": "2026-03-02"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 438,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 3,
+                "proxy_share": 0.00684931506849315
+              },
+              {
+                "all_posts": 647,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 4,
+                "proxy_share": 0.0061823802163833074
+              },
+              {
+                "all_posts": 795,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 10,
+                "proxy_share": 0.012578616352201259
+              },
+              {
+                "all_posts": 1333,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 41,
+                "proxy_share": 0.03075768942235559
+              },
+              {
+                "all_posts": 909,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 2,
+                "proxy_share": 0.0022002200220022
+              },
+              {
+                "all_posts": 648,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 2,
+                "proxy_share": 0.0030864197530864196
+              },
+              {
+                "all_posts": 483,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 1,
+                "proxy_share": 0.002070393374741201
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.2698412698412698,
+                "1": 0.5079365079365079,
+                "16": 1.0,
+                "2": 0.6349206349206349,
+                "32": 1.0,
+                "4": 0.8571428571428571,
+                "8": 0.9523809523809523
+              },
+              "comment_quantiles": {
+                "p50": 1.0,
+                "p75": 3.0,
+                "p90": 5.0,
+                "p95": 6.899999999999999,
+                "p99": 12.380000000000003
+              },
+              "mean_comments_all": 2.3174603174603177,
+              "mean_comments_if_responded": 3.1739130434782608,
+              "proxy_posts": 63,
+              "responded_posts": 46,
+              "response_rate": 0.7301587301587301,
+              "response_rate_wilson_95": [
+                0.6097009078044822,
+                0.82416155587684
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2026-06-03",
+            "proxy_posts": 63,
+            "window_end_inclusive": "2026-06-06",
+            "window_start": "2026-05-31"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 891,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 9,
+                "proxy_share": 0.010101010101010102
+              },
+              {
+                "all_posts": 700,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 5,
+                "proxy_share": 0.007142857142857143
+              },
+              {
+                "all_posts": 633,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 9,
+                "proxy_share": 0.014218009478672985
+              },
+              {
+                "all_posts": 953,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 37,
+                "proxy_share": 0.03882476390346275
+              },
+              {
+                "all_posts": 762,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 14,
+                "proxy_share": 0.01837270341207349
+              },
+              {
+                "all_posts": 832,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 13,
+                "proxy_share": 0.015625
+              },
+              {
+                "all_posts": 787,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 6,
+                "proxy_share": 0.007623888182973317
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.3548387096774194,
+                "1": 0.5376344086021505,
+                "16": 0.989247311827957,
+                "2": 0.6344086021505376,
+                "32": 0.989247311827957,
+                "4": 0.7849462365591398,
+                "8": 0.9247311827956989
+              },
+              "comment_quantiles": {
+                "p50": 1.0,
+                "p75": 4.0,
+                "p90": 7.799999999999997,
+                "p95": 10.599999999999966,
+                "p99": 20.079999999999913
+              },
+              "mean_comments_all": 3.3333333333333335,
+              "mean_comments_if_responded": 5.166666666666667,
+              "proxy_posts": 93,
+              "responded_posts": 60,
+              "response_rate": 0.6451612903225806,
+              "response_rate_wilson_95": [
+                0.5439349596804137,
+                0.7348712492387599
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2026-07-06",
+            "proxy_posts": 93,
+            "window_end_inclusive": "2026-07-09",
+            "window_start": "2026-07-03"
+          }
+        ],
+        "evidence_scope": "retrospective_event_shape_repeatability_only",
+        "folds": [
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.043086487162439416,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2025-12-12",
+            "holdout_proxy_posts": 95,
+            "training_event_count": 3,
+            "training_proxy_posts": 214,
+            "unscored_volume_relative_error": 0.3368421052631579
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "weak",
+              "normalized_profile_mae": 0.10103142844644486,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "weak",
+            "holdout_peak_date": "2026-03-05",
+            "holdout_proxy_posts": 58,
+            "training_event_count": 3,
+            "training_proxy_posts": 251,
+            "unscored_volume_relative_error": 0.603448275862069
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "moderate",
+              "normalized_profile_mae": 0.0823569141651871,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "moderate",
+            "holdout_peak_date": "2026-06-03",
+            "holdout_proxy_posts": 63,
+            "training_event_count": 3,
+            "training_proxy_posts": 246,
+            "unscored_volume_relative_error": 0.47619047619047616
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.03647346892833779,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2026-07-06",
+            "holdout_proxy_posts": 93,
+            "training_event_count": 3,
+            "training_proxy_posts": 216,
+            "unscored_volume_relative_error": 0.3225806451612903
+          }
+        ],
+        "grade_counts": {
+          "moderate": 1,
+          "strong": 2,
+          "weak": 1
+        },
+        "interpretation": "Each fold pools all other discovered windows and holds out one complete event. The conservative grade is the weakest normalized proxy-share arrival-shape fold. Event occurrence, absolute volume, comment behavior, and policy effects are not scored here.",
+        "mean_normalized_arrival_profile_mae": 0.06573707467560229,
+        "overall_grade": "weak",
+        "proxy_definition": "Declared scenario keyword pattern; overlapping and not human-reviewed.",
+        "proxy_version": "1.0.0",
+        "stable_fold_fraction": 0.75,
+        "title": "选课治理"
+      },
+      "exam_pressure": {
+        "event_count": 5,
+        "events": [
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 427,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 69,
+                "proxy_share": 0.16159250585480095
+              },
+              {
+                "all_posts": 394,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 85,
+                "proxy_share": 0.21573604060913706
+              },
+              {
+                "all_posts": 327,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 84,
+                "proxy_share": 0.25688073394495414
+              },
+              {
+                "all_posts": 368,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 124,
+                "proxy_share": 0.33695652173913043
+              },
+              {
+                "all_posts": 603,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 175,
+                "proxy_share": 0.2902155887230514
+              },
+              {
+                "all_posts": 496,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 127,
+                "proxy_share": 0.2560483870967742
+              },
+              {
+                "all_posts": 356,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 56,
+                "proxy_share": 0.15730337078651685
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.05,
+                "1": 0.3347222222222222,
+                "16": 0.9805555555555555,
+                "2": 0.5486111111111112,
+                "32": 0.9944444444444445,
+                "4": 0.7722222222222223,
+                "8": 0.9236111111111112
+              },
+              "comment_quantiles": {
+                "p50": 2.0,
+                "p75": 4.0,
+                "p90": 8.0,
+                "p95": 11.0,
+                "p99": 22.0
+              },
+              "mean_comments_all": 3.8402777777777777,
+              "mean_comments_if_responded": 4.042397660818714,
+              "proxy_posts": 720,
+              "responded_posts": 684,
+              "response_rate": 0.95,
+              "response_rate_wilson_95": [
+                0.9315560531723391,
+                0.963667606792845
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2025-12-28",
+            "proxy_posts": 720,
+            "window_end_inclusive": "2025-12-31",
+            "window_start": "2025-12-25"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 261,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 8,
+                "proxy_share": 0.03065134099616858
+              },
+              {
+                "all_posts": 277,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 9,
+                "proxy_share": 0.032490974729241874
+              },
+              {
+                "all_posts": 248,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 7,
+                "proxy_share": 0.028225806451612902
+              },
+              {
+                "all_posts": 315,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 73,
+                "proxy_share": 0.23174603174603176
+              },
+              {
+                "all_posts": 297,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 20,
+                "proxy_share": 0.06734006734006734
+              },
+              {
+                "all_posts": 333,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 23,
+                "proxy_share": 0.06906906906906907
+              },
+              {
+                "all_posts": 545,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 36,
+                "proxy_share": 0.06605504587155964
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.08522727272727272,
+                "1": 0.38636363636363635,
+                "16": 0.9886363636363636,
+                "2": 0.6534090909090909,
+                "32": 0.9943181818181818,
+                "4": 0.8352272727272727,
+                "8": 0.9431818181818182
+              },
+              "comment_quantiles": {
+                "p50": 2.0,
+                "p75": 3.0,
+                "p90": 6.0,
+                "p95": 9.0,
+                "p99": 15.25
+              },
+              "mean_comments_all": 2.9431818181818183,
+              "mean_comments_if_responded": 3.217391304347826,
+              "proxy_posts": 176,
+              "responded_posts": 161,
+              "response_rate": 0.9147727272727273,
+              "response_rate_wilson_95": [
+                0.8641540642072312,
+                0.9476720906593461
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2026-02-27",
+            "proxy_posts": 176,
+            "window_end_inclusive": "2026-03-02",
+            "window_start": "2026-02-24"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": null,
+                "observed": false,
+                "offset_days": -3,
+                "proxy_posts": null,
+                "proxy_share": null
+              },
+              {
+                "all_posts": 341,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 9,
+                "proxy_share": 0.026392961876832845
+              },
+              {
+                "all_posts": 395,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 15,
+                "proxy_share": 0.0379746835443038
+              },
+              {
+                "all_posts": 567,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 46,
+                "proxy_share": 0.08112874779541446
+              },
+              {
+                "all_posts": 612,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 31,
+                "proxy_share": 0.05065359477124183
+              },
+              {
+                "all_posts": 690,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 25,
+                "proxy_share": 0.036231884057971016
+              },
+              {
+                "all_posts": 606,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 31,
+                "proxy_share": 0.05115511551155116
+              }
+            ],
+            "excluded_gap_offsets": [
+              -3
+            ],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.4012738853503185,
+                "1": 0.6050955414012739,
+                "16": 0.9808917197452229,
+                "2": 0.7643312101910829,
+                "32": 0.9808917197452229,
+                "4": 0.8726114649681529,
+                "8": 0.9363057324840764
+              },
+              "comment_quantiles": {
+                "p50": 1.0,
+                "p75": 2.0,
+                "p90": 5.400000000000006,
+                "p95": 9.199999999999989,
+                "p99": 42.15999999999997
+              },
+              "mean_comments_all": 2.7197452229299364,
+              "mean_comments_if_responded": 4.542553191489362,
+              "proxy_posts": 157,
+              "responded_posts": 94,
+              "response_rate": 0.5987261146496815,
+              "response_rate_wilson_95": [
+                0.5205813242382572,
+                0.6721550524851022
+              ]
+            },
+            "observed_days": 6,
+            "peak_date": "2026-04-07",
+            "proxy_posts": 157,
+            "window_end_inclusive": "2026-04-10",
+            "window_start": "2026-04-04"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 579,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 52,
+                "proxy_share": 0.08981001727115717
+              },
+              {
+                "all_posts": 609,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 48,
+                "proxy_share": 0.07881773399014778
+              },
+              {
+                "all_posts": 493,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 51,
+                "proxy_share": 0.10344827586206896
+              },
+              {
+                "all_posts": 499,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 81,
+                "proxy_share": 0.1623246492985972
+              },
+              {
+                "all_posts": 701,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 59,
+                "proxy_share": 0.08416547788873038
+              },
+              {
+                "all_posts": 628,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 39,
+                "proxy_share": 0.06210191082802548
+              },
+              {
+                "all_posts": 320,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 21,
+                "proxy_share": 0.065625
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.33903133903133903,
+                "1": 0.5299145299145299,
+                "16": 0.9829059829059829,
+                "2": 0.7037037037037037,
+                "32": 0.9943019943019943,
+                "4": 0.8433048433048433,
+                "8": 0.9601139601139601
+              },
+              "comment_quantiles": {
+                "p50": 1.0,
+                "p75": 3.0,
+                "p90": 6.0,
+                "p95": 7.5,
+                "p99": 23.0
+              },
+              "mean_comments_all": 2.4358974358974357,
+              "mean_comments_if_responded": 3.685344827586207,
+              "proxy_posts": 351,
+              "responded_posts": 232,
+              "response_rate": 0.6609686609686609,
+              "response_rate_wilson_95": [
+                0.6099412482899532,
+                0.7085108299298589
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2026-04-26",
+            "proxy_posts": 351,
+            "window_end_inclusive": "2026-04-29",
+            "window_start": "2026-04-23"
+          },
+          {
+            "daily_proxy_posts": [
+              {
+                "all_posts": 648,
+                "observed": true,
+                "offset_days": -3,
+                "proxy_posts": 119,
+                "proxy_share": 0.18364197530864199
+              },
+              {
+                "all_posts": 483,
+                "observed": true,
+                "offset_days": -2,
+                "proxy_posts": 64,
+                "proxy_share": 0.13250517598343686
+              },
+              {
+                "all_posts": 507,
+                "observed": true,
+                "offset_days": -1,
+                "proxy_posts": 118,
+                "proxy_share": 0.23274161735700197
+              },
+              {
+                "all_posts": 822,
+                "observed": true,
+                "offset_days": 0,
+                "proxy_posts": 198,
+                "proxy_share": 0.24087591240875914
+              },
+              {
+                "all_posts": 789,
+                "observed": true,
+                "offset_days": 1,
+                "proxy_posts": 154,
+                "proxy_share": 0.19518377693282637
+              },
+              {
+                "all_posts": 876,
+                "observed": true,
+                "offset_days": 2,
+                "proxy_posts": 177,
+                "proxy_share": 0.20205479452054795
+              },
+              {
+                "all_posts": 856,
+                "observed": true,
+                "offset_days": 3,
+                "proxy_posts": 200,
+                "proxy_share": 0.2336448598130841
+              }
+            ],
+            "excluded_gap_offsets": [],
+            "natural_response_summary_unscored": {
+              "comment_count_cdf": {
+                "0": 0.42524271844660194,
+                "1": 0.6475728155339806,
+                "16": 0.9932038834951457,
+                "2": 0.7708737864077669,
+                "32": 0.9990291262135922,
+                "4": 0.8776699029126214,
+                "8": 0.9660194174757282
+              },
+              "comment_quantiles": {
+                "p50": 1.0,
+                "p75": 2.0,
+                "p90": 5.0,
+                "p95": 7.0,
+                "p99": 14.0
+              },
+              "mean_comments_all": 1.8601941747572817,
+              "mean_comments_if_responded": 3.2364864864864864,
+              "proxy_posts": 1030,
+              "responded_posts": 592,
+              "response_rate": 0.574757281553398,
+              "response_rate_wilson_95": [
+                0.5443424887079308,
+                0.604616521095824
+              ]
+            },
+            "observed_days": 7,
+            "peak_date": "2026-06-08",
+            "proxy_posts": 1030,
+            "window_end_inclusive": "2026-06-11",
+            "window_start": "2026-06-05"
+          }
+        ],
+        "evidence_scope": "retrospective_event_shape_repeatability_only",
+        "folds": [
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.03798007150626249,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2025-12-28",
+            "holdout_proxy_posts": 720,
+            "training_event_count": 4,
+            "training_proxy_posts": 1714,
+            "unscored_volume_relative_error": 0.6340277777777777
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "moderate",
+              "normalized_profile_mae": 0.0646040647534786,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "moderate",
+            "holdout_peak_date": "2026-02-27",
+            "holdout_proxy_posts": 176,
+            "training_event_count": 4,
+            "training_proxy_posts": 2258,
+            "unscored_volume_relative_error": 2.0426136363636362
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.021407507933176344,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2026-04-07",
+            "holdout_proxy_posts": 157,
+            "training_event_count": 4,
+            "training_proxy_posts": 2277,
+            "unscored_volume_relative_error": 2.410828025477707
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.03231860887957598,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2026-04-26",
+            "holdout_proxy_posts": 351,
+            "training_event_count": 4,
+            "training_proxy_posts": 2083,
+            "unscored_volume_relative_error": 0.27635327635327633
+          },
+          {
+            "arrival_profile": {
+              "compared_offsets": [
+                -3,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                3
+              ],
+              "grade": "strong",
+              "normalized_profile_mae": 0.0387197861925417,
+              "rubric": {
+                "moderate": "normalized seven-day proxy-share profile MAE <= 0.10",
+                "strong": "normalized seven-day proxy-share profile MAE <= 0.05",
+                "weak": "normalized seven-day proxy-share profile MAE > 0.10"
+              }
+            },
+            "fold_grade": "strong",
+            "holdout_peak_date": "2026-06-08",
+            "holdout_proxy_posts": 1030,
+            "training_event_count": 4,
+            "training_proxy_posts": 1404,
+            "unscored_volume_relative_error": 0.7441747572815534
+          }
+        ],
+        "grade_counts": {
+          "moderate": 1,
+          "strong": 4
+        },
+        "interpretation": "Each fold pools all other discovered windows and holds out one complete event. The conservative grade is the weakest normalized proxy-share arrival-shape fold. Event occurrence, absolute volume, comment behavior, and policy effects are not scored here.",
+        "mean_normalized_arrival_profile_mae": 0.03900600785300702,
+        "overall_grade": "moderate",
+        "proxy_definition": "Declared scenario keyword pattern; overlapping and not human-reviewed.",
+        "proxy_version": "1.0.0",
+        "stable_fold_fraction": 1.0,
+        "title": "考试压力"
+      }
+    },
+    "schema_version": "1.1.0"
+  },
+  "generated_at_utc": "2026-07-21T17:50:15.667876+00:00",
+  "input_evidence": {
+    "comments_csv": {
+      "bytes": 139282569,
+      "sha256": "a418f3936a520b857ea5e4796588d6d33faf8435d1426f19874dfb6fc0e89ec9"
+    },
+    "note": "File-level fingerprints identify the evaluated snapshot; no source path is persisted.",
+    "posts_csv": {
+      "bytes": 93350184,
+      "sha256": "c72c1b3dc321aa4f12075b1e0006675c48eb8a141024e165696fd3c7ce14a0bd"
+    }
+  },
+  "limitations": [
+    "Keyword proxy categories overlap and are not human-reviewed ground truth.",
+    "The validation window is restricted to one stable post-discontinuity collection regime.",
+    "Final comment counts measure cumulative attention, not timeliness, unique responders, or solution quality.",
+    "Policy-effect outputs remain assumption-driven until intervention and service outcome logs exist.",
+    "Event peaks are discovered from observed keyword-proxy activity; backtests are conditional on an event and do not forecast event occurrence or absolute workload.",
+    "Annotation completeness does not establish label validity; sentiment, tags, analysis, and enriched text are not used for current scoring."
+  ],
+  "methodology": {
+    "data_quality_regime": "Validation starts on 2026-05-01, after the 2026-04-03/04 crawl discontinuity, and ends before the documented 2026-07-16/17 synchronization interruption.",
+    "design": "chronological holdout; no random row split",
+    "excluded_known_gap_dates": [
+      "2026-03-04",
+      "2026-04-03",
+      "2026-04-04",
+      "2026-04-20",
+      "2026-06-25"
+    ],
+    "focus_evidence": {
+      "eligible_scoring_window": {
+        "end_exclusive": "2026-07-21",
+        "start_inclusive": "2025-12-01"
+      },
+      "event_design": "deterministic separated local peaks with leave-one-event-out backtesting",
+      "event_search_window": {
+        "end_exclusive": "2026-07-16",
+        "start_inclusive": "2025-12-01"
+      },
+      "event_window_radius_days": 3,
+      "excluded_known_gap_dates": [
+        "2026-03-04",
+        "2026-04-03",
+        "2026-04-04",
+        "2026-04-20",
+        "2026-06-25"
+      ],
+      "field_audit_scope": "entire_source_files",
+      "maximum_events_per_focus": 5,
+      "minimum_event_posts": 40,
+      "minimum_event_separation_days": 14,
+      "minimum_peak_lift_vs_prior_baseline": 1.25,
+      "minimum_peak_posts": 5,
+      "selection_note": "Peak discovery conditions on observed proxy activity. The backtest evaluates within-event shape and natural comment attention, not event occurrence or volume forecasting."
+    },
+    "holdout_window": {
+      "end_exclusive": "2026-07-16",
+      "start_inclusive": "2026-06-16"
+    },
+    "minimum_posts_for_grade": 100,
+    "observable_parameter_calibration": "Bundled scenario response probabilities and positive reply means use the train window only.",
+    "platform_marker": "NP",
+    "proxy_overlap": "Posts may belong to more than one keyword-proxy need type.",
+    "seed": 20260721,
+    "simulated_samples_per_need": 50000,
+    "train_window": {
+      "end_exclusive": "2026-06-16",
+      "start_inclusive": "2026-05-01"
+    }
+  },
+  "need_type_details_by_scenario": {
+    "campus_safety": {
+      "academic_information": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.02625922299716249,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.1774536811785233,
+          "response_rate_absolute_error_pp": 6.5183515871542586,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.3828,
+            "1": 0.5594,
+            "16": 0.99126,
+            "2": 0.64424,
+            "32": 0.99992,
+            "4": 0.77774,
+            "8": 0.92004
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 10.0,
+            "p99": 16.0
+          },
+          "mean_comments_all": 2.66944,
+          "mean_comments_if_responded": 4.325081011017498,
+          "proxy_posts": 50000,
+          "responded_posts": 30860,
+          "response_rate": 0.6172,
+          "response_rate_wilson_95": [
+            0.6129306363039245,
+            0.6214513563206158
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3176164841284574,
+            "1": 0.4976795990347132,
+            "16": 0.9704844997215519,
+            "2": 0.6341191757935771,
+            "32": 0.9905327640616298,
+            "4": 0.784109894189716,
+            "8": 0.9097828104696492
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 12.0,
+            "p99": 31.0
+          },
+          "mean_comments_all": 3.5880824206422868,
+          "mean_comments_if_responded": 5.25816104461371,
+          "proxy_posts": 5387,
+          "responded_posts": 3676,
+          "response_rate": 0.6823835158715426,
+          "response_rate_wilson_95": [
+            0.6698253196013609,
+            0.6946817828630963
+          ]
+        },
+        "proxy_category": "academic_and_exam",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.3826991980890633,
+            "1": 0.5746459648524143,
+            "16": 0.9843030199624637,
+            "2": 0.7075584371267701,
+            "32": 0.9955638969459136,
+            "4": 0.8425183415799352,
+            "8": 0.9443780924756867
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 19.0
+          },
+          "mean_comments_all": 2.5940965705511005,
+          "mean_comments_if_responded": 4.202321724709784,
+          "proxy_posts": 5861,
+          "responded_posts": 3618,
+          "response_rate": 0.6173008019109367,
+          "response_rate_wilson_95": [
+            0.6047843982711586,
+            0.6296635419936215
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.046763103376136046,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.20080011071275455,
+          "response_rate_absolute_error_pp": 6.508271396060583,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "campus_service": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.05599711654827675,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.145033534064664,
+          "response_rate_absolute_error_pp": 6.239090239410682,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.26818,
+            "1": 0.47628,
+            "16": 0.9898,
+            "2": 0.57616,
+            "32": 0.99996,
+            "4": 0.73568,
+            "8": 0.90258
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 5.0,
+            "p90": 8.0,
+            "p95": 11.0,
+            "p99": 17.0
+          },
+          "mean_comments_all": 3.17894,
+          "mean_comments_if_responded": 4.343882375447515,
+          "proxy_posts": 50000,
+          "responded_posts": 36591,
+          "response_rate": 0.73182,
+          "response_rate_wilson_95": [
+            0.7279192005393856,
+            0.7356851811177899
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3305709023941068,
+            "1": 0.5340699815837937,
+            "16": 0.990791896869245,
+            "2": 0.6961325966850829,
+            "32": 0.994475138121547,
+            "4": 0.8397790055248618,
+            "8": 0.9438305709023941
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 14.150000000000091
+          },
+          "mean_comments_all": 2.539594843462247,
+          "mean_comments_if_responded": 3.793672627235213,
+          "proxy_posts": 1086,
+          "responded_posts": 727,
+          "response_rate": 0.6694290976058932,
+          "response_rate_wilson_95": [
+            0.6408967918233565,
+            0.6967670004847549
+          ]
+        },
+        "proxy_category": "campus_services",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2697406340057637,
+            "1": 0.4622478386167147,
+            "16": 0.9827089337175793,
+            "2": 0.6265129682997118,
+            "32": 0.9948126801152738,
+            "4": 0.7953890489913544,
+            "8": 0.9325648414985591
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 7.0,
+            "p95": 10.0,
+            "p99": 21.0
+          },
+          "mean_comments_all": 3.069740634005764,
+          "mean_comments_if_responded": 4.203630623520127,
+          "proxy_posts": 1735,
+          "responded_posts": 1267,
+          "response_rate": 0.7302593659942364,
+          "response_rate_wilson_95": [
+            0.7088837275039728,
+            0.7506176237818958
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.03804974726050401,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.10806361976038151,
+          "response_rate_absolute_error_pp": 6.083026838834316,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "emotional_support": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.07194243021346469,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.012587680932463055,
+          "response_rate_absolute_error_pp": 7.5410114942528805,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.18436,
+            "1": 0.32242,
+            "16": 0.93596,
+            "2": 0.39926,
+            "32": 0.99686,
+            "4": 0.54342,
+            "8": 0.75382
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 8.0,
+            "p90": 14.0,
+            "p95": 18.0,
+            "p99": 27.0
+          },
+          "mean_comments_all": 5.67888,
+          "mean_comments_if_responded": 6.962483448580256,
+          "proxy_posts": 50000,
+          "responded_posts": 40782,
+          "response_rate": 0.81564,
+          "response_rate_wilson_95": [
+            0.8122168383610624,
+            0.8190146646424354
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2597701149425287,
+            "1": 0.39770114942528734,
+            "16": 0.9505747126436782,
+            "2": 0.5091954022988506,
+            "32": 0.9793103448275862,
+            "4": 0.6632183908045977,
+            "8": 0.8448275862068966
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 12.0,
+            "p95": 16.0,
+            "p99": 44.309999999999945
+          },
+          "mean_comments_all": 5.219540229885057,
+          "mean_comments_if_responded": 7.051242236024844,
+          "proxy_posts": 870,
+          "responded_posts": 644,
+          "response_rate": 0.7402298850574712,
+          "response_rate_wilson_95": [
+            0.7100803200109057,
+            0.7682673204914322
+          ]
+        },
+        "proxy_category": "emotional_support",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.18282208588957055,
+            "1": 0.301840490797546,
+            "16": 0.9361963190184049,
+            "2": 0.44785276073619634,
+            "32": 0.9852760736196319,
+            "4": 0.6159509202453988,
+            "8": 0.8196319018404908
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 7.0,
+            "p90": 13.0,
+            "p95": 18.0,
+            "p99": 37.72000000000003
+          },
+          "mean_comments_all": 5.666257668711657,
+          "mean_comments_if_responded": 6.933933933933934,
+          "proxy_posts": 815,
+          "responded_posts": 666,
+          "response_rate": 0.8171779141104294,
+          "response_rate_wilson_95": [
+            0.789174066528523,
+            0.8422057865929713
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0467083723694682,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.01663654405341248,
+          "response_rate_absolute_error_pp": 7.694802905295816,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "safety_report": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.055878650023116025,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33265958912544935,
+          "response_rate_absolute_error_pp": 4.130653721682842,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.27108,
+            "1": 0.37684,
+            "16": 0.9188,
+            "2": 0.43792,
+            "32": 0.99352,
+            "4": 0.55444,
+            "8": 0.7366
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 9.0,
+            "p90": 15.0,
+            "p95": 20.0,
+            "p99": 30.0
+          },
+          "mean_comments_all": 5.79842,
+          "mean_comments_if_responded": 7.954809855676892,
+          "proxy_posts": 50000,
+          "responded_posts": 36446,
+          "response_rate": 0.72892,
+          "response_rate_wilson_95": [
+            0.7250062292248087,
+            0.7327985980073568
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2297734627831715,
+            "1": 0.36245954692556637,
+            "16": 0.8770226537216829,
+            "2": 0.4886731391585761,
+            "32": 0.9385113268608414,
+            "4": 0.6731391585760518,
+            "8": 0.8058252427184466
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 6.0,
+            "p90": 20.0,
+            "p95": 48.599999999999966,
+            "p99": 142.0400000000002
+          },
+          "mean_comments_all": 9.181229773462784,
+          "mean_comments_if_responded": 11.920168067226891,
+          "proxy_posts": 309,
+          "responded_posts": 238,
+          "response_rate": 0.7702265372168284,
+          "response_rate_wilson_95": [
+            0.7201733287881809,
+            0.813643386648236
+          ]
+        },
+        "proxy_category": "safety_and_rights",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2716049382716049,
+            "1": 0.4567901234567901,
+            "16": 0.9382716049382716,
+            "2": 0.5493827160493827,
+            "32": 0.9814814814814815,
+            "4": 0.6790123456790124,
+            "8": 0.845679012345679
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 11.0,
+            "p95": 19.699999999999932,
+            "p99": 60.38999999999987
+          },
+          "mean_comments_all": 5.783950617283951,
+          "mean_comments_if_responded": 7.940677966101695,
+          "proxy_posts": 324,
+          "responded_posts": 236,
+          "response_rate": 0.7283950617283951,
+          "response_rate_wilson_95": [
+            0.6774976223184905,
+            0.7739400955722948
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0495453844968408,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33384513361571966,
+          "response_rate_absolute_error_pp": 4.183147548843335,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      }
+    },
+    "campus_services": {
+      "academic_information": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.02625922299716249,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.1774536811785233,
+          "response_rate_absolute_error_pp": 6.5183515871542586,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.3828,
+            "1": 0.5594,
+            "16": 0.99126,
+            "2": 0.64424,
+            "32": 0.99992,
+            "4": 0.77774,
+            "8": 0.92004
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 10.0,
+            "p99": 16.0
+          },
+          "mean_comments_all": 2.66944,
+          "mean_comments_if_responded": 4.325081011017498,
+          "proxy_posts": 50000,
+          "responded_posts": 30860,
+          "response_rate": 0.6172,
+          "response_rate_wilson_95": [
+            0.6129306363039245,
+            0.6214513563206158
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3176164841284574,
+            "1": 0.4976795990347132,
+            "16": 0.9704844997215519,
+            "2": 0.6341191757935771,
+            "32": 0.9905327640616298,
+            "4": 0.784109894189716,
+            "8": 0.9097828104696492
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 12.0,
+            "p99": 31.0
+          },
+          "mean_comments_all": 3.5880824206422868,
+          "mean_comments_if_responded": 5.25816104461371,
+          "proxy_posts": 5387,
+          "responded_posts": 3676,
+          "response_rate": 0.6823835158715426,
+          "response_rate_wilson_95": [
+            0.6698253196013609,
+            0.6946817828630963
+          ]
+        },
+        "proxy_category": "academic_and_exam",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.3826991980890633,
+            "1": 0.5746459648524143,
+            "16": 0.9843030199624637,
+            "2": 0.7075584371267701,
+            "32": 0.9955638969459136,
+            "4": 0.8425183415799352,
+            "8": 0.9443780924756867
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 19.0
+          },
+          "mean_comments_all": 2.5940965705511005,
+          "mean_comments_if_responded": 4.202321724709784,
+          "proxy_posts": 5861,
+          "responded_posts": 3618,
+          "response_rate": 0.6173008019109367,
+          "response_rate_wilson_95": [
+            0.6047843982711586,
+            0.6296635419936215
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.046763103376136046,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.20080011071275455,
+          "response_rate_absolute_error_pp": 6.508271396060583,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "campus_service": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.05599711654827675,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.145033534064664,
+          "response_rate_absolute_error_pp": 6.239090239410682,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.26818,
+            "1": 0.47628,
+            "16": 0.9898,
+            "2": 0.57616,
+            "32": 0.99996,
+            "4": 0.73568,
+            "8": 0.90258
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 5.0,
+            "p90": 8.0,
+            "p95": 11.0,
+            "p99": 17.0
+          },
+          "mean_comments_all": 3.17894,
+          "mean_comments_if_responded": 4.343882375447515,
+          "proxy_posts": 50000,
+          "responded_posts": 36591,
+          "response_rate": 0.73182,
+          "response_rate_wilson_95": [
+            0.7279192005393856,
+            0.7356851811177899
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3305709023941068,
+            "1": 0.5340699815837937,
+            "16": 0.990791896869245,
+            "2": 0.6961325966850829,
+            "32": 0.994475138121547,
+            "4": 0.8397790055248618,
+            "8": 0.9438305709023941
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 14.150000000000091
+          },
+          "mean_comments_all": 2.539594843462247,
+          "mean_comments_if_responded": 3.793672627235213,
+          "proxy_posts": 1086,
+          "responded_posts": 727,
+          "response_rate": 0.6694290976058932,
+          "response_rate_wilson_95": [
+            0.6408967918233565,
+            0.6967670004847549
+          ]
+        },
+        "proxy_category": "campus_services",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2697406340057637,
+            "1": 0.4622478386167147,
+            "16": 0.9827089337175793,
+            "2": 0.6265129682997118,
+            "32": 0.9948126801152738,
+            "4": 0.7953890489913544,
+            "8": 0.9325648414985591
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 7.0,
+            "p95": 10.0,
+            "p99": 21.0
+          },
+          "mean_comments_all": 3.069740634005764,
+          "mean_comments_if_responded": 4.203630623520127,
+          "proxy_posts": 1735,
+          "responded_posts": 1267,
+          "response_rate": 0.7302593659942364,
+          "response_rate_wilson_95": [
+            0.7088837275039728,
+            0.7506176237818958
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.03804974726050401,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.10806361976038151,
+          "response_rate_absolute_error_pp": 6.083026838834316,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "emotional_support": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.07194243021346469,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.012587680932463055,
+          "response_rate_absolute_error_pp": 7.5410114942528805,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.18436,
+            "1": 0.32242,
+            "16": 0.93596,
+            "2": 0.39926,
+            "32": 0.99686,
+            "4": 0.54342,
+            "8": 0.75382
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 8.0,
+            "p90": 14.0,
+            "p95": 18.0,
+            "p99": 27.0
+          },
+          "mean_comments_all": 5.67888,
+          "mean_comments_if_responded": 6.962483448580256,
+          "proxy_posts": 50000,
+          "responded_posts": 40782,
+          "response_rate": 0.81564,
+          "response_rate_wilson_95": [
+            0.8122168383610624,
+            0.8190146646424354
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2597701149425287,
+            "1": 0.39770114942528734,
+            "16": 0.9505747126436782,
+            "2": 0.5091954022988506,
+            "32": 0.9793103448275862,
+            "4": 0.6632183908045977,
+            "8": 0.8448275862068966
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 12.0,
+            "p95": 16.0,
+            "p99": 44.309999999999945
+          },
+          "mean_comments_all": 5.219540229885057,
+          "mean_comments_if_responded": 7.051242236024844,
+          "proxy_posts": 870,
+          "responded_posts": 644,
+          "response_rate": 0.7402298850574712,
+          "response_rate_wilson_95": [
+            0.7100803200109057,
+            0.7682673204914322
+          ]
+        },
+        "proxy_category": "emotional_support",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.18282208588957055,
+            "1": 0.301840490797546,
+            "16": 0.9361963190184049,
+            "2": 0.44785276073619634,
+            "32": 0.9852760736196319,
+            "4": 0.6159509202453988,
+            "8": 0.8196319018404908
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 7.0,
+            "p90": 13.0,
+            "p95": 18.0,
+            "p99": 37.72000000000003
+          },
+          "mean_comments_all": 5.666257668711657,
+          "mean_comments_if_responded": 6.933933933933934,
+          "proxy_posts": 815,
+          "responded_posts": 666,
+          "response_rate": 0.8171779141104294,
+          "response_rate_wilson_95": [
+            0.789174066528523,
+            0.8422057865929713
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0467083723694682,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.01663654405341248,
+          "response_rate_absolute_error_pp": 7.694802905295816,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "safety_report": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.055878650023116025,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33265958912544935,
+          "response_rate_absolute_error_pp": 4.130653721682842,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.27108,
+            "1": 0.37684,
+            "16": 0.9188,
+            "2": 0.43792,
+            "32": 0.99352,
+            "4": 0.55444,
+            "8": 0.7366
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 9.0,
+            "p90": 15.0,
+            "p95": 20.0,
+            "p99": 30.0
+          },
+          "mean_comments_all": 5.79842,
+          "mean_comments_if_responded": 7.954809855676892,
+          "proxy_posts": 50000,
+          "responded_posts": 36446,
+          "response_rate": 0.72892,
+          "response_rate_wilson_95": [
+            0.7250062292248087,
+            0.7327985980073568
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2297734627831715,
+            "1": 0.36245954692556637,
+            "16": 0.8770226537216829,
+            "2": 0.4886731391585761,
+            "32": 0.9385113268608414,
+            "4": 0.6731391585760518,
+            "8": 0.8058252427184466
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 6.0,
+            "p90": 20.0,
+            "p95": 48.599999999999966,
+            "p99": 142.0400000000002
+          },
+          "mean_comments_all": 9.181229773462784,
+          "mean_comments_if_responded": 11.920168067226891,
+          "proxy_posts": 309,
+          "responded_posts": 238,
+          "response_rate": 0.7702265372168284,
+          "response_rate_wilson_95": [
+            0.7201733287881809,
+            0.813643386648236
+          ]
+        },
+        "proxy_category": "safety_and_rights",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2716049382716049,
+            "1": 0.4567901234567901,
+            "16": 0.9382716049382716,
+            "2": 0.5493827160493827,
+            "32": 0.9814814814814815,
+            "4": 0.6790123456790124,
+            "8": 0.845679012345679
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 11.0,
+            "p95": 19.699999999999932,
+            "p99": 60.38999999999987
+          },
+          "mean_comments_all": 5.783950617283951,
+          "mean_comments_if_responded": 7.940677966101695,
+          "proxy_posts": 324,
+          "responded_posts": 236,
+          "response_rate": 0.7283950617283951,
+          "response_rate_wilson_95": [
+            0.6774976223184905,
+            0.7739400955722948
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0495453844968408,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33384513361571966,
+          "response_rate_absolute_error_pp": 4.183147548843335,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      }
+    },
+    "course_selection": {
+      "academic_information": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.02625922299716249,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.1774536811785233,
+          "response_rate_absolute_error_pp": 6.5183515871542586,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.3828,
+            "1": 0.5594,
+            "16": 0.99126,
+            "2": 0.64424,
+            "32": 0.99992,
+            "4": 0.77774,
+            "8": 0.92004
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 10.0,
+            "p99": 16.0
+          },
+          "mean_comments_all": 2.66944,
+          "mean_comments_if_responded": 4.325081011017498,
+          "proxy_posts": 50000,
+          "responded_posts": 30860,
+          "response_rate": 0.6172,
+          "response_rate_wilson_95": [
+            0.6129306363039245,
+            0.6214513563206158
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3176164841284574,
+            "1": 0.4976795990347132,
+            "16": 0.9704844997215519,
+            "2": 0.6341191757935771,
+            "32": 0.9905327640616298,
+            "4": 0.784109894189716,
+            "8": 0.9097828104696492
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 12.0,
+            "p99": 31.0
+          },
+          "mean_comments_all": 3.5880824206422868,
+          "mean_comments_if_responded": 5.25816104461371,
+          "proxy_posts": 5387,
+          "responded_posts": 3676,
+          "response_rate": 0.6823835158715426,
+          "response_rate_wilson_95": [
+            0.6698253196013609,
+            0.6946817828630963
+          ]
+        },
+        "proxy_category": "academic_and_exam",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.3826991980890633,
+            "1": 0.5746459648524143,
+            "16": 0.9843030199624637,
+            "2": 0.7075584371267701,
+            "32": 0.9955638969459136,
+            "4": 0.8425183415799352,
+            "8": 0.9443780924756867
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 19.0
+          },
+          "mean_comments_all": 2.5940965705511005,
+          "mean_comments_if_responded": 4.202321724709784,
+          "proxy_posts": 5861,
+          "responded_posts": 3618,
+          "response_rate": 0.6173008019109367,
+          "response_rate_wilson_95": [
+            0.6047843982711586,
+            0.6296635419936215
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.046763103376136046,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.20080011071275455,
+          "response_rate_absolute_error_pp": 6.508271396060583,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "campus_service": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.05599711654827675,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.145033534064664,
+          "response_rate_absolute_error_pp": 6.239090239410682,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.26818,
+            "1": 0.47628,
+            "16": 0.9898,
+            "2": 0.57616,
+            "32": 0.99996,
+            "4": 0.73568,
+            "8": 0.90258
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 5.0,
+            "p90": 8.0,
+            "p95": 11.0,
+            "p99": 17.0
+          },
+          "mean_comments_all": 3.17894,
+          "mean_comments_if_responded": 4.343882375447515,
+          "proxy_posts": 50000,
+          "responded_posts": 36591,
+          "response_rate": 0.73182,
+          "response_rate_wilson_95": [
+            0.7279192005393856,
+            0.7356851811177899
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3305709023941068,
+            "1": 0.5340699815837937,
+            "16": 0.990791896869245,
+            "2": 0.6961325966850829,
+            "32": 0.994475138121547,
+            "4": 0.8397790055248618,
+            "8": 0.9438305709023941
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 14.150000000000091
+          },
+          "mean_comments_all": 2.539594843462247,
+          "mean_comments_if_responded": 3.793672627235213,
+          "proxy_posts": 1086,
+          "responded_posts": 727,
+          "response_rate": 0.6694290976058932,
+          "response_rate_wilson_95": [
+            0.6408967918233565,
+            0.6967670004847549
+          ]
+        },
+        "proxy_category": "campus_services",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2697406340057637,
+            "1": 0.4622478386167147,
+            "16": 0.9827089337175793,
+            "2": 0.6265129682997118,
+            "32": 0.9948126801152738,
+            "4": 0.7953890489913544,
+            "8": 0.9325648414985591
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 7.0,
+            "p95": 10.0,
+            "p99": 21.0
+          },
+          "mean_comments_all": 3.069740634005764,
+          "mean_comments_if_responded": 4.203630623520127,
+          "proxy_posts": 1735,
+          "responded_posts": 1267,
+          "response_rate": 0.7302593659942364,
+          "response_rate_wilson_95": [
+            0.7088837275039728,
+            0.7506176237818958
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.03804974726050401,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.10806361976038151,
+          "response_rate_absolute_error_pp": 6.083026838834316,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "emotional_support": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.07194243021346469,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.012587680932463055,
+          "response_rate_absolute_error_pp": 7.5410114942528805,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.18436,
+            "1": 0.32242,
+            "16": 0.93596,
+            "2": 0.39926,
+            "32": 0.99686,
+            "4": 0.54342,
+            "8": 0.75382
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 8.0,
+            "p90": 14.0,
+            "p95": 18.0,
+            "p99": 27.0
+          },
+          "mean_comments_all": 5.67888,
+          "mean_comments_if_responded": 6.962483448580256,
+          "proxy_posts": 50000,
+          "responded_posts": 40782,
+          "response_rate": 0.81564,
+          "response_rate_wilson_95": [
+            0.8122168383610624,
+            0.8190146646424354
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2597701149425287,
+            "1": 0.39770114942528734,
+            "16": 0.9505747126436782,
+            "2": 0.5091954022988506,
+            "32": 0.9793103448275862,
+            "4": 0.6632183908045977,
+            "8": 0.8448275862068966
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 12.0,
+            "p95": 16.0,
+            "p99": 44.309999999999945
+          },
+          "mean_comments_all": 5.219540229885057,
+          "mean_comments_if_responded": 7.051242236024844,
+          "proxy_posts": 870,
+          "responded_posts": 644,
+          "response_rate": 0.7402298850574712,
+          "response_rate_wilson_95": [
+            0.7100803200109057,
+            0.7682673204914322
+          ]
+        },
+        "proxy_category": "emotional_support",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.18282208588957055,
+            "1": 0.301840490797546,
+            "16": 0.9361963190184049,
+            "2": 0.44785276073619634,
+            "32": 0.9852760736196319,
+            "4": 0.6159509202453988,
+            "8": 0.8196319018404908
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 7.0,
+            "p90": 13.0,
+            "p95": 18.0,
+            "p99": 37.72000000000003
+          },
+          "mean_comments_all": 5.666257668711657,
+          "mean_comments_if_responded": 6.933933933933934,
+          "proxy_posts": 815,
+          "responded_posts": 666,
+          "response_rate": 0.8171779141104294,
+          "response_rate_wilson_95": [
+            0.789174066528523,
+            0.8422057865929713
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0467083723694682,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.01663654405341248,
+          "response_rate_absolute_error_pp": 7.694802905295816,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "safety_report": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.055878650023116025,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33265958912544935,
+          "response_rate_absolute_error_pp": 4.130653721682842,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.27108,
+            "1": 0.37684,
+            "16": 0.9188,
+            "2": 0.43792,
+            "32": 0.99352,
+            "4": 0.55444,
+            "8": 0.7366
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 9.0,
+            "p90": 15.0,
+            "p95": 20.0,
+            "p99": 30.0
+          },
+          "mean_comments_all": 5.79842,
+          "mean_comments_if_responded": 7.954809855676892,
+          "proxy_posts": 50000,
+          "responded_posts": 36446,
+          "response_rate": 0.72892,
+          "response_rate_wilson_95": [
+            0.7250062292248087,
+            0.7327985980073568
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2297734627831715,
+            "1": 0.36245954692556637,
+            "16": 0.8770226537216829,
+            "2": 0.4886731391585761,
+            "32": 0.9385113268608414,
+            "4": 0.6731391585760518,
+            "8": 0.8058252427184466
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 6.0,
+            "p90": 20.0,
+            "p95": 48.599999999999966,
+            "p99": 142.0400000000002
+          },
+          "mean_comments_all": 9.181229773462784,
+          "mean_comments_if_responded": 11.920168067226891,
+          "proxy_posts": 309,
+          "responded_posts": 238,
+          "response_rate": 0.7702265372168284,
+          "response_rate_wilson_95": [
+            0.7201733287881809,
+            0.813643386648236
+          ]
+        },
+        "proxy_category": "safety_and_rights",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2716049382716049,
+            "1": 0.4567901234567901,
+            "16": 0.9382716049382716,
+            "2": 0.5493827160493827,
+            "32": 0.9814814814814815,
+            "4": 0.6790123456790124,
+            "8": 0.845679012345679
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 11.0,
+            "p95": 19.699999999999932,
+            "p99": 60.38999999999987
+          },
+          "mean_comments_all": 5.783950617283951,
+          "mean_comments_if_responded": 7.940677966101695,
+          "proxy_posts": 324,
+          "responded_posts": 236,
+          "response_rate": 0.7283950617283951,
+          "response_rate_wilson_95": [
+            0.6774976223184905,
+            0.7739400955722948
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0495453844968408,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33384513361571966,
+          "response_rate_absolute_error_pp": 4.183147548843335,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      }
+    },
+    "exam_pressure": {
+      "academic_information": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.02625922299716249,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.1774536811785233,
+          "response_rate_absolute_error_pp": 6.5183515871542586,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.3828,
+            "1": 0.5594,
+            "16": 0.99126,
+            "2": 0.64424,
+            "32": 0.99992,
+            "4": 0.77774,
+            "8": 0.92004
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 10.0,
+            "p99": 16.0
+          },
+          "mean_comments_all": 2.66944,
+          "mean_comments_if_responded": 4.325081011017498,
+          "proxy_posts": 50000,
+          "responded_posts": 30860,
+          "response_rate": 0.6172,
+          "response_rate_wilson_95": [
+            0.6129306363039245,
+            0.6214513563206158
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3176164841284574,
+            "1": 0.4976795990347132,
+            "16": 0.9704844997215519,
+            "2": 0.6341191757935771,
+            "32": 0.9905327640616298,
+            "4": 0.784109894189716,
+            "8": 0.9097828104696492
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 8.0,
+            "p95": 12.0,
+            "p99": 31.0
+          },
+          "mean_comments_all": 3.5880824206422868,
+          "mean_comments_if_responded": 5.25816104461371,
+          "proxy_posts": 5387,
+          "responded_posts": 3676,
+          "response_rate": 0.6823835158715426,
+          "response_rate_wilson_95": [
+            0.6698253196013609,
+            0.6946817828630963
+          ]
+        },
+        "proxy_category": "academic_and_exam",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.3826991980890633,
+            "1": 0.5746459648524143,
+            "16": 0.9843030199624637,
+            "2": 0.7075584371267701,
+            "32": 0.9955638969459136,
+            "4": 0.8425183415799352,
+            "8": 0.9443780924756867
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 19.0
+          },
+          "mean_comments_all": 2.5940965705511005,
+          "mean_comments_if_responded": 4.202321724709784,
+          "proxy_posts": 5861,
+          "responded_posts": 3618,
+          "response_rate": 0.6173008019109367,
+          "response_rate_wilson_95": [
+            0.6047843982711586,
+            0.6296635419936215
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.046763103376136046,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.20080011071275455,
+          "response_rate_absolute_error_pp": 6.508271396060583,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "campus_service": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.05599711654827675,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.145033534064664,
+          "response_rate_absolute_error_pp": 6.239090239410682,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.26818,
+            "1": 0.47628,
+            "16": 0.9898,
+            "2": 0.57616,
+            "32": 0.99996,
+            "4": 0.73568,
+            "8": 0.90258
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 5.0,
+            "p90": 8.0,
+            "p95": 11.0,
+            "p99": 17.0
+          },
+          "mean_comments_all": 3.17894,
+          "mean_comments_if_responded": 4.343882375447515,
+          "proxy_posts": 50000,
+          "responded_posts": 36591,
+          "response_rate": 0.73182,
+          "response_rate_wilson_95": [
+            0.7279192005393856,
+            0.7356851811177899
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.3305709023941068,
+            "1": 0.5340699815837937,
+            "16": 0.990791896869245,
+            "2": 0.6961325966850829,
+            "32": 0.994475138121547,
+            "4": 0.8397790055248618,
+            "8": 0.9438305709023941
+          },
+          "comment_quantiles": {
+            "p50": 1.0,
+            "p75": 3.0,
+            "p90": 6.0,
+            "p95": 9.0,
+            "p99": 14.150000000000091
+          },
+          "mean_comments_all": 2.539594843462247,
+          "mean_comments_if_responded": 3.793672627235213,
+          "proxy_posts": 1086,
+          "responded_posts": 727,
+          "response_rate": 0.6694290976058932,
+          "response_rate_wilson_95": [
+            0.6408967918233565,
+            0.6967670004847549
+          ]
+        },
+        "proxy_category": "campus_services",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2697406340057637,
+            "1": 0.4622478386167147,
+            "16": 0.9827089337175793,
+            "2": 0.6265129682997118,
+            "32": 0.9948126801152738,
+            "4": 0.7953890489913544,
+            "8": 0.9325648414985591
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 4.0,
+            "p90": 7.0,
+            "p95": 10.0,
+            "p99": 21.0
+          },
+          "mean_comments_all": 3.069740634005764,
+          "mean_comments_if_responded": 4.203630623520127,
+          "proxy_posts": 1735,
+          "responded_posts": 1267,
+          "response_rate": 0.7302593659942364,
+          "response_rate_wilson_95": [
+            0.7088837275039728,
+            0.7506176237818958
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.03804974726050401,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.10806361976038151,
+          "response_rate_absolute_error_pp": 6.083026838834316,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "emotional_support": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.07194243021346469,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.012587680932463055,
+          "response_rate_absolute_error_pp": 7.5410114942528805,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.18436,
+            "1": 0.32242,
+            "16": 0.93596,
+            "2": 0.39926,
+            "32": 0.99686,
+            "4": 0.54342,
+            "8": 0.75382
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 8.0,
+            "p90": 14.0,
+            "p95": 18.0,
+            "p99": 27.0
+          },
+          "mean_comments_all": 5.67888,
+          "mean_comments_if_responded": 6.962483448580256,
+          "proxy_posts": 50000,
+          "responded_posts": 40782,
+          "response_rate": 0.81564,
+          "response_rate_wilson_95": [
+            0.8122168383610624,
+            0.8190146646424354
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2597701149425287,
+            "1": 0.39770114942528734,
+            "16": 0.9505747126436782,
+            "2": 0.5091954022988506,
+            "32": 0.9793103448275862,
+            "4": 0.6632183908045977,
+            "8": 0.8448275862068966
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 12.0,
+            "p95": 16.0,
+            "p99": 44.309999999999945
+          },
+          "mean_comments_all": 5.219540229885057,
+          "mean_comments_if_responded": 7.051242236024844,
+          "proxy_posts": 870,
+          "responded_posts": 644,
+          "response_rate": 0.7402298850574712,
+          "response_rate_wilson_95": [
+            0.7100803200109057,
+            0.7682673204914322
+          ]
+        },
+        "proxy_category": "emotional_support",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.18282208588957055,
+            "1": 0.301840490797546,
+            "16": 0.9361963190184049,
+            "2": 0.44785276073619634,
+            "32": 0.9852760736196319,
+            "4": 0.6159509202453988,
+            "8": 0.8196319018404908
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 7.0,
+            "p90": 13.0,
+            "p95": 18.0,
+            "p99": 37.72000000000003
+          },
+          "mean_comments_all": 5.666257668711657,
+          "mean_comments_if_responded": 6.933933933933934,
+          "proxy_posts": 815,
+          "responded_posts": 666,
+          "response_rate": 0.8171779141104294,
+          "response_rate_wilson_95": [
+            0.789174066528523,
+            0.8422057865929713
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0467083723694682,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.01663654405341248,
+          "response_rate_absolute_error_pp": 7.694802905295816,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      },
+      "safety_report": {
+        "calibrated_generator_to_holdout": {
+          "comment_cdf_mae": 0.055878650023116025,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33265958912544935,
+          "response_rate_absolute_error_pp": 4.130653721682842,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        },
+        "calibrated_model": {
+          "comment_count_cdf": {
+            "0": 0.27108,
+            "1": 0.37684,
+            "16": 0.9188,
+            "2": 0.43792,
+            "32": 0.99352,
+            "4": 0.55444,
+            "8": 0.7366
+          },
+          "comment_quantiles": {
+            "p50": 4.0,
+            "p75": 9.0,
+            "p90": 15.0,
+            "p95": 20.0,
+            "p99": 30.0
+          },
+          "mean_comments_all": 5.79842,
+          "mean_comments_if_responded": 7.954809855676892,
+          "proxy_posts": 50000,
+          "responded_posts": 36446,
+          "response_rate": 0.72892,
+          "response_rate_wilson_95": [
+            0.7250062292248087,
+            0.7327985980073568
+          ]
+        },
+        "holdout": {
+          "comment_count_cdf": {
+            "0": 0.2297734627831715,
+            "1": 0.36245954692556637,
+            "16": 0.8770226537216829,
+            "2": 0.4886731391585761,
+            "32": 0.9385113268608414,
+            "4": 0.6731391585760518,
+            "8": 0.8058252427184466
+          },
+          "comment_quantiles": {
+            "p50": 3.0,
+            "p75": 6.0,
+            "p90": 20.0,
+            "p95": 48.599999999999966,
+            "p99": 142.0400000000002
+          },
+          "mean_comments_all": 9.181229773462784,
+          "mean_comments_if_responded": 11.920168067226891,
+          "proxy_posts": 309,
+          "responded_posts": 238,
+          "response_rate": 0.7702265372168284,
+          "response_rate_wilson_95": [
+            0.7201733287881809,
+            0.813643386648236
+          ]
+        },
+        "proxy_category": "safety_and_rights",
+        "train": {
+          "comment_count_cdf": {
+            "0": 0.2716049382716049,
+            "1": 0.4567901234567901,
+            "16": 0.9382716049382716,
+            "2": 0.5493827160493827,
+            "32": 0.9814814814814815,
+            "4": 0.6790123456790124,
+            "8": 0.845679012345679
+          },
+          "comment_quantiles": {
+            "p50": 2.0,
+            "p75": 6.0,
+            "p90": 11.0,
+            "p95": 19.699999999999932,
+            "p99": 60.38999999999987
+          },
+          "mean_comments_all": 5.783950617283951,
+          "mean_comments_if_responded": 7.940677966101695,
+          "proxy_posts": 324,
+          "responded_posts": 236,
+          "response_rate": 0.7283950617283951,
+          "response_rate_wilson_95": [
+            0.6774976223184905,
+            0.7739400955722948
+          ]
+        },
+        "train_persistence_to_holdout": {
+          "comment_cdf_mae": 0.0495453844968408,
+          "grade": "moderate",
+          "positive_mean_relative_error": 0.33384513361571966,
+          "response_rate_absolute_error_pp": 4.183147548843335,
+          "rubric": {
+            "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+            "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+            "weak": "exceeds at least one moderate threshold"
+          }
+        }
+      }
+    }
+  },
+  "overall_conclusion": {
+    "appropriate_use": "comparative operational stress testing and sensitivity analysis",
+    "focus_event_backtest": {
+      "course_selection": "weak",
+      "exam_pressure": "moderate"
+    },
+    "inappropriate_use": "predicting real policy effect sizes, response times, or student outcomes",
+    "intervention_effect_validity": "not_empirically_validated",
+    "observable_generator_holdout_fidelity": "moderate",
+    "temporal_stability": "moderate"
+  },
+  "privacy": "Aggregate output only; source text and direct identifiers are not persisted.",
+  "scenario_results": {
+    "campus_safety": {
+      "interpretation": "Temporal stability compares earlier empirical behavior with the later window. Generator fidelity evaluates the train-window-calibrated hurdle/count mechanism against observations that were not used to set its response probability or mean.",
+      "need_mix_is_operator_or_assumption_input": true,
+      "observable_generator_holdout_fidelity": {
+        "comment_cdf_mae": 0.04293225832757154,
+        "grade": "moderate",
+        "positive_mean_relative_error": 0.27971933349322303,
+        "response_rate_absolute_error_pp": 2.3562984197647685,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "scenario_version": "1.1.0",
+      "temporal_stability": {
+        "comment_cdf_mae": 0.03083977848377062,
+        "grade": "moderate",
+        "positive_mean_relative_error": 0.28445061958221685,
+        "response_rate_absolute_error_pp": 2.3872573571607547,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "title": "校园安全事件压力测试"
+    },
+    "campus_services": {
+      "interpretation": "Temporal stability compares earlier empirical behavior with the later window. Generator fidelity evaluates the train-window-calibrated hurdle/count mechanism against observations that were not used to set its response probability or mean.",
+      "need_mix_is_operator_or_assumption_input": true,
+      "observable_generator_holdout_fidelity": {
+        "comment_cdf_mae": 0.045632794262523216,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.03758511609060413,
+        "response_rate_absolute_error_pp": 4.2222327865914515,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "scenario_version": "1.1.1",
+      "temporal_stability": {
+        "comment_cdf_mae": 0.024729770760022623,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.009818604086315042,
+        "response_rate_absolute_error_pp": 4.117950701163442,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "title": "校园后勤服务需求冲击"
+    },
+    "course_selection": {
+      "interpretation": "Temporal stability compares earlier empirical behavior with the later window. Generator fidelity evaluates the train-window-calibrated hurdle/count mechanism against observations that were not used to set its response probability or mean.",
+      "need_mix_is_operator_or_assumption_input": true,
+      "observable_generator_holdout_fidelity": {
+        "comment_cdf_mae": 0.02169540998842561,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.1250995295687169,
+        "response_rate_absolute_error_pp": 3.4061938842506745,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "scenario_version": "1.2.0",
+      "temporal_stability": {
+        "comment_cdf_mae": 0.026628917509337664,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.14551798470998378,
+        "response_rate_absolute_error_pp": 3.404592718444255,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "title": "选课期信息需求冲击"
+    },
+    "exam_pressure": {
+      "interpretation": "Temporal stability compares earlier empirical behavior with the later window. Generator fidelity evaluates the train-window-calibrated hurdle/count mechanism against observations that were not used to set its response probability or mean.",
+      "need_mix_is_operator_or_assumption_input": true,
+      "observable_generator_holdout_fidelity": {
+        "comment_cdf_mae": 0.02635158909796313,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.08124781154546568,
+        "response_rate_absolute_error_pp": 0.37033059585444006,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "scenario_version": "1.2.0",
+      "temporal_stability": {
+        "comment_cdf_mae": 0.004612526612714107,
+        "grade": "strong",
+        "positive_mean_relative_error": 0.09591535442165602,
+        "response_rate_absolute_error_pp": 0.3871667336861728,
+        "rubric": {
+          "moderate": "<=10 pp response error, <=40% positive-mean error, and <=0.10 CDF MAE",
+          "strong": "<=5 pp response error, <=20% positive-mean error, and <=0.05 CDF MAE",
+          "weak": "exceeds at least one moderate threshold"
+        }
+      },
+      "title": "考试周支持需求冲击"
+    }
+  },
+  "validation_schema_version": "2.1.0"
+}

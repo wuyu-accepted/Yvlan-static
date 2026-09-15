@@ -1,0 +1,852 @@
+{
+  "artifact_sha256": "400a49fe8debd0eddbcce9a41d6ea3007a658bb29898cde0b77430ffa0bcf81c",
+  "automatic_checks_passed": true,
+  "branch_aggregate_summaries": {
+    "A": {
+      "claims": {
+        "max": 36.0,
+        "mean": 32.333333,
+        "min": 27.0
+      },
+      "complete_correction_chains": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "complete_governance_uptake_chains": {
+        "max": 6.0,
+        "mean": 4.333333,
+        "min": 2.0
+      },
+      "complete_help_service_feedback_chains": {
+        "max": 1.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "compound_speech_and_engagement_turns": {
+        "max": 112.0,
+        "mean": 109.0,
+        "min": 107.0
+      },
+      "contested_claims": {
+        "max": 2.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "corrected_or_verified_claims": {
+        "max": 34.0,
+        "mean": 31.0,
+        "min": 27.0
+      },
+      "governance_public_messages": {
+        "max": 6.0,
+        "mean": 6.0,
+        "min": 6.0
+      },
+      "help_requests": {
+        "max": 2.0,
+        "mean": 1.333333,
+        "min": 1.0
+      },
+      "likes": {
+        "max": 129.0,
+        "mean": 123.666667,
+        "min": 114.0
+      },
+      "multi_kind_engagement_turns": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "replies": {
+        "max": 114.0,
+        "mean": 113.333333,
+        "min": 112.0
+      },
+      "reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "reposts": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "resident_public_messages": {
+        "max": 138.0,
+        "mean": 137.333333,
+        "min": 136.0
+      },
+      "risk_reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "threads": {
+        "max": 23.0,
+        "mean": 23.0,
+        "min": 23.0
+      },
+      "unique_activated_agents": {
+        "max": 60.0,
+        "mean": 60.0,
+        "min": 60.0
+      }
+    },
+    "B": {
+      "claims": {
+        "max": 35.0,
+        "mean": 34.0,
+        "min": 32.0
+      },
+      "complete_correction_chains": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "complete_governance_uptake_chains": {
+        "max": 2.0,
+        "mean": 1.0,
+        "min": 0.0
+      },
+      "complete_help_service_feedback_chains": {
+        "max": 1.0,
+        "mean": 0.333333,
+        "min": 0.0
+      },
+      "compound_speech_and_engagement_turns": {
+        "max": 113.0,
+        "mean": 110.0,
+        "min": 108.0
+      },
+      "contested_claims": {
+        "max": 3.0,
+        "mean": 1.0,
+        "min": 0.0
+      },
+      "corrected_or_verified_claims": {
+        "max": 35.0,
+        "mean": 32.333333,
+        "min": 29.0
+      },
+      "governance_public_messages": {
+        "max": 7.0,
+        "mean": 6.666667,
+        "min": 6.0
+      },
+      "help_requests": {
+        "max": 2.0,
+        "mean": 1.0,
+        "min": 0.0
+      },
+      "likes": {
+        "max": 136.0,
+        "mean": 130.0,
+        "min": 126.0
+      },
+      "multi_kind_engagement_turns": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "replies": {
+        "max": 114.0,
+        "mean": 113.333333,
+        "min": 112.0
+      },
+      "reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "reposts": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "resident_public_messages": {
+        "max": 138.0,
+        "mean": 137.0,
+        "min": 136.0
+      },
+      "risk_reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "threads": {
+        "max": 24.0,
+        "mean": 23.333333,
+        "min": 23.0
+      },
+      "unique_activated_agents": {
+        "max": 60.0,
+        "mean": 60.0,
+        "min": 60.0
+      }
+    },
+    "C": {
+      "claims": {
+        "max": 34.0,
+        "mean": 29.333333,
+        "min": 26.0
+      },
+      "complete_correction_chains": {
+        "max": 1.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "complete_governance_uptake_chains": {
+        "max": 5.0,
+        "mean": 3.666667,
+        "min": 3.0
+      },
+      "complete_help_service_feedback_chains": {
+        "max": 1.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "compound_speech_and_engagement_turns": {
+        "max": 109.0,
+        "mean": 108.0,
+        "min": 106.0
+      },
+      "contested_claims": {
+        "max": 3.0,
+        "mean": 1.333333,
+        "min": 0.0
+      },
+      "corrected_or_verified_claims": {
+        "max": 32.0,
+        "mean": 27.333333,
+        "min": 23.0
+      },
+      "governance_public_messages": {
+        "max": 8.0,
+        "mean": 7.666667,
+        "min": 7.0
+      },
+      "help_requests": {
+        "max": 2.0,
+        "mean": 1.333333,
+        "min": 1.0
+      },
+      "likes": {
+        "max": 126.0,
+        "mean": 120.333333,
+        "min": 115.0
+      },
+      "multi_kind_engagement_turns": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "replies": {
+        "max": 114.0,
+        "mean": 113.0,
+        "min": 112.0
+      },
+      "reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "reposts": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "resident_public_messages": {
+        "max": 138.0,
+        "mean": 137.0,
+        "min": 136.0
+      },
+      "risk_reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "threads": {
+        "max": 24.0,
+        "mean": 23.333333,
+        "min": 23.0
+      },
+      "unique_activated_agents": {
+        "max": 60.0,
+        "mean": 60.0,
+        "min": 60.0
+      }
+    },
+    "D": {
+      "claims": {
+        "max": 47.0,
+        "mean": 33.666667,
+        "min": 26.0
+      },
+      "complete_correction_chains": {
+        "max": 1.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "complete_governance_uptake_chains": {
+        "max": 3.0,
+        "mean": 2.666667,
+        "min": 2.0
+      },
+      "complete_help_service_feedback_chains": {
+        "max": 1.0,
+        "mean": 0.333333,
+        "min": 0.0
+      },
+      "compound_speech_and_engagement_turns": {
+        "max": 256.0,
+        "mean": 158.666667,
+        "min": 109.0
+      },
+      "contested_claims": {
+        "max": 3.0,
+        "mean": 1.0,
+        "min": 0.0
+      },
+      "corrected_or_verified_claims": {
+        "max": 45.0,
+        "mean": 32.0,
+        "min": 23.0
+      },
+      "governance_public_messages": {
+        "max": 7.0,
+        "mean": 7.0,
+        "min": 7.0
+      },
+      "help_requests": {
+        "max": 3.0,
+        "mean": 2.333333,
+        "min": 1.0
+      },
+      "likes": {
+        "max": 322.0,
+        "mean": 187.666667,
+        "min": 115.0
+      },
+      "multi_kind_engagement_turns": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "replies": {
+        "max": 271.0,
+        "mean": 166.0,
+        "min": 113.0
+      },
+      "reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "reposts": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "resident_public_messages": {
+        "max": 297.0,
+        "mean": 191.0,
+        "min": 138.0
+      },
+      "risk_reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "threads": {
+        "max": 24.0,
+        "mean": 23.333333,
+        "min": 23.0
+      },
+      "unique_activated_agents": {
+        "max": 72.0,
+        "mean": 64.0,
+        "min": 60.0
+      }
+    },
+    "Natural": {
+      "claims": {
+        "max": 34.0,
+        "mean": 31.0,
+        "min": 28.0
+      },
+      "complete_correction_chains": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "complete_governance_uptake_chains": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "complete_help_service_feedback_chains": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "compound_speech_and_engagement_turns": {
+        "max": 255.0,
+        "mean": 159.666667,
+        "min": 110.0
+      },
+      "contested_claims": {
+        "max": 2.0,
+        "mean": 0.666667,
+        "min": 0.0
+      },
+      "corrected_or_verified_claims": {
+        "max": 32.0,
+        "mean": 29.666667,
+        "min": 26.0
+      },
+      "governance_public_messages": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "help_requests": {
+        "max": 6.0,
+        "mean": 3.333333,
+        "min": 1.0
+      },
+      "likes": {
+        "max": 278.0,
+        "mean": 178.0,
+        "min": 122.0
+      },
+      "multi_kind_engagement_turns": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "replies": {
+        "max": 272.0,
+        "mean": 165.0,
+        "min": 110.0
+      },
+      "reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "reposts": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "resident_public_messages": {
+        "max": 298.0,
+        "mean": 191.0,
+        "min": 137.0
+      },
+      "risk_reports": {
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0
+      },
+      "threads": {
+        "max": 23.0,
+        "mean": 23.0,
+        "min": 23.0
+      },
+      "unique_activated_agents": {
+        "max": 72.0,
+        "mean": 64.0,
+        "min": 60.0
+      }
+    }
+  },
+  "branch_labels": {
+    "A": "标准公开与证据更新",
+    "B": "申诉复核与服务承接",
+    "C": "跨群触达与参与式沟通",
+    "D": "三主体动态组合治理",
+    "Natural": "论坛自然演化"
+  },
+  "branches": [
+    "Natural",
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "canonical_branch_summaries": {
+    "A": {
+      "claims": 34,
+      "complete_correction_chains": 0,
+      "complete_governance_uptake_chains": 5,
+      "complete_help_service_feedback_chains": 1,
+      "compound_speech_and_engagement_turns": 107,
+      "contested_claims": 0,
+      "corrected_or_verified_claims": 32,
+      "governance_public_messages": 6,
+      "help_requests": 1,
+      "likes": 129,
+      "lineage_valid": true,
+      "multi_kind_engagement_turns": 0,
+      "near_duplicate_rate": 0.0,
+      "population_state": {
+        "activity_probability": 0.343047,
+        "attention": 0.564144,
+        "concern": 0.114724,
+        "opposition": 0.249814,
+        "satisfaction": 0.229606,
+        "support": 0.599497,
+        "trust": 0.521801
+      },
+      "public_provenance_valid": true,
+      "replies": 112,
+      "reports": 0,
+      "reposts": 0,
+      "resident_public_messages": 136,
+      "resource_conserved": true,
+      "risk_reports": 0,
+      "threads": 23,
+      "unique_activated_agents": 60
+    },
+    "B": {
+      "claims": 35,
+      "complete_correction_chains": 0,
+      "complete_governance_uptake_chains": 0,
+      "complete_help_service_feedback_chains": 0,
+      "compound_speech_and_engagement_turns": 109,
+      "contested_claims": 0,
+      "corrected_or_verified_claims": 33,
+      "governance_public_messages": 6,
+      "help_requests": 0,
+      "likes": 128,
+      "lineage_valid": true,
+      "multi_kind_engagement_turns": 0,
+      "near_duplicate_rate": 0.0,
+      "population_state": {
+        "activity_probability": 0.340902,
+        "attention": 0.560815,
+        "concern": 0.111691,
+        "opposition": 0.247225,
+        "satisfaction": 0.232511,
+        "support": 0.602865,
+        "trust": 0.526838
+      },
+      "public_provenance_valid": true,
+      "replies": 114,
+      "reports": 0,
+      "reposts": 0,
+      "resident_public_messages": 137,
+      "resource_conserved": true,
+      "risk_reports": 0,
+      "threads": 24,
+      "unique_activated_agents": 60
+    },
+    "C": {
+      "claims": 34,
+      "complete_correction_chains": 0,
+      "complete_governance_uptake_chains": 3,
+      "complete_help_service_feedback_chains": 1,
+      "compound_speech_and_engagement_turns": 106,
+      "contested_claims": 0,
+      "corrected_or_verified_claims": 32,
+      "governance_public_messages": 7,
+      "help_requests": 1,
+      "likes": 120,
+      "lineage_valid": true,
+      "multi_kind_engagement_turns": 0,
+      "near_duplicate_rate": 0.0,
+      "population_state": {
+        "activity_probability": 0.340381,
+        "attention": 0.56087,
+        "concern": 0.110832,
+        "opposition": 0.246519,
+        "satisfaction": 0.234239,
+        "support": 0.604114,
+        "trust": 0.529018
+      },
+      "public_provenance_valid": true,
+      "replies": 112,
+      "reports": 0,
+      "reposts": 0,
+      "resident_public_messages": 136,
+      "resource_conserved": true,
+      "risk_reports": 0,
+      "threads": 24,
+      "unique_activated_agents": 60
+    },
+    "D": {
+      "claims": 47,
+      "complete_correction_chains": 1,
+      "complete_governance_uptake_chains": 2,
+      "complete_help_service_feedback_chains": 0,
+      "compound_speech_and_engagement_turns": 256,
+      "contested_claims": 0,
+      "corrected_or_verified_claims": 45,
+      "governance_public_messages": 7,
+      "help_requests": 3,
+      "likes": 322,
+      "lineage_valid": true,
+      "multi_kind_engagement_turns": 0,
+      "near_duplicate_rate": 0.0,
+      "population_state": {
+        "activity_probability": 0.342371,
+        "attention": 0.565952,
+        "concern": 0.109757,
+        "opposition": 0.248623,
+        "satisfaction": 0.219967,
+        "support": 0.603119,
+        "trust": 0.517666
+      },
+      "public_provenance_valid": true,
+      "replies": 271,
+      "reports": 0,
+      "reposts": 0,
+      "resident_public_messages": 297,
+      "resource_conserved": true,
+      "risk_reports": 0,
+      "threads": 24,
+      "unique_activated_agents": 72
+    },
+    "Natural": {
+      "claims": 34,
+      "complete_correction_chains": 0,
+      "complete_governance_uptake_chains": 0,
+      "complete_help_service_feedback_chains": 0,
+      "compound_speech_and_engagement_turns": 255,
+      "contested_claims": 0,
+      "corrected_or_verified_claims": 32,
+      "governance_public_messages": 0,
+      "help_requests": 3,
+      "likes": 278,
+      "lineage_valid": true,
+      "multi_kind_engagement_turns": 0,
+      "near_duplicate_rate": 0.0,
+      "population_state": {
+        "activity_probability": 0.338391,
+        "attention": 0.55806,
+        "concern": 0.114529,
+        "opposition": 0.249571,
+        "satisfaction": 0.224046,
+        "support": 0.603552,
+        "trust": 0.520918
+      },
+      "public_provenance_valid": true,
+      "replies": 272,
+      "reports": 0,
+      "reposts": 0,
+      "resident_public_messages": 298,
+      "resource_conserved": true,
+      "risk_reports": 0,
+      "threads": 23,
+      "unique_activated_agents": 72
+    }
+  },
+  "canonical_seed": 20260722,
+  "cost_controlled_stop_after_three_seeds": true,
+  "end_tick": 15,
+  "featured_mechanisms": {
+    "governance_uptake": {
+      "branch": "C",
+      "governance_text": "已知床位缺口和原通知的程序信息不足；排序、复核与申诉安排尚未公开。请在治理公告区公布排序规则、复核责任、申诉入口及答复时限。",
+      "resident_response_text": "证据卡把责任边界说清了，但材料复核还没落到可操作层面：申请人要按什么格式补材料，截止到哪一刻？这两个时间点不公布，申诉入口也还是难用。"
+    },
+    "service_feedback": {
+      "branch": "C",
+      "follow_up_text": "收到，ticket 进队列不等于问题解决。我前面要的申请编号与复核状态查询仍缺具体方式；请反馈时给出查询入口或操作步骤。",
+      "help_text": "申请编号和复核状态这个点很关键。能否明确：提交申诉后会收到什么受理凭证、状态在哪里查？不然即使有入口，材料交出去也还是只能等。",
+      "receipt_text": "已登记该咨询：回执仅表示问题进入服务队列，不代表已解决。服务运营角色将在1个工作日内反馈受理状态及查询方式。"
+    }
+  },
+  "full_scope_complete": false,
+  "model": "gpt-5.6-luna",
+  "paired_state_difference_intervals_95_vs_Natural": {
+    "A": {
+      "activity_probability": {
+        "lower": -0.001588,
+        "mean": 0.001558,
+        "upper": 0.004705
+      },
+      "attention": {
+        "lower": -0.003946,
+        "mean": 0.001047,
+        "upper": 0.006039
+      },
+      "concern": {
+        "lower": -0.000918,
+        "mean": 0.000999,
+        "upper": 0.002916
+      },
+      "opposition": {
+        "lower": -0.001111,
+        "mean": 0.001168,
+        "upper": 0.003448
+      },
+      "satisfaction": {
+        "lower": -0.003835,
+        "mean": 0.000971,
+        "upper": 0.005776
+      },
+      "support": {
+        "lower": -0.00577,
+        "mean": -0.002763,
+        "upper": 0.000245
+      },
+      "trust": {
+        "lower": -0.005178,
+        "mean": -0.001388,
+        "upper": 0.002403
+      }
+    },
+    "B": {
+      "activity_probability": {
+        "lower": -0.001866,
+        "mean": 0.000627,
+        "upper": 0.003121
+      },
+      "attention": {
+        "lower": -0.005136,
+        "mean": -0.000805,
+        "upper": 0.003527
+      },
+      "concern": {
+        "lower": -0.003403,
+        "mean": -0.000273,
+        "upper": 0.002858
+      },
+      "opposition": {
+        "lower": -0.002854,
+        "mean": 1e-05,
+        "upper": 0.002874
+      },
+      "satisfaction": {
+        "lower": -0.003973,
+        "mean": 0.002247,
+        "upper": 0.008466
+      },
+      "support": {
+        "lower": -0.003282,
+        "mean": -0.001186,
+        "upper": 0.00091
+      },
+      "trust": {
+        "lower": -0.005411,
+        "mean": 0.000499,
+        "upper": 0.006409
+      }
+    },
+    "C": {
+      "activity_probability": {
+        "lower": -0.000862,
+        "mean": 0.000678,
+        "upper": 0.002217
+      },
+      "attention": {
+        "lower": -0.002709,
+        "mean": 5e-05,
+        "upper": 0.002809
+      },
+      "concern": {
+        "lower": -0.003977,
+        "mean": -0.000358,
+        "upper": 0.003262
+      },
+      "opposition": {
+        "lower": -0.003428,
+        "mean": 0.000218,
+        "upper": 0.003863
+      },
+      "satisfaction": {
+        "lower": -0.004993,
+        "mean": 0.002586,
+        "upper": 0.010166
+      },
+      "support": {
+        "lower": -0.003947,
+        "mean": -0.001245,
+        "upper": 0.001458
+      },
+      "trust": {
+        "lower": -0.006295,
+        "mean": 0.00109,
+        "upper": 0.008475
+      }
+    },
+    "D": {
+      "activity_probability": {
+        "lower": -0.00107,
+        "mean": 0.001821,
+        "upper": 0.004712
+      },
+      "attention": {
+        "lower": -0.001922,
+        "mean": 0.003137,
+        "upper": 0.008195
+      },
+      "concern": {
+        "lower": -0.004726,
+        "mean": -0.001186,
+        "upper": 0.002354
+      },
+      "opposition": {
+        "lower": -0.001223,
+        "mean": 5.9e-05,
+        "upper": 0.001341
+      },
+      "satisfaction": {
+        "lower": -0.004327,
+        "mean": -0.002015,
+        "upper": 0.000298
+      },
+      "support": {
+        "lower": -0.001852,
+        "mean": -0.000685,
+        "upper": 0.000482
+      },
+      "trust": {
+        "lower": -0.004118,
+        "mean": -0.001992,
+        "upper": 0.000135
+      }
+    }
+  },
+  "particle_count": 10000,
+  "planned_full_seeds": [
+    20260722,
+    20261731,
+    20262740,
+    20263749
+  ],
+  "population_size": 1000,
+  "primary_slots": 2028,
+  "result_sha256": "ac79fa162ca62240b46709635b526bfb62fc20019a9574be7ba5365d82e7c02f",
+  "run_id": "run_7d056d1e3233ab981febe48c",
+  "scenario_id": "governance_legitimacy_dispute",
+  "scenario_title": "暑期住宿床位分配正当性争议",
+  "schema_version": "campus-pulse-resource-flagship-public-summary-v1",
+  "seeds": [
+    20260722,
+    20261731,
+    20262740
+  ],
+  "shared_through_tick": 4,
+  "start_tick": 3,
+  "story_gate": {
+    "at_least_three_claims": true,
+    "correction_chain_present": true,
+    "direct_governance_uptake_present": true,
+    "help_service_feedback_present": true,
+    "parallel_engagement_visible": true
+  },
+  "story_gate_passed": true,
+  "usage": {
+    "cache_hits": 2028,
+    "provider_calls": 0,
+    "provider_tokens": 0,
+    "semantic_turns": 2028,
+    "unknown_outcomes": 0
+  },
+  "validation_scope": "three_seed_product_validation"
+}

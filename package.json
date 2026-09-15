@@ -1,0 +1,49 @@
+{
+  "name": "ai-behavior-sim",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check:i18n": "node scripts/extract-campus-pulse-i18n.mjs && node scripts/check-campus-pulse-i18n.mjs",
+    "preview": "vite preview",
+    "test:e2e": "node e2e/run-e2e.mjs",
+    "test:forum-twin": "node --experimental-strip-types --test src/services/forumTwin.test.ts src/services/forumTwinV2.test.ts src/campus-pulse/agent-world/agentWorldLabels.test.ts src/components/campus-pulse/forum-twin/ForumTwinComponents.test.mjs tests/forumTwin.contract.test.mjs tests/resourcePolicyHero.contract.test.mjs tests/resourceFlagship.contract.test.mjs tests/m01Shell.contract.test.mjs tests/m02Reliability.contract.test.mjs tests/m03Overview.contract.test.mjs tests/m04Results.contract.test.mjs tests/m05ForumInvestigation.contract.test.mjs tests/m06Workbench.contract.test.mjs tests/m07EvidenceSystem.contract.test.mjs tests/nonProductArtifactPurge.contract.test.mjs tests/m1TruthAndAdapters.contract.test.ts tests/m2ProjectFlow.contract.test.mjs tests/m3UnifiedRuntime.contract.test.mjs tests/m4RunAnalysis.contract.test.mjs"
+  },
+  "dependencies": {
+    "@antv/g6": "^5.0.44",
+    "@codemirror/basic-setup": "^0.20.0",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-python": "^6.1.7",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.36.5",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@monaco-editor/loader": "^1.5.0",
+    "@pixi/layers": "^2.1.0",
+    "@pixi/sound": "^6.0.1",
+    "@pixi/tilemap": "^5.0.1",
+    "@uiw/codemirror-theme-github": "^4.23.10",
+    "axios": "^1.8.4",
+    "codemirror-theme-github": "^1.1.0",
+    "echarts": "^5.6.0",
+    "element-plus": "^2.9.6",
+    "gsap": "^3.15.0",
+    "highlight.js": "^11.11.1",
+    "mitt": "^3.0.1",
+    "monaco-editor": "^0.52.2",
+    "pinia": "^3.0.1",
+    "pixi-viewport": "^6.0.3",
+    "pixi.js": "^8.9.0",
+    "prismjs": "^1.30.0",
+    "vue": "^3.5.13",
+    "vue-codemirror": "^6.1.1",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.2.0"
+  }
+}

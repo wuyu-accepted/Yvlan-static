@@ -1,0 +1,949 @@
+{
+  "schemaVersion": "campus-pulse-demo-v1",
+  "generatedFrom": "directly-reviewed-synthetic-decisions",
+  "meta": {
+    "datasetSnapshot": "99cf3df5dafe",
+    "sourceTables": 2,
+    "semanticCards": 1000,
+    "taxonomyClasses": 17,
+    "activeArchetypes": 16,
+    "personaVariants": 51,
+    "agents": 48,
+    "seeds": 2,
+    "reviewedDecisions": 912,
+    "reviewedPublicMessages": 620,
+    "rawRowsIncluded": false,
+    "promptsIncluded": false
+  },
+  "population": {
+    "month": "2026-03",
+    "allocation": "按当月论坛行为权重进行最大余数分配",
+    "activeWeight": 0.929825,
+    "backgroundWeight": 0.070175,
+    "backgroundLabel": "语境不明与非语义信号",
+    "archetypes": [
+      {
+        "id": "archetype-01",
+        "label": "课程规则核实者",
+        "domain": "information",
+        "count": 5,
+        "weight": 0.122807,
+        "variants": ["考核安排确认型", "资格边界核实型", "结果口径核算型"]
+      },
+      {
+        "id": "archetype-02",
+        "label": "学习行动求助者",
+        "domain": "action",
+        "count": 4,
+        "weight": 0.087719,
+        "variants": ["知识路径诊断型", "课程比较决策型", "临考范围压缩型"]
+      },
+      {
+        "id": "archetype-03",
+        "label": "校园规则办事询问者",
+        "domain": "information",
+        "count": 4,
+        "weight": 0.070175,
+        "variants": ["即时可用性确认型", "规则步骤核实型", "进度催确认型"]
+      },
+      {
+        "id": "archetype-04",
+        "label": "公共服务投诉者",
+        "domain": "governance",
+        "count": 2,
+        "weight": 0.026316,
+        "variants": ["教学评价追问型", "服务升级申诉型"]
+      },
+      {
+        "id": "archetype-05",
+        "label": "生涯机会决策咨询者",
+        "domain": "information",
+        "count": 4,
+        "weight": 0.078947,
+        "variants": ["门槛核实型", "条件评估型", "路径权衡型"]
+      },
+      {
+        "id": "archetype-06",
+        "label": "机会发布招募者",
+        "domain": "resource",
+        "count": 1,
+        "weight": 0.008772,
+        "variants": ["组织方限时召集"]
+      },
+      {
+        "id": "archetype-07",
+        "label": "生活方案咨询者",
+        "domain": "action",
+        "count": 4,
+        "weight": 0.096491,
+        "variants": ["时效服务搜寻型", "预算用途比较型", "生活可行性确认型"]
+      },
+      {
+        "id": "archetype-08",
+        "label": "一般交易推广者",
+        "domain": "resource",
+        "count": 3,
+        "weight": 0.061404,
+        "variants": ["备考资料征集者", "闲置权益转让者", "限期住宿匹配者"]
+      },
+      {
+        "id": "archetype-09",
+        "label": "风险交易推广者",
+        "domain": "resource",
+        "count": 2,
+        "weight": 0.035088,
+        "variants": ["技术服务招揽", "成果材料求购"]
+      },
+      {
+        "id": "archetype-10",
+        "label": "社交同伴匹配者",
+        "domain": "resource",
+        "count": 3,
+        "weight": 0.052632,
+        "variants": ["情绪陪伴寻求", "即时活动招伴", "计划型同行匹配"]
+      },
+      {
+        "id": "archetype-11",
+        "label": "任务资源匹配者",
+        "domain": "resource",
+        "count": 4,
+        "weight": 0.078947,
+        "variants": ["协作成员匹配", "线索与行程协同", "即时信息补缺"]
+      },
+      {
+        "id": "archetype-12",
+        "label": "关系与协作边界协商者",
+        "domain": "support",
+        "count": 3,
+        "weight": 0.070175,
+        "variants": ["亲密信任取舍型", "共处援助设限型", "承诺退出权衡型"]
+      },
+      {
+        "id": "archetype-13",
+        "label": "情绪承接者",
+        "domain": "support",
+        "count": 3,
+        "weight": 0.052632,
+        "variants": ["学业受挫共鸣型", "急性不适承接型", "自责求理解型"]
+      },
+      {
+        "id": "archetype-14",
+        "label": "公共规范讨论者",
+        "domain": "governance",
+        "count": 2,
+        "weight": 0.026316,
+        "variants": ["结构反思讨论型", "背景核实提问型"]
+      },
+      {
+        "id": "archetype-15",
+        "label": "社区体验交流者",
+        "domain": "support",
+        "count": 3,
+        "weight": 0.052632,
+        "variants": ["经历提醒与共鸣", "即时观感与接梗", "低成本社区互动"]
+      },
+      {
+        "id": "archetype-17",
+        "label": "身心健康求助者",
+        "domain": "support",
+        "count": 1,
+        "weight": 0.008772,
+        "variants": ["持续困扰应对型"]
+      }
+    ]
+  },
+  "crossShockFidelity": {
+    "version": "1.1.0",
+    "alignmentAuditSha256": "ef26b708be0d2dc2cea5c4f746007b05de3a3a5f656ab7300617129b6f598103",
+    "directReviewSha256": "9f42c45e42a0f08467d3751b821eb05d1d422d946f9519a84c50e39ba6b44db7",
+    "summary": {
+      "commonVariants": 37,
+      "reviewedVariants": 10,
+      "clear": 9,
+      "partial": 1,
+      "fail": 0,
+      "messagesRead": 104
+    },
+    "gateAcceptance": {
+      "version": "1.0.0",
+      "sourceSha256": "3cedca118fb87440dedf9cee5fed1560ccf409b9d8e6d00f961ed37af0d68b21",
+      "directReviewSha256": "aef876091c477511a755b77604209f01664ffe8b163ca70aa237a6915fb9124c",
+      "panelFingerprint": "6eee2a7436dc1a314d57cfb738ab7c404ffb15577505891605d7fbe8c60a0a92",
+      "summary": {
+        "variants": 4,
+        "clear": 4,
+        "decisionsRead": 32,
+        "publicMessagesRead": 23,
+        "providerTokens": 83566,
+        "formatRepairs": 0,
+        "irrelevantPublicViolations": 0
+      },
+      "routeAudit": {
+        "directPublic": 5,
+        "adjacentPublic": 9,
+        "adjacentNonPublic": 1,
+        "irrelevantNonPublic": 9
+      },
+      "boundary": "这是冻结四变体诊断面板的回归验收，不是总体响应率、完整仿真的外部效度或因果政策效果。"
+    },
+    "boundary": "跨月对齐的是冻结画像变体，不是同号智能体；同一人物的政策分支比较只在2026年3月共享基线内成立。",
+    "cases": [
+      {
+        "id": "procedure",
+        "variantId": "archetype-03-v2",
+        "archetype": "校园规则办事询问者",
+        "variant": "规则步骤核实型",
+        "rating": "clear",
+        "ratingLabel": "清晰通过",
+        "headline": "步骤逻辑可以迁移，事件内容不会照抄",
+        "invariant": "无论面对争议回应还是校区安排，都优先寻找正式入口、办理步骤、回复时限和可查询进度。",
+        "lecture": {
+          "month": "2026-06",
+          "agent": "031",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "direct_event",
+          "phase": "扩散期",
+          "action": "追问正式渠道",
+          "text": "目前有人找到校方公开说明或正式反馈入口了吗？想确认以哪个渠道为准。"
+        },
+        "tongzhouNatural": {
+          "month": "2026-03",
+          "agent": "027",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "feedback_channel",
+          "phase": "扩散期 · 自然演化",
+          "action": "核实入口与时限",
+          "text": "看到大家都在问细则。想确认：若各渠道说法不一致，应向哪个正式入口核实，预计多久回复？"
+        },
+        "tongzhouCombined": {
+          "month": "2026-03",
+          "agent": "027",
+          "policyId": "combined",
+          "phaseId": "spread",
+          "topicId": "feedback_channel",
+          "phase": "扩散期 · 组合治理",
+          "action": "继续追问回执与进度",
+          "text": "看到FAQ会标注下次更新时间。想确认正式反馈入口在哪，提交后回执和进度要去哪里查？"
+        }
+      },
+      {
+        "id": "boundary",
+        "variantId": "archetype-12-v3",
+        "archetype": "关系与协作边界协商者",
+        "variant": "共处援助设限型",
+        "rating": "clear",
+        "ratingLabel": "清晰通过",
+        "headline": "关系对象在变化，协商方式保持稳定",
+        "invariant": "从合作群分歧到学生组织值班，始终先协商责任边界、替代方案和退出条件，而不是直接升级冲突。",
+        "lecture": {
+          "month": "2026-06",
+          "agent": "021",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "career_spillover",
+          "phase": "扩散期",
+          "action": "设置讨论边界",
+          "text": "合作群里有人转争议观点当建议，我不想把分歧升级，但也担心默认认同。该怎么设讨论边界？"
+        },
+        "tongzhouNatural": {
+          "month": "2026-03",
+          "agent": "039",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "student_organizations",
+          "phase": "扩散期 · 自然演化",
+          "action": "协商替班与交接",
+          "text": "同意先汇总任务，但负责人若仍要求固定到场，能否先约定临时替班、线上交接和重新确认期限？"
+        },
+        "tongzhouCombined": {
+          "month": "2026-03",
+          "agent": "039",
+          "policyId": "combined",
+          "phaseId": "spread",
+          "topicId": "student_organizations",
+          "phase": "扩散期 · 组合治理",
+          "action": "核实退出与留痕",
+          "text": "看到可申请调班、线上参与或无责退出。若负责人仍要求固定到场，应该走哪个反馈入口并保留哪些沟通记录？"
+        }
+      },
+      {
+        "id": "selective",
+        "variantId": "archetype-07-v2",
+        "archetype": "生活方案咨询者",
+        "variant": "时效服务搜寻型",
+        "rating": "clear",
+        "ratingLabel": "清晰通过",
+        "headline": "不追热点，本身也是一种拟真",
+        "invariant": "讲座争议与其生活服务需求无关，因此继续寻找烘干服务；通州则真正触发了通勤与住宿决策。",
+        "lecture": {
+          "month": "2026-06",
+          "agent": "035",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "off_topic_daily_life",
+          "phase": "扩散期 · 未被热点激活",
+          "action": "继续原有服务搜索",
+          "text": "最近天气潮，宿舍晾不干。附近有烘干靠谱的洗衣店吗？想了解价格、耗时和近期体验。"
+        },
+        "tongzhouNatural": {
+          "month": "2026-03",
+          "agent": "008",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "housing",
+          "phase": "扩散期 · 自然演化",
+          "action": "比较住宿时机",
+          "text": "住宿申请截止前，班车时刻可能还没定。该先申请宿舍占位，还是能等通勤细则后再调整？"
+        },
+        "tongzhouCombined": {
+          "month": "2026-03",
+          "agent": "008",
+          "policyId": "combined",
+          "phaseId": "spread",
+          "topicId": "tongzhou",
+          "phase": "扩散期 · 组合治理",
+          "action": "追问缓冲与调整入口",
+          "text": "住宿选择截止前会公布通勤耗时，但我得先排早课。现在该按多长缓冲预留？公布后调整住宿走哪个入口？"
+        }
+      },
+      {
+        "id": "partial",
+        "variantId": "archetype-02-v1",
+        "archetype": "学习行动求助者",
+        "variant": "临考范围压缩型",
+        "rating": "partial_non_regressive",
+        "ratingLabel": "部分通过",
+        "headline": "保留一次真实漂移，不把边界藏起来",
+        "invariant": "通州轨迹仍聚焦近期学习安排；讲座轨迹却扩展为职业规划，保留了行动求助大类，但削弱了临考变体的特异性。",
+        "repair": {
+          "rating": "clear_after_variant_gate",
+          "ratingLabel": "门控后清晰通过",
+          "headline": "不是让它闭嘴，而是只在具体学习任务被触发时开口",
+          "oldDrift": {
+            "label": "旧版问题",
+            "phase": "讲座扩散期 · 相邻漂移",
+            "route": "职业外溢 → 公开求助",
+            "text": "没听完整场讲座，求职准备该先补通用技能，还是先定方向做项目？能否给个优先级和具体步骤？"
+          },
+          "gate": {
+            "label": "变体相关性门控",
+            "rule": "先判断冲击是否进入“临近考试、短期备考、复习范围或重点不明”的具体行动时域，再决定公开回应、只读或忽略。",
+            "decision": "讲座只形成职业议题外溢，不足以触发临考求助；通州课程调整直接改变近期复习安排，应保留公开行动。"
+          },
+          "updatedLecture": {
+            "label": "新版 · 讲座外生冲击",
+            "agent": "014",
+            "timeline": "爆发忽略 → 扩散只读 → 衰减只读",
+            "route": "相邻 / 无关 → 非公开",
+            "text": "0 条公开发言；没有再把争议改写成泛化职业规划。"
+          },
+          "updatedTongzhou": {
+            "label": "新版 · 通州治理冲击",
+            "agent": "033",
+            "timeline": "爆发求助 → 扩散评论",
+            "route": "课程连续性 → 公开回应",
+            "messages": [
+              "近期要按原计划复习，但跨校区课程安排还不明确。哪些课可能调整、短期该先复习哪部分？",
+              "课表没定但复习时间有限，能否先按现有教学进度列出必复习章节和暂缓部分？"
+            ]
+          }
+        },
+        "lecture": {
+          "month": "2026-06",
+          "agent": "014",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "career_spillover",
+          "phase": "扩散期 · 发生相邻漂移",
+          "action": "转向职业行动规划",
+          "text": "没听完整场讲座，求职准备该先补通用技能，还是先定方向做项目？能否给个优先级和具体步骤？"
+        },
+        "tongzhouNatural": {
+          "month": "2026-03",
+          "agent": "033",
+          "policyId": "baseline",
+          "phaseId": "spread",
+          "topicId": "course_continuity",
+          "phase": "扩散期 · 自然演化",
+          "action": "压缩课表不确定性",
+          "text": "先按原课表推进能理解，但若临近考核才调整会很被动。能否明确冻结课表的最晚节点？"
+        },
+        "tongzhouCombined": {
+          "month": "2026-03",
+          "agent": "033",
+          "policyId": "combined",
+          "phaseId": "spread",
+          "topicId": "course_continuity",
+          "phase": "扩散期 · 组合治理",
+          "action": "校准复习预留空间",
+          "text": "退补选前课程校区会冻结，但复习计划现在就要排。先按现课表推进，还是给跨校区课预留调整时间？"
+        }
+      }
+    ]
+  },
+  "scenarios": {
+    "tongzhou": {
+      "id": "tongzhou",
+      "short": "通州公告",
+      "title": "通州校区治理信息冲击",
+      "origin": "治理行动",
+      "description": "公告由治理系统直接发布，48个智能体广泛知晓，并把宏观安排翻译成课程、通勤、住宿、组织协作和反馈责任问题。",
+      "observedPeak": "burst",
+      "simulatedPeak": "burst",
+      "mae": [0.0115, 0.0332],
+      "phaseData": {
+        "baseline": {
+          "label": "基线",
+          "window": "公告前24小时",
+          "story": "论坛维持日常需求生态，没有人提前知道公告内容。",
+          "public": [47, 48],
+          "relevant": [0, 0],
+          "primaryShare": [0, 0],
+          "topics": [
+            {"label": "日常校园生活", "value": 48}
+          ]
+        },
+        "burst": {
+          "label": "爆发",
+          "window": "公告后0–1小时",
+          "story": "直接暴露产生广泛首轮反应，诉求仍以“这意味着什么”为主。",
+          "public": [38, 38],
+          "relevant": [38, 38],
+          "primaryShare": [0.2544, 0.3202],
+          "topics": [
+            {"label": "课程连续性", "value": 13},
+            {"label": "通州总体安排", "value": 13},
+            {"label": "学生组织", "value": 6},
+            {"label": "反馈渠道", "value": 4},
+            {"label": "住宿", "value": 2}
+          ]
+        },
+        "spread": {
+          "label": "扩散",
+          "window": "公告后1–24小时",
+          "story": "宏观担忧演化为截止日期、可逆性、负责人、远程协作和答复时限。",
+          "public": [43, 42],
+          "relevant": [38, 38],
+          "primaryShare": [0.0373, 0.0636],
+          "topics": [
+            {"label": "课程连续性", "value": 13},
+            {"label": "通州总体安排", "value": 7},
+            {"label": "反馈渠道", "value": 6},
+            {"label": "住宿", "value": 6},
+            {"label": "学生组织", "value": 6}
+          ]
+        },
+        "decay": {
+          "label": "衰减",
+          "window": "公告后24–72小时",
+          "story": "大多数人退出事件注意，仍受具体决策约束的人继续追问。",
+          "public": [24, 22],
+          "relevant": [21, 20],
+          "primaryShare": [0, 0],
+          "topics": [
+            {"label": "课程连续性", "value": 6},
+            {"label": "反馈渠道", "value": 6},
+            {"label": "住宿", "value": 4},
+            {"label": "学生组织", "value": 4},
+            {"label": "总体安排", "value": 1}
+          ]
+        }
+      },
+      "policies": {
+        "baseline": {
+          "label": "自然演化",
+          "description": "只观察公告后的自然诉求演化，不追加治理承诺。",
+          "metrics": {
+            "baseline": {"public": 47, "relevant": 0, "trust": 0.4966, "satisfied": 0.0263},
+            "burst": {"public": 38, "relevant": 38, "trust": 0.4772, "satisfied": 0},
+            "spread": {"public": 43, "relevant": 38, "trust": 0.4611, "satisfied": 0},
+            "decay": {"public": 24, "relevant": 21, "trust": 0.4474, "satisfied": 0}
+          }
+        },
+        "combined": {
+          "label": "组合治理",
+          "description": "提供可执行但仍不完整的课程、通勤、住宿、组织与反馈服务契约。",
+          "metrics": {
+            "baseline": {"public": 47, "relevant": 0, "trust": 0.4966, "satisfied": 0.0263},
+            "burst": {"public": 40, "relevant": 38, "trust": 0.4993, "satisfied": 0},
+            "spread": {"public": 45, "relevant": 38, "trust": 0.5534, "satisfied": 0.0841},
+            "decay": {"public": 24, "relevant": 21, "trust": 0.5634, "satisfied": 0.1586}
+          }
+        }
+      },
+      "servicePackage": [
+        "退补选截止前冻结课程校区与上课时间，冲突者可专项退补选或等效线上参与",
+        "住宿选择截止前公布通勤服务时段、上车方式和预计耗时，并保留调整窗口",
+        "学生组织成员可调班、线上参与或无责退出",
+        "FAQ标记已确认/待确认，公开负责人、更新时间与反馈处理进度"
+      ],
+      "governanceOrchestration": {
+        "version": "1.0.0",
+        "status": "reviewed_model_program",
+        "label": "通州多主体治理程序",
+        "summary": "把组合治理拆成责任角色、决策时点、触发条件和资源账本；所有动作只在模拟内执行。",
+        "actorCount": 3,
+        "actionCount": 4,
+        "resourceUnitCount": 5,
+        "realWorldActions": 0,
+        "steps": [
+          {
+            "id": "listen",
+            "index": "01",
+            "phase": "爆发期",
+            "actor": "职能部门",
+            "action": "倾听与协商",
+            "target": "服务使用者 · 高关注者",
+            "condition": "阶段启动",
+            "mechanism": "先收集未解决需求，为后续服务容量调整提供前置证据。",
+            "resource": "人力时间 · 协同槽位"
+          },
+          {
+            "id": "disclose",
+            "index": "02",
+            "phase": "爆发期",
+            "actor": "信息发布与社区管理",
+            "action": "信息公开",
+            "target": "信息核实者 · 全部受影响者",
+            "condition": "并行启动 · 发布前复核",
+            "mechanism": "公开已确认、待确认、责任方与更新时间，降低信息不对称。",
+            "resource": "人力时间 · 发布槽位 · 复核槽位"
+          },
+          {
+            "id": "service",
+            "index": "03",
+            "phase": "扩散期",
+            "actor": "职能部门",
+            "action": "服务容量调整",
+            "target": "服务使用者 · 求助者",
+            "condition": "上一封存点：容量缺口 ≥ 25% 且求助权重 > 10%",
+            "mechanism": "只有在倾听动作已完成且聚合阈值满足时，才预留模型服务容量。",
+            "resource": "人力时间 · 服务容量 · 协同槽位"
+          },
+          {
+            "id": "monitor",
+            "index": "04",
+            "phase": "跟进期",
+            "actor": "校级治理协调",
+            "action": "监测与升级复核",
+            "target": "全部受影响者 · 高关注者",
+            "condition": "上一封存点：高批评权重 ≥ 15%",
+            "mechanism": "达到阈值才进入复核与升级路由，不把高声量自动解释为危机。",
+            "resource": "人力时间 · 协同槽位"
+          }
+        ],
+        "comparisonContract": [
+          {
+            "label": "同源配对",
+            "value": "2 个相同随机种子",
+            "note": "自然演化与组合治理使用同一批人物和冲击"
+          },
+          {
+            "label": "共同起点",
+            "value": "1 条共享基线",
+            "note": "干预前状态只封存一次，禁止分支各造一条基线"
+          },
+          {
+            "label": "决策时钟",
+            "value": "只读上一检查点",
+            "note": "动作不能偷看当前轮或未来结果"
+          },
+          {
+            "label": "资源核算",
+            "value": "5 类建模资源",
+            "note": "先预留、后结算，失败也保留终态与原因"
+          }
+        ],
+        "gapsByCase": {
+          "course": [
+            "专项退补选的申请入口与审核节点仍未明确",
+            "待确认事项的最晚更新时间与处理进度仍需公开"
+          ],
+          "feedback": [
+            "高紧迫事项的认定标准仍未明确",
+            "积压时的扩容条件、责任方与升级路径仍需公开"
+          ]
+        },
+        "externalContrast": {
+          "label": "外生事件对照",
+          "title": "讲座事件只保留监测、复核与转介",
+          "note": "平台不会因为检测到舆情，就为校方虚构可直接改变外部事件的政策杠杆；因此不展示该事件的治理效果排名。"
+        },
+        "cohortGap": "当前比较结果没有安全可发布的“群体 × 需求”分解维度，因此不补造哪类人被满足的比例。",
+        "boundary": "治理主体是模型角色，资源是建模上限；编排不执行真实治理动作，分支差异不构成因果识别或现实政策推荐。",
+        "actorReleaseFingerprint": "0caaabbc3e370ef3d35cb693498e6fac2acc5138d0a906a91aa389c8ff8141e7",
+        "actionReleaseFingerprint": "4799bc1172e32263bf5c598ebc8158fd72a8300a16bbaece71dfc5819371c36f"
+      },
+      "governanceBranchDemo": {
+        "version": "1.0.0",
+        "phase": "spread",
+        "phaseLabel": "扩散期",
+        "sourceArtifactSha256": "8392fa5344fdc7d64f9d4d59f4361e24957974d4c2ec7765d168f58547274bc4",
+        "cases": [
+          {
+            "id": "course",
+            "label": "课程衔接",
+            "root": {
+              "agent": "022",
+              "archetype": "情绪承接者",
+              "variant": "学业受挫共鸣型",
+              "text": "公告一出来就有点慌，信息又不完整。有人也在担心课程怎么衔接吗？"
+            },
+            "actors": [
+              {
+                "agent": "001",
+                "archetype": "课程规则核实者",
+                "variant": "考核安排确认型",
+                "interpretation": "问题从“有没有调整规则”收窄为“入口与审核节点”",
+                "baseline": {
+                  "trustDelta": -0.03,
+                  "satisfied": false,
+                  "text": "想追问：若临时调整上课校区，已选课的退补选期限和容量怎么算？会另行通知吗？"
+                },
+                "combined": {
+                  "trustDelta": 0.08,
+                  "satisfied": false,
+                  "text": "看到可走专项退补选或线上参与。具体申请入口和审核节点会在退补选截止前公布吗？"
+                }
+              },
+              {
+                "agent": "022",
+                "archetype": "情绪承接者",
+                "variant": "学业受挫共鸣型",
+                "interpretation": "不确定性下降，但仍然等待更新时间与处理进度",
+                "baseline": {
+                  "trustDelta": -0.03,
+                  "satisfied": false,
+                  "text": "看到大家都在问课表，我还是有点慌。最难受的是不知道现在该按原计划学，还是先留出调整空间。"
+                },
+                "combined": {
+                  "trustDelta": 0.08,
+                  "satisfied": false,
+                  "text": "看到FAQ会区分已确认和待确认，稍微安心点。但还是希望更新时间和处理进度别拖，焦虑真的很消耗。"
+                }
+              }
+            ]
+          },
+          {
+            "id": "feedback",
+            "label": "反馈机制",
+            "root": {
+              "agent": "032",
+              "archetype": "公共服务投诉者",
+              "variant": "服务升级申诉型",
+              "text": "公告信息不完整，受影响学生该通过什么渠道反馈？请明确受理入口、回复时限和后续说明安排。"
+            },
+            "actors": [
+              {
+                "agent": "002",
+                "archetype": "公共规范讨论者",
+                "variant": "结构反思讨论型",
+                "interpretation": "从要求建立机制，转向审查紧迫度与扩容标准",
+                "baseline": {
+                  "trustDelta": -0.04,
+                  "satisfied": false,
+                  "text": "大家的问题已分散到课程、通勤和住宿，但谁负责汇总并公开回应？建议设问题清单、答复时限和异议反馈入口。"
+                },
+                "combined": {
+                  "trustDelta": 0.08,
+                  "satisfied": false,
+                  "text": "FAQ分层、反馈可查进度是改进，但公平还取决于高紧迫如何认定、积压时扩容是否公开，能否同步说明标准？"
+                }
+              },
+              {
+                "agent": "032",
+                "archetype": "公共服务投诉者",
+                "variant": "服务升级申诉型",
+                "interpretation": "从找不到受理路径，转向追问责任方、更新与扩容",
+                "baseline": {
+                  "trustDelta": -0.06,
+                  "satisfied": false,
+                  "text": "已有同学问细则来源，但常规渠道是否受理个案仍不清楚。请明确入口、回复时限及未答复时的升级路径。"
+                },
+                "combined": {
+                  "trustDelta": 0.08,
+                  "satisfied": false,
+                  "text": "支持FAQ区分已确认和待确认，但请同步责任方、更新时间及反馈进度，积压时也应说明扩容情况。"
+                }
+              }
+            ]
+          }
+        ],
+        "boundary": "展示的是同一模型人物在共享基线后的平行政策反应，不是观察数据识别的因果效果，也不冒充真实父子回复链。"
+      },
+      "updatedGroups": ["计划型学习者", "任务协调者", "学生组织参与者", "低成本观察者"],
+      "unresolvedGroups": ["需要精确日期的人", "需要确认个人资格的人", "需要具体班次的人", "关注优先规则公平的人"],
+      "messages": {
+        "baseline": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "想确认一下，这门课考试到底能不能开卷？允许带哪些资料，以正式通知为准吗？"},
+          {"agent": "005", "archetype": "公共服务投诉者", "variant": "教学评价追问型", "stance": "critical", "text": "平时任务和课堂互动都按要求完成，但平时分和预期差距很大。评分依据能否公开说明并核对记录？"}
+        ],
+        "burst": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "想确认一下：通州入驻后，已选课程的上课校区会不会调整？正式课表何时更新？"},
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "公告之外，入驻对象和资源分配依据会公开吗？程序公平不能只靠结果通知。"},
+          {"agent": "003", "archetype": "生活方案咨询者", "variant": "时效服务搜寻型", "stance": "neutral", "text": "如果住原校区，往返通州的班车时刻和通勤时长有明确安排吗？想先判断是否需要申请住宿。"},
+          {"agent": "010", "archetype": "关系与协作边界协商者", "variant": "亲密信任取舍型", "stance": "concerned", "text": "原先答应参与的学生组织工作可能受校区安排影响。细则未明时，怎么先和团队协商投入边界比较合适？"}
+        ],
+        "spread": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "若临时调整上课校区，已选课的退补选期限和容量怎么算？会另行通知吗？"},
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "大家的问题已分散到课程、通勤和住宿，但谁负责汇总并公开回应？建议设问题清单、答复时限和异议反馈入口。"},
+          {"agent": "003", "archetype": "生活方案咨询者", "variant": "时效服务搜寻型", "stance": "neutral", "text": "如果班车细则暂时不出，住宿申请截止时间能否晚于通勤安排公布？怕现在选了后没法调整。"},
+          {"agent": "004", "archetype": "任务资源匹配者", "variant": "协作成员匹配", "stance": "neutral", "text": "跨校区项目组可否先建任务清单？求一份成员到场、材料流转和远程协作的通用模板。"}
+        ],
+        "decay": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "课表和退补选规则现在有更新吗？若仍未定，能否明确正式发布入口和最晚时间？"},
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "critical", "text": "过了一天仍没看到问题汇总。即使细则未定，也应标注哪些待确认、由谁回应及预计更新时间。"},
+          {"agent": "008", "archetype": "生活方案咨询者", "variant": "时效服务搜寻型", "stance": "neutral", "text": "住宿申请快截止了，若班车仍未公布，之后能否改住宿选择？想确认调整期限和办理入口。"},
+          {"agent": "010", "archetype": "关系与协作边界协商者", "variant": "亲密信任取舍型", "stance": "concerned", "text": "现有承诺还能推进，但调整节点和退出条件仍没着落。负责人若暂时无法确认，是否先书面约定复核日期？"}
+        ]
+      },
+      "combinedMessages": {
+        "burst": [
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "公告先出来、标准却还不清楚，难免让人不安。入驻范围和安排依据何时公开？反馈后能否看到处理进度？"},
+          {"agent": "010", "archetype": "关系与协作边界协商者", "variant": "亲密信任取舍型", "stance": "concerned", "text": "已有学生组织分工如果因校区安排难以继续，能否协商调整职责或退出？该向哪个入口说明？"}
+        ],
+        "spread": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "看到可走专项退补选或线上参与。具体申请入口和审核节点会在退补选截止前公布吗？"},
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "FAQ分层、反馈可查进度是改进，但高紧迫如何认定、积压时扩容是否公开，能否同步说明标准？"},
+          {"agent": "003", "archetype": "生活方案咨询者", "variant": "时效服务搜寻型", "stance": "neutral", "text": "通勤时段会在住宿选择截止前公布；如果公布后发现早课赶不上，住宿调整窗口怎么申请？"},
+          {"agent": "009", "archetype": "社交同伴匹配者", "variant": "情绪陪伴寻求", "stance": "supportive", "text": "看到FAQ会标更新时间，先安心一点。之后可以一起对照安排、约线上或同校区活动。"}
+        ],
+        "decay": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "申请入口和审核节点有更新吗？至少能否确认会早于退补选截止公布？"},
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "FAQ和反馈进度能缓解不确定，但高紧迫认定、积压时扩容及责任方的公开标准仍不清楚。"},
+          {"agent": "008", "archetype": "生活方案咨询者", "variant": "时效服务搜寻型", "stance": "neutral", "text": "通勤信息公布后若要改住宿，具体入口、可调整天数和生效时间什么时候能确认？"},
+          {"agent": "010", "archetype": "关系与协作边界协商者", "variant": "亲密信任取舍型", "stance": "concerned", "text": "如果内部协商后仍被要求线下到场，反馈入口需要哪些记录？提交期间能否先暂停相关职责？"}
+        ]
+      }
+    },
+    "lecture": {
+      "id": "lecture",
+      "short": "讲座争议",
+      "title": "讲座争议外生事件",
+      "origin": "论坛外生事件",
+      "description": "事件并非治理系统广播，只有少数人早期获知；扩散后才出现来源核实、职业外溢、情绪承接和公共规范讨论。",
+      "observedPeak": "spread",
+      "simulatedPeak": "spread",
+      "mae": [0.0414, 0.0208],
+      "phaseData": {
+        "baseline": {
+          "label": "基线",
+          "window": "事件前",
+          "story": "所有人保持原有日常论坛行为，没有任何事件信息泄漏。",
+          "public": [47, 47],
+          "relevant": [0, 0],
+          "primaryShare": [0, 0],
+          "topics": [{"label": "日常校园生活", "value": 48}]
+        },
+        "burst": {
+          "label": "早期出现",
+          "window": "少数人先期知晓",
+          "story": "48人中只有约18%的早期暴露者可能行动，其余人读取或尚未知晓。",
+          "public": [6, 6],
+          "relevant": [6, 6],
+          "primaryShare": [0.0865, 0.0696],
+          "topics": [
+            {"label": "事件本身", "value": 5},
+            {"label": "职业外溢", "value": 2}
+          ]
+        },
+        "spread": {
+          "label": "扩散",
+          "window": "讨论进入论坛",
+          "story": "事件成为公共议题，不同人群按自己的信息门槛和现实压力重新解释。",
+          "public": [39, 37],
+          "relevant": [28, 28],
+          "primaryShare": [0.1983, 0.1329],
+          "topics": [
+            {"label": "职业选择外溢", "value": 16},
+            {"label": "事件与回应", "value": 13}
+          ]
+        },
+        "decay": {
+          "label": "衰减",
+          "window": "热度回落",
+          "story": "大多数人返回日常议题，职业压力、情绪余波和正式回应需求仍在少数人中持续。",
+          "public": [13, 14],
+          "relevant": [11, 12],
+          "primaryShare": [0, 0],
+          "topics": [
+            {"label": "职业选择外溢", "value": 9},
+            {"label": "事件与回应", "value": 3}
+          ]
+        }
+      },
+      "policies": {
+        "baseline": {
+          "label": "自然演化",
+          "description": "用于验证同一代表性人口面对不同冲击时不会复用同一反应脚本。",
+          "metrics": {
+            "baseline": {"public": 47, "relevant": 0, "trust": 0.4943, "satisfied": 0.0253},
+            "burst": {"public": 6, "relevant": 6, "trust": 0.4899, "satisfied": 0},
+            "spread": {"public": 39, "relevant": 28, "trust": 0.4755, "satisfied": 0},
+            "decay": {"public": 13, "relevant": 11, "trust": 0.4707, "satisfied": 0}
+          }
+        }
+      },
+      "messages": {
+        "baseline": [
+          {"agent": "001", "archetype": "课程规则核实者", "variant": "考核安排确认型", "stance": "concerned", "text": "想确认一下，这门课考试到底能不能开卷？允许带哪些资料，以正式通知为准吗？"},
+          {"agent": "004", "archetype": "任务资源匹配者", "variant": "协作成员匹配", "stance": "neutral", "text": "想找有编程基础的同学一起组队参赛，希望能稳定参与、按时沟通，具体分工可协商。"}
+        ],
+        "burst": [
+          {"agent": "016", "archetype": "社区体验交流者", "variant": "即时观感与接梗", "stance": "concerned", "text": "刚刷到这事，有点膈应。求职已经够焦虑了，争议表达别急着当金句转发。"},
+          {"agent": "026", "archetype": "公共服务投诉者", "variant": "教学评价追问型", "stance": "critical", "text": "既然讲座面向学生，组织方能否尽快说明争议表达的完整语境，并提供正式反馈渠道？"},
+          {"agent": "031", "archetype": "校园规则办事询问者", "variant": "规则步骤核实型", "stance": "concerned", "text": "请问这次讲座争议有校方公开说明或正式反馈入口吗？想先核实原文和处理进度。"},
+          {"agent": "038", "archetype": "情绪承接者", "variant": "急性不适承接型", "stance": "concerned", "text": "刚看到这场讲座的争议表达，真的很堵。职业选择不该被这样贬低。"}
+        ],
+        "spread": [
+          {"agent": "002", "archetype": "公共规范讨论者", "variant": "背景核实提问型", "stance": "neutral", "text": "目前流传的是完整表述还是片段？评价前能否先区分原话、转述与职业价值判断，别急着给群体贴标签。"},
+          {"agent": "005", "archetype": "生涯机会决策咨询者", "variant": "门槛核实型", "stance": "neutral", "text": "准备秋招，也在考虑考公。遇到这种职业观点争议，选路径该看哪些更可靠的指标？"},
+          {"agent": "010", "archetype": "情绪承接者", "variant": "学业受挫共鸣型", "stance": "critical", "text": "看到这种贬低职业选择的表达，真的又气又堵。求职已经很难了，不该再被这样评判。"},
+          {"agent": "021", "archetype": "关系与协作边界协商者", "variant": "共处援助设限型", "stance": "concerned", "text": "合作群里有人转争议观点当建议，我不想把分歧升级，但也担心默认认同。该怎么设讨论边界？"}
+        ],
+        "decay": [
+          {"agent": "005", "archetype": "生涯机会决策咨询者", "variant": "门槛核实型", "stance": "neutral", "text": "秋招和考公时间冲突，能否按成功率、准备成本和退出风险给个比较框架？"},
+          {"agent": "012", "archetype": "校园规则办事询问者", "variant": "即时可用性确认型", "stance": "neutral", "text": "前两天问的正式反馈入口有更新吗？如果已提交，一般多久能收到回复？"},
+          {"agent": "039", "archetype": "情绪承接者", "variant": "自责求理解型", "stance": "concerned", "text": "两天了还是会被那些话影响，甚至怀疑自己的选择。争议热度降了，但这种压力有人还在承受吗？"},
+          {"agent": "041", "archetype": "公共规范讨论者", "variant": "结构反思讨论型", "stance": "concerned", "text": "两天过去，完整表述与正式回应仍不清楚。若事实尚未补齐，讨论至少应避免把职业选择分出高低。"}
+        ]
+      }
+    }
+  },
+  "expressionPilot": {
+    "version": "1.2.0",
+    "architecture": "冻结行为底稿 → 论坛表达候选 → 独立语义审稿 → 不合格自动回退",
+    "caseCount": 16,
+    "clearImprovements": 11,
+    "partialNonRegressive": 5,
+    "semanticRegressions": 0,
+    "replyMedianBefore": 36,
+    "replyMedianAfter": 10,
+    "realReplyMedian": 12,
+    "rawOverlap16Chars": 0,
+    "heldOut": "两个冲击窗口及其关联回复均未进入风格提示",
+    "examples": [
+      {
+        "scenario": "tongzhou",
+        "phase": "爆发期",
+        "target": "主帖",
+        "archetype": "生活方案咨询者",
+        "variant": "时效服务搜寻型",
+        "canonical": "如果住通州但有早课，跨校区通勤大概要预留多久？想先确定住宿怎么选。",
+        "forum": "蹲个真实体验，住通州赶早课通勤要留多久？想选住宿"
+      },
+      {
+        "scenario": "tongzhou",
+        "phase": "扩散期",
+        "target": "回复",
+        "archetype": "学习行动求助者",
+        "variant": "临考范围压缩型",
+        "parent": "公告没写清双校区课程怎么衔接。课表冲突或跨校区上课由谁协调？",
+        "canonical": "先按原课表推进能理解，但若临近考核才调整会很被动。能否明确冻结课表的最晚节点？",
+        "forum": "课表最晚啥时定？"
+      },
+      {
+        "scenario": "tongzhou",
+        "phase": "扩散期",
+        "target": "回复",
+        "archetype": "关系与协作边界协商者",
+        "variant": "共处援助设限型",
+        "parent": "各学生组织请先汇总跨校区活动安排与人员需求；具体规则待正式说明。",
+        "canonical": "同意先汇总任务，但负责人若仍要求固定到场，能否先约定临时替班、线上交接和重新确认期限？",
+        "forum": "能先约好临时替班吗？"
+      },
+      {
+        "scenario": "lecture",
+        "phase": "扩散期",
+        "target": "回复",
+        "archetype": "社区体验交流者",
+        "variant": "即时观感与接梗",
+        "parent": "准备求职时该先补通用技能，还是先定方向做项目？",
+        "canonical": "同感。现在连选什么工作都像要被一句话打分，先别把争议表达包装成求职圣经吧。",
+        "forum": "先别当求职圣经"
+      },
+      {
+        "scenario": "lecture",
+        "phase": "扩散期",
+        "target": "主帖",
+        "archetype": "社交同伴匹配者",
+        "variant": "情绪陪伴寻求",
+        "canonical": "刚看到争议讨论，求职焦虑有点上来了。有人愿意组个小聊天局，互相梳理方向吗？",
+        "forum": "刚刷到争议讨论，求职焦虑上来了，有人想一起聊聊梳理方向吗？"
+      },
+      {
+        "scenario": "lecture",
+        "phase": "衰减期",
+        "target": "回复",
+        "archetype": "公共规范讨论者",
+        "variant": "结构反思讨论型",
+        "parent": "职业选择不该被这样贬低，有没有人也觉得很不舒服？",
+        "canonical": "两天过去，完整表述与正式回应仍不清楚。若事实尚未补齐，讨论至少应避免把职业选择分出高低。",
+        "forum": "同感，职业不分高低"
+      }
+    ],
+    "limitations": "已验证局部主帖与父帖条件回复；尚未覆盖完整回复树、证据搬运、集体围观和传播速度。"
+  },
+  "threadEcology": {
+    "version": "1.1.0",
+    "architecture": "真实回复功能盲编码 → 语义线程路由 → 独立功能分配 → 根帖/最新回复锚定 → 条件生成 → 独立审稿 → 人工逐条复核",
+    "seedCount": 2,
+    "referenceSample": 48,
+    "lectureHoldoutSample": 48,
+    "threadCount": 6,
+    "replyCount": 24,
+    "modelAccepted": 24,
+    "clearCount": 22,
+    "partialCount": 2,
+    "failCount": 0,
+    "functions": [
+      {"id": "evidence_request", "label": "求证原文", "reference": 4.17, "referenceRange": "4.17%", "holdout": 10.42, "holdoutRange": "8.33–12.50%"},
+      {"id": "evidence_relay", "label": "证据状态转述", "reference": 6.25, "referenceRange": "4.17–8.33%", "holdout": 5.21, "holdoutRange": "4.17–6.25%"},
+      {"id": "irony_or_meme", "label": "反讽接梗", "reference": 14.58, "referenceRange": "14.58%", "holdout": 15.63, "holdoutRange": "10.42–20.83%"},
+      {"id": "amplification_or_pile_on", "label": "附和放大", "reference": 13.54, "referenceRange": "6.25–20.83%", "holdout": 27.08, "holdoutRange": "20.83–33.33%"}
+    ],
+    "threads": [
+      {
+        "id": "lecture-thread-1",
+        "label": "事实与回应链",
+        "root": "这次讲座争议有校方公开说明吗？想先核实原文，也看看有没有正式反馈入口和处理进度。",
+        "turns": [
+          {"agent": "公共服务投诉者", "function": "行动要求", "text": "都讨论开了，正式说明和反馈入口也该明确了吧？"},
+          {"agent": "公共服务投诉者", "function": "行动要求", "text": "先把核实时间和反馈入口说清楚吧"},
+          {"agent": "校园规则办事询问者", "function": "求证入口", "text": "有正式反馈入口吗？"},
+          {"agent": "公共规范讨论者", "function": "证据状态转述", "text": "目前线程里，完整表述和正式回应都还不清楚"}
+        ]
+      },
+      {
+        "id": "lecture-thread-2",
+        "label": "情绪与求证链",
+        "root": "刚看到这场讲座的争议表达，真的很堵。职业选择不该被这么贬低，有没有人也觉得很不舒服？",
+        "turns": [
+          {"agent": "情绪承接者", "function": "求证原文", "text": "有原文吗？想看看完整语境"},
+          {"agent": "社区体验交流者", "function": "反讽接梗", "text": "同蹲，别一句话就成求职圣经"},
+          {"agent": "情绪承接者", "function": "附和放大", "text": "确实，别捧成圣经"}
+        ]
+      },
+      {
+        "id": "lecture-thread-3",
+        "label": "焦虑与接梗链",
+        "root": "刚刷到争议讨论，求职焦虑上来了，有人想一起聊聊梳理方向吗？",
+        "turns": [
+          {"agent": "情绪承接者", "function": "个人体验", "text": "有同感，我也更焦虑了"},
+          {"agent": "情绪承接者", "function": "个人体验", "text": "我也是，越想越怀疑自己"},
+          {"agent": "情绪承接者", "function": "附和放大", "text": "我也是，别让这些评判变成自我怀疑"}
+        ]
+      }
+    ],
+    "heldOut": "每个种子独立盲编码窗口外/讲座留出各48条真实回复；讲座留出不参与人物选择、路由或生成提示。",
+    "boundary": "双种子24条局部回复支持语义连贯与事实边界；功能比例对抽样/种子仍敏感，不代表人口频率，也不声称恢复完整传播图。"
+  },
+  "review": {
+    "verdict": "代表性论坛行为仿真发布候选",
+    "accepted": ["典型人群文本特征", "不同冲击下的阶段机制", "同类内部差异", "治理方案压力测试"],
+    "notClaimed": ["绝对发帖量预测", "真实学生数字孪生", "沉默读者覆盖率", "真实传播速度", "因果政策效果"],
+    "knownLimitation": "两个场景的衰减期主议题新帖权重仍为零，因此只接受阶段形状和文本机制，不接受点预测。"
+  }
+}

@@ -1,0 +1,14 @@
+AgentWorldPanel.vue
+WorkbenchEvidencePanel.vue
+WorkbenchOverviewPanel.vue
+WorkbenchPlanPanel.vue
+WorkbenchPreflightPanel.vue
+WorkbenchPolicyPanel.vue
+WorkbenchProjectCreateDialog.vue
+WorkbenchRunMonitor.vue
+WorkbenchRunsPanel.vue
+WorkbenchScenarioPanel.vue
+WorkbenchWorkspacePage.vue
+workbenchCapabilities.ts
+workbenchState.ts
+workbenchViewModel.ts

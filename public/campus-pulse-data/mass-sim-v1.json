@@ -1,0 +1,2961 @@
+{
+  "non_claims": [
+    "Micro-agents are forum behavior episodes, not students.",
+    "Particles visualize local uncertainty and are not evidence units.",
+    "The exposure graph is synthetic and not a social graph.",
+    "No causal or real-world governance effect is claimed."
+  ],
+  "performance": {
+    "engine_elapsed_seconds": 3.293983,
+    "peak_additional_memory_bytes": 196608
+  },
+  "plan_sha256": "496b0b7af39c6419944d9f74cd68b8e38f82b10422658d43d9dc70093c23afb8",
+  "population_identity": {
+    "particle_count": 10000,
+    "population_sha256": "a7b8835e2d010d2684bfd9a03d3165e14ff3b40d204dc127cf8429afa0a183e6",
+    "population_size": 1000,
+    "unit": "reviewed_forum_episode_micro_agent",
+    "visual_groups": [
+      {
+        "group_id": "archetype-01",
+        "population_weight": 0.11703255
+      },
+      {
+        "group_id": "archetype-02",
+        "population_weight": 0.06656372
+      },
+      {
+        "group_id": "archetype-03",
+        "population_weight": 0.12643324
+      },
+      {
+        "group_id": "archetype-04",
+        "population_weight": 0.03816742
+      },
+      {
+        "group_id": "archetype-05",
+        "population_weight": 0.06829999
+      },
+      {
+        "group_id": "archetype-06",
+        "population_weight": 0.01054806
+      },
+      {
+        "group_id": "archetype-07",
+        "population_weight": 0.06847405
+      },
+      {
+        "group_id": "archetype-08",
+        "population_weight": 0.086874
+      },
+      {
+        "group_id": "archetype-09",
+        "population_weight": 0.02178459
+      },
+      {
+        "group_id": "archetype-10",
+        "population_weight": 0.04372568
+      },
+      {
+        "group_id": "archetype-11",
+        "population_weight": 0.06129646
+      },
+      {
+        "group_id": "archetype-12",
+        "population_weight": 0.03614445
+      },
+      {
+        "group_id": "archetype-13",
+        "population_weight": 0.09108757
+      },
+      {
+        "group_id": "archetype-14",
+        "population_weight": 0.05446288
+      },
+      {
+        "group_id": "archetype-15",
+        "population_weight": 0.05704893
+      },
+      {
+        "group_id": "archetype-16",
+        "population_weight": 0.03753314
+      },
+      {
+        "group_id": "archetype-17",
+        "population_weight": 0.01452328
+      }
+    ]
+  },
+  "privacy": {
+    "fixture_decisions_exported": false,
+    "graph_edges_exported": false,
+    "micro_agent_states_exported": false,
+    "raw_text_exported": false,
+    "sample_identities_exported": false,
+    "source_identifiers_exported": false
+  },
+  "representative_synthetic_utterances": [
+    {
+      "label": "信息缺口",
+      "review_status": "synthetic_reviewed_demo_text",
+      "text": "希望先看到可核验的时间线，再决定是否转发。"
+    },
+    {
+      "label": "服务承载",
+      "review_status": "synthetic_reviewed_demo_text",
+      "text": "说明已经发布，但支持渠道是否接得住仍需观察。"
+    },
+    {
+      "label": "有限杠杆",
+      "review_status": "synthetic_reviewed_demo_text",
+      "text": "治理动作降低了部分焦虑，并没有让所有分歧消失。"
+    }
+  ],
+  "result_kind": "budgeted_population_model_conditional_simulation",
+  "result_sha256": "3e0bf752ed2d8a8f38a6885d20c18e9b90bd7528b7e85d8c335120040a823b0f",
+  "sampling_summary": {
+    "all_selected_probabilities_positive": true,
+    "budget_per_round": 32,
+    "inclusion_probability_range": [
+      0.00548253,
+      1.0
+    ],
+    "mean_kish_ess": 30.670743,
+    "total_fixture_probe_turns": 896
+  },
+  "scenarios": {
+    "lecture_external_incident_shock": {
+      "branch_differences": [
+        {
+          "activity_delta": 0.0,
+          "concern_delta": 0.0,
+          "phase": "baseline",
+          "tick": 0,
+          "trust_delta": 0.0
+        },
+        {
+          "activity_delta": 0.0,
+          "concern_delta": 0.0,
+          "phase": "baseline",
+          "tick": 1,
+          "trust_delta": 0.0
+        },
+        {
+          "activity_delta": 0.000158,
+          "concern_delta": 0.000199,
+          "phase": "burst",
+          "tick": 2,
+          "trust_delta": -0.000149
+        },
+        {
+          "activity_delta": -0.013452,
+          "concern_delta": -0.037299,
+          "phase": "burst",
+          "tick": 3,
+          "trust_delta": 0.032338
+        },
+        {
+          "activity_delta": -0.029123,
+          "concern_delta": -0.074699,
+          "phase": "burst",
+          "tick": 4,
+          "trust_delta": 0.067351
+        },
+        {
+          "activity_delta": -0.044719,
+          "concern_delta": -0.112089,
+          "phase": "burst",
+          "tick": 5,
+          "trust_delta": 0.103781
+        },
+        {
+          "activity_delta": -0.05961,
+          "concern_delta": -0.149606,
+          "phase": "spread",
+          "tick": 6,
+          "trust_delta": 0.140782
+        },
+        {
+          "activity_delta": -0.073425,
+          "concern_delta": -0.185972,
+          "phase": "spread",
+          "tick": 7,
+          "trust_delta": 0.176611
+        },
+        {
+          "activity_delta": -0.085833,
+          "concern_delta": -0.220103,
+          "phase": "spread",
+          "tick": 8,
+          "trust_delta": 0.209901
+        },
+        {
+          "activity_delta": -0.09613,
+          "concern_delta": -0.250115,
+          "phase": "spread",
+          "tick": 9,
+          "trust_delta": 0.241411
+        },
+        {
+          "activity_delta": -0.102928,
+          "concern_delta": -0.27144,
+          "phase": "spread",
+          "tick": 10,
+          "trust_delta": 0.273978
+        },
+        {
+          "activity_delta": -0.106741,
+          "concern_delta": -0.283153,
+          "phase": "spread",
+          "tick": 11,
+          "trust_delta": 0.308755
+        },
+        {
+          "activity_delta": -0.105041,
+          "concern_delta": -0.277827,
+          "phase": "decay",
+          "tick": 12,
+          "trust_delta": 0.349174
+        },
+        {
+          "activity_delta": -0.098757,
+          "concern_delta": -0.254717,
+          "phase": "decay",
+          "tick": 13,
+          "trust_delta": 0.394137
+        },
+        {
+          "activity_delta": -0.089613,
+          "concern_delta": -0.223702,
+          "phase": "decay",
+          "tick": 14,
+          "trust_delta": 0.438238
+        },
+        {
+          "activity_delta": -0.078004,
+          "concern_delta": -0.189947,
+          "phase": "decay",
+          "tick": 15,
+          "trust_delta": 0.479818
+        }
+      ],
+      "resource_accounting": {
+        "actions": [
+          {
+            "action": "publish_verified_update",
+            "actor": "student_affairs_response_team",
+            "external_real_world_action": false,
+            "propagation_path": [
+              "governance_actor",
+              "cross_archetype_bridges",
+              "semantic_neighborhoods"
+            ],
+            "resource_units": 14,
+            "tick": 3
+          },
+          {
+            "action": "open_support_channel",
+            "actor": "campus_service_coordinator",
+            "external_real_world_action": false,
+            "propagation_path": [
+              "governance_actor",
+              "cross_archetype_bridges",
+              "semantic_neighborhoods"
+            ],
+            "resource_units": 18,
+            "tick": 7
+          }
+        ],
+        "conserved": true,
+        "consumed": 32,
+        "opening": 100,
+        "remaining": 68
+      },
+      "shared_baseline_sha256_by_seed": [
+        "3d5ef8141e0cd6b93a1522d37e9cc2a69ef474949049f16a2d59494318effefc",
+        "524759a227162df876da9d5ed8a299fc141ed8743b6b6e809bb1967ad9c3e7ba"
+      ],
+      "timeline": {
+        "governance": [
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.219131,
+              "attention": 0.212828,
+              "concern": 0.239591,
+              "opposition": 0.323714,
+              "satisfaction": 0.389601,
+              "support": 0.607626,
+              "trust": 0.500045
+            },
+            "tick": 0
+          },
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.00018,
+                    0.000377
+                  ],
+                  "ignore": [
+                    0.25181,
+                    0.602391
+                  ],
+                  "post": [
+                    0.00018,
+                    0.000377
+                  ],
+                  "read": [
+                    0.357003,
+                    0.710447
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.106669
+                  ],
+                  "seek_help": [
+                    0.001029,
+                    0.002156
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.008418,
+                    0.230812
+                  ],
+                  "critical": [
+                    0.218873,
+                    0.564277
+                  ],
+                  "neutral": [
+                    0.117838,
+                    0.443168
+                  ],
+                  "supportive": [
+                    0.067322,
+                    0.349292
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                539,
+                772,
+                1117,
+                1228,
+                1404,
+                1619,
+                1729,
+                1831,
+                1848,
+                2330,
+                2419,
+                2503,
+                2963,
+                3317,
+                3600,
+                3694,
+                4035,
+                4572,
+                5683,
+                6232,
+                6346,
+                6533,
+                7002,
+                7045,
+                7598,
+                7681,
+                7960,
+                8482,
+                8564,
+                8716,
+                8960,
+                9851
+              ],
+              "inclusion_probability_range": [
+                0.0097473,
+                1.0
+              ],
+              "mean_kish_ess": 30.590869
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.193861,
+              "attention": 0.172653,
+              "concern": 0.197895,
+              "opposition": 0.317001,
+              "satisfaction": 0.28508,
+              "support": 0.572903,
+              "trust": 0.437725
+            },
+            "tick": 1
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.236946,
+              "attention": 0.224499,
+              "concern": 0.242415,
+              "opposition": 0.346438,
+              "satisfaction": 0.192901,
+              "support": 0.513386,
+              "trust": 0.350683
+            },
+            "tick": 2
+          },
+          {
+            "governance_actions": [
+              {
+                "action": "publish_verified_update",
+                "actor": "student_affairs_response_team",
+                "external_real_world_action": false,
+                "propagation_path": [
+                  "governance_actor",
+                  "cross_archetype_bridges",
+                  "semantic_neighborhoods"
+                ],
+                "resource_units": 14,
+                "tick": 3
+              }
+            ],
+            "phase": "burst",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.268675,
+              "attention": 0.268794,
+              "concern": 0.258086,
+              "opposition": 0.347887,
+              "satisfaction": 0.14738,
+              "support": 0.50534,
+              "trust": 0.299164
+            },
+            "tick": 3
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.281874,
+              "attention": 0.293413,
+              "concern": 0.256646,
+              "opposition": 0.353256,
+              "satisfaction": 0.119575,
+              "support": 0.491491,
+              "trust": 0.262998
+            },
+            "tick": 4
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.000325,
+                    0.000691
+                  ],
+                  "ignore": [
+                    0.293493,
+                    0.652983
+                  ],
+                  "post": [
+                    0.000325,
+                    0.000691
+                  ],
+                  "read": [
+                    0.275883,
+                    0.635713
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.104043
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.097085
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.012179,
+                    0.267462
+                  ],
+                  "critical": [
+                    0.081876,
+                    0.390241
+                  ],
+                  "neutral": [
+                    0.15915,
+                    0.482254
+                  ],
+                  "supportive": [
+                    0.132409,
+                    0.474428
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                146,
+                603,
+                892,
+                1030,
+                1342,
+                1570,
+                1744,
+                3349,
+                3478,
+                3597,
+                4019,
+                4427,
+                4486,
+                4806,
+                4838,
+                5601,
+                5811,
+                5827,
+                5854,
+                6167,
+                6464,
+                6584,
+                6762,
+                6827,
+                6971,
+                7555,
+                7575,
+                8491,
+                9786,
+                9804,
+                9838,
+                9949
+              ],
+              "inclusion_probability_range": [
+                0.00795448,
+                0.24964387
+              ],
+              "mean_kish_ess": 29.613414
+            },
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.281629,
+              "attention": 0.30083,
+              "concern": 0.239725,
+              "opposition": 0.34828,
+              "satisfaction": 0.108023,
+              "support": 0.48925,
+              "trust": 0.240961
+            },
+            "tick": 5
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.268728,
+              "attention": 0.291536,
+              "concern": 0.2076,
+              "opposition": 0.333478,
+              "satisfaction": 0.110468,
+              "support": 0.497954,
+              "trust": 0.232834
+            },
+            "tick": 6
+          },
+          {
+            "governance_actions": [
+              {
+                "action": "open_support_channel",
+                "actor": "campus_service_coordinator",
+                "external_real_world_action": false,
+                "propagation_path": [
+                  "governance_actor",
+                  "cross_archetype_bridges",
+                  "semantic_neighborhoods"
+                ],
+                "resource_units": 18,
+                "tick": 7
+              }
+            ],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.25357,
+              "attention": 0.277013,
+              "concern": 0.171347,
+              "opposition": 0.314231,
+              "satisfaction": 0.123494,
+              "support": 0.512939,
+              "trust": 0.233737
+            },
+            "tick": 7
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.235264,
+              "attention": 0.256625,
+              "concern": 0.132018,
+              "opposition": 0.292342,
+              "satisfaction": 0.146023,
+              "support": 0.533671,
+              "trust": 0.243418
+            },
+            "tick": 8
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.215581,
+              "attention": 0.23197,
+              "concern": 0.092419,
+              "opposition": 0.269378,
+              "satisfaction": 0.176418,
+              "support": 0.558714,
+              "trust": 0.260636
+            },
+            "tick": 9
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.19557,
+              "attention": 0.203182,
+              "concern": 0.056705,
+              "opposition": 0.247257,
+              "satisfaction": 0.212768,
+              "support": 0.586448,
+              "trust": 0.284739
+            },
+            "tick": 10
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.084685
+                  ],
+                  "ignore": [
+                    0.122313,
+                    0.411465
+                  ],
+                  "post": [
+                    0.0,
+                    0.134683
+                  ],
+                  "read": [
+                    0.42888,
+                    0.750134
+                  ],
+                  "report_risk": [
+                    3.1e-05,
+                    6.1e-05
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.133369
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.0,
+                    0.144866
+                  ],
+                  "critical": [
+                    0.065938,
+                    0.333527
+                  ],
+                  "neutral": [
+                    0.127832,
+                    0.409793
+                  ],
+                  "supportive": [
+                    0.299208,
+                    0.624711
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                144,
+                915,
+                1273,
+                1553,
+                1585,
+                1725,
+                2166,
+                2355,
+                2676,
+                3149,
+                3793,
+                4035,
+                4816,
+                5171,
+                5538,
+                6085,
+                6193,
+                6569,
+                6859,
+                7107,
+                7223,
+                7274,
+                7507,
+                7613,
+                8066,
+                8615,
+                8764,
+                9001,
+                9047,
+                9121,
+                9441,
+                9739
+              ],
+              "inclusion_probability_range": [
+                0.00851514,
+                0.10939151
+              ],
+              "mean_kish_ess": 31.013385
+            },
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.177223,
+              "attention": 0.172078,
+              "concern": 0.028189,
+              "opposition": 0.227578,
+              "satisfaction": 0.252617,
+              "support": 0.615068,
+              "trust": 0.314605
+            },
+            "tick": 11
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.157332,
+              "attention": 0.131753,
+              "concern": 0.008241,
+              "opposition": 0.210416,
+              "satisfaction": 0.294328,
+              "support": 0.644498,
+              "trust": 0.352592
+            },
+            "tick": 12
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.140255,
+              "attention": 0.088034,
+              "concern": 0.001442,
+              "opposition": 0.197259,
+              "satisfaction": 0.335406,
+              "support": 0.672206,
+              "trust": 0.396292
+            },
+            "tick": 13
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.126163,
+              "attention": 0.046851,
+              "concern": 0.0,
+              "opposition": 0.189279,
+              "satisfaction": 0.370842,
+              "support": 0.693511,
+              "trust": 0.439665
+            },
+            "tick": 14
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.08593
+                  ],
+                  "ignore": [
+                    0.192724,
+                    0.524827
+                  ],
+                  "post": [
+                    0.0,
+                    0.0
+                  ],
+                  "read": [
+                    0.442728,
+                    0.780769
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.0
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.0,
+                    0.0
+                  ],
+                  "critical": [
+                    0.011102,
+                    0.254257
+                  ],
+                  "neutral": [
+                    0.101379,
+                    0.408699
+                  ],
+                  "supportive": [
+                    0.440483,
+                    0.78408
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                110,
+                126,
+                136,
+                245,
+                1196,
+                1584,
+                1831,
+                2446,
+                2591,
+                2628,
+                3164,
+                3363,
+                3508,
+                3632,
+                3899,
+                5686,
+                5983,
+                6091,
+                6118,
+                6278,
+                6350,
+                6746,
+                6780,
+                7026,
+                7863,
+                8178,
+                8207,
+                8371,
+                8615,
+                8765,
+                9557,
+                9857
+              ],
+              "inclusion_probability_range": [
+                0.00633487,
+                0.07244764
+              ],
+              "mean_kish_ess": 30.351987
+            },
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.115809,
+              "attention": 0.01501,
+              "concern": 0.0,
+              "opposition": 0.183135,
+              "satisfaction": 0.401043,
+              "support": 0.711504,
+              "trust": 0.481122
+            },
+            "tick": 15
+          }
+        ],
+        "natural": [
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.219131,
+              "attention": 0.212828,
+              "concern": 0.239591,
+              "opposition": 0.323714,
+              "satisfaction": 0.389601,
+              "support": 0.607626,
+              "trust": 0.500045
+            },
+            "tick": 0
+          },
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.00018,
+                    0.000377
+                  ],
+                  "ignore": [
+                    0.25181,
+                    0.602391
+                  ],
+                  "post": [
+                    0.00018,
+                    0.000377
+                  ],
+                  "read": [
+                    0.357003,
+                    0.710447
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.106669
+                  ],
+                  "seek_help": [
+                    0.001029,
+                    0.002156
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.008418,
+                    0.230812
+                  ],
+                  "critical": [
+                    0.218873,
+                    0.564277
+                  ],
+                  "neutral": [
+                    0.117838,
+                    0.443168
+                  ],
+                  "supportive": [
+                    0.067322,
+                    0.349292
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                13,
+                27,
+                285,
+                622,
+                1594,
+                1703,
+                1992,
+                2132,
+                2675,
+                2832,
+                3064,
+                3504,
+                3849,
+                4794,
+                4821,
+                4852,
+                5629,
+                5872,
+                6139,
+                6726,
+                7390,
+                7412,
+                8190,
+                8494,
+                8534,
+                8738,
+                8809,
+                9151,
+                9228,
+                9255,
+                9411,
+                9978
+              ],
+              "inclusion_probability_range": [
+                0.0097473,
+                1.0
+              ],
+              "mean_kish_ess": 30.590869
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.193861,
+              "attention": 0.172653,
+              "concern": 0.197895,
+              "opposition": 0.317001,
+              "satisfaction": 0.28508,
+              "support": 0.572903,
+              "trust": 0.437725
+            },
+            "tick": 1
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.236788,
+              "attention": 0.224251,
+              "concern": 0.242216,
+              "opposition": 0.346333,
+              "satisfaction": 0.192975,
+              "support": 0.513497,
+              "trust": 0.350832
+            },
+            "tick": 2
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.282127,
+              "attention": 0.283548,
+              "concern": 0.295385,
+              "opposition": 0.388757,
+              "satisfaction": 0.109623,
+              "support": 0.455101,
+              "trust": 0.266826
+            },
+            "tick": 3
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.310997,
+              "attention": 0.322749,
+              "concern": 0.331345,
+              "opposition": 0.424095,
+              "satisfaction": 0.04909,
+              "support": 0.41048,
+              "trust": 0.195647
+            },
+            "tick": 4
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.071558
+                  ],
+                  "ignore": [
+                    0.157322,
+                    0.492824
+                  ],
+                  "post": [
+                    0.0,
+                    0.0
+                  ],
+                  "read": [
+                    0.413495,
+                    0.767803
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.09046
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.083819
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.102336,
+                    0.427707
+                  ],
+                  "critical": [
+                    0.042114,
+                    0.318919
+                  ],
+                  "neutral": [
+                    0.179971,
+                    0.526506
+                  ],
+                  "supportive": [
+                    0.048148,
+                    0.354299
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                336,
+                366,
+                483,
+                931,
+                1304,
+                1575,
+                1615,
+                1621,
+                1789,
+                2048,
+                2206,
+                2584,
+                2754,
+                2903,
+                2967,
+                3056,
+                3743,
+                4124,
+                4341,
+                4502,
+                5010,
+                5329,
+                6189,
+                7311,
+                7362,
+                7407,
+                8021,
+                8660,
+                8926,
+                9540,
+                9725,
+                9813
+              ],
+              "inclusion_probability_range": [
+                0.00548253,
+                0.19315645
+              ],
+              "mean_kish_ess": 30.295176
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.326348,
+              "attention": 0.344503,
+              "concern": 0.351814,
+              "opposition": 0.449269,
+              "satisfaction": 0.019325,
+              "support": 0.380375,
+              "trust": 0.13718
+            },
+            "tick": 5
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.328338,
+              "attention": 0.349687,
+              "concern": 0.357206,
+              "opposition": 0.464129,
+              "satisfaction": 0.007083,
+              "support": 0.361573,
+              "trust": 0.092052
+            },
+            "tick": 6
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.326995,
+              "attention": 0.349253,
+              "concern": 0.357319,
+              "opposition": 0.472983,
+              "satisfaction": 0.002262,
+              "support": 0.348855,
+              "trust": 0.057126
+            },
+            "tick": 7
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.321097,
+              "attention": 0.343276,
+              "concern": 0.352121,
+              "opposition": 0.476592,
+              "satisfaction": 0.000513,
+              "support": 0.341534,
+              "trust": 0.033517
+            },
+            "tick": 8
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.311711,
+              "attention": 0.3328,
+              "concern": 0.342534,
+              "opposition": 0.475735,
+              "satisfaction": 5.6e-05,
+              "support": 0.338364,
+              "trust": 0.019225
+            },
+            "tick": 9
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.298498,
+              "attention": 0.317399,
+              "concern": 0.328145,
+              "opposition": 0.4712,
+              "satisfaction": 2e-06,
+              "support": 0.3381,
+              "trust": 0.010761
+            },
+            "tick": 10
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.084797
+                  ],
+                  "ignore": [
+                    0.1294,
+                    0.455497
+                  ],
+                  "post": [
+                    0.0,
+                    0.0
+                  ],
+                  "read": [
+                    0.512378,
+                    0.846589
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.0
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.026934,
+                    0.26872
+                  ],
+                  "critical": [
+                    0.148612,
+                    0.480665
+                  ],
+                  "neutral": [
+                    0.090158,
+                    0.402196
+                  ],
+                  "supportive": [
+                    0.122675,
+                    0.46004
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                423,
+                1242,
+                1504,
+                1559,
+                1704,
+                1788,
+                1850,
+                2318,
+                2420,
+                3213,
+                3224,
+                3356,
+                3500,
+                3662,
+                4279,
+                4501,
+                4627,
+                4877,
+                5421,
+                5655,
+                5840,
+                6374,
+                6435,
+                6616,
+                7098,
+                7108,
+                7455,
+                8582,
+                8658,
+                8788,
+                9124,
+                9356
+              ],
+              "inclusion_probability_range": [
+                0.00981845,
+                0.12139892
+              ],
+              "mean_kish_ess": 31.021916
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.283964,
+              "attention": 0.299751,
+              "concern": 0.311342,
+              "opposition": 0.464387,
+              "satisfaction": 0.0,
+              "support": 0.339486,
+              "trust": 0.00585
+            },
+            "tick": 11
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.262373,
+              "attention": 0.273342,
+              "concern": 0.286068,
+              "opposition": 0.453526,
+              "satisfaction": 0.0,
+              "support": 0.343264,
+              "trust": 0.003418
+            },
+            "tick": 12
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.239012,
+              "attention": 0.242389,
+              "concern": 0.256159,
+              "opposition": 0.439732,
+              "satisfaction": 0.0,
+              "support": 0.348331,
+              "trust": 0.002155
+            },
+            "tick": 13
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.215776,
+              "attention": 0.209151,
+              "concern": 0.223702,
+              "opposition": 0.424432,
+              "satisfaction": 0.0,
+              "support": 0.354106,
+              "trust": 0.001427
+            },
+            "tick": 14
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.143498
+                  ],
+                  "ignore": [
+                    0.18151,
+                    0.500604
+                  ],
+                  "post": [
+                    0.0,
+                    0.069684
+                  ],
+                  "read": [
+                    0.36728,
+                    0.703342
+                  ],
+                  "report_risk": [
+                    0.000333,
+                    0.000672
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.10148
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.103037,
+                    0.392915
+                  ],
+                  "critical": [
+                    0.184849,
+                    0.505307
+                  ],
+                  "neutral": [
+                    0.07071,
+                    0.332753
+                  ],
+                  "supportive": [
+                    0.063807,
+                    0.346622
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                201,
+                912,
+                1406,
+                1538,
+                1832,
+                2111,
+                2158,
+                3108,
+                3464,
+                3535,
+                3919,
+                4051,
+                4593,
+                4952,
+                4959,
+                5234,
+                5824,
+                5950,
+                6729,
+                7036,
+                7292,
+                7649,
+                8173,
+                8176,
+                8344,
+                8407,
+                8426,
+                8497,
+                8631,
+                8706,
+                9177,
+                9612
+              ],
+              "inclusion_probability_range": [
+                0.01073081,
+                0.07262766
+              ],
+              "mean_kish_ess": 31.128123
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.193813,
+              "attention": 0.174856,
+              "concern": 0.189947,
+              "opposition": 0.408354,
+              "satisfaction": 0.0,
+              "support": 0.360389,
+              "trust": 0.001304
+            },
+            "tick": 15
+          }
+        ]
+      }
+    },
+    "tongzhou_governance_information_shock": {
+      "branch_differences": [
+        {
+          "activity_delta": 0.0,
+          "concern_delta": 0.0,
+          "phase": "baseline",
+          "tick": 0,
+          "trust_delta": 0.0
+        },
+        {
+          "activity_delta": 0.0,
+          "concern_delta": 0.0,
+          "phase": "baseline",
+          "tick": 1,
+          "trust_delta": 0.0
+        },
+        {
+          "activity_delta": 2e-05,
+          "concern_delta": 2e-06,
+          "phase": "burst",
+          "tick": 2,
+          "trust_delta": -2e-06
+        },
+        {
+          "activity_delta": -0.013835,
+          "concern_delta": -0.037545,
+          "phase": "burst",
+          "tick": 3,
+          "trust_delta": 0.032534
+        },
+        {
+          "activity_delta": -0.029587,
+          "concern_delta": -0.074653,
+          "phase": "burst",
+          "tick": 4,
+          "trust_delta": 0.067344
+        },
+        {
+          "activity_delta": -0.045673,
+          "concern_delta": -0.112317,
+          "phase": "burst",
+          "tick": 5,
+          "trust_delta": 0.104402
+        },
+        {
+          "activity_delta": -0.060811,
+          "concern_delta": -0.149822,
+          "phase": "spread",
+          "tick": 6,
+          "trust_delta": 0.141799
+        },
+        {
+          "activity_delta": -0.074916,
+          "concern_delta": -0.186348,
+          "phase": "spread",
+          "tick": 7,
+          "trust_delta": 0.176777
+        },
+        {
+          "activity_delta": -0.087339,
+          "concern_delta": -0.220953,
+          "phase": "spread",
+          "tick": 8,
+          "trust_delta": 0.209044
+        },
+        {
+          "activity_delta": -0.098073,
+          "concern_delta": -0.252342,
+          "phase": "spread",
+          "tick": 9,
+          "trust_delta": 0.239554
+        },
+        {
+          "activity_delta": -0.105548,
+          "concern_delta": -0.276649,
+          "phase": "spread",
+          "tick": 10,
+          "trust_delta": 0.271051
+        },
+        {
+          "activity_delta": -0.109736,
+          "concern_delta": -0.290609,
+          "phase": "spread",
+          "tick": 11,
+          "trust_delta": 0.305
+        },
+        {
+          "activity_delta": -0.107825,
+          "concern_delta": -0.285832,
+          "phase": "decay",
+          "tick": 12,
+          "trust_delta": 0.345094
+        },
+        {
+          "activity_delta": -0.10134,
+          "concern_delta": -0.262089,
+          "phase": "decay",
+          "tick": 13,
+          "trust_delta": 0.39042
+        },
+        {
+          "activity_delta": -0.09199,
+          "concern_delta": -0.229679,
+          "phase": "decay",
+          "tick": 14,
+          "trust_delta": 0.434876
+        },
+        {
+          "activity_delta": -0.080339,
+          "concern_delta": -0.195078,
+          "phase": "decay",
+          "tick": 15,
+          "trust_delta": 0.476662
+        }
+      ],
+      "resource_accounting": {
+        "actions": [
+          {
+            "action": "publish_verified_update",
+            "actor": "student_affairs_response_team",
+            "external_real_world_action": false,
+            "propagation_path": [
+              "governance_actor",
+              "cross_archetype_bridges",
+              "semantic_neighborhoods"
+            ],
+            "resource_units": 14,
+            "tick": 3
+          },
+          {
+            "action": "open_support_channel",
+            "actor": "campus_service_coordinator",
+            "external_real_world_action": false,
+            "propagation_path": [
+              "governance_actor",
+              "cross_archetype_bridges",
+              "semantic_neighborhoods"
+            ],
+            "resource_units": 18,
+            "tick": 7
+          }
+        ],
+        "conserved": true,
+        "consumed": 32,
+        "opening": 100,
+        "remaining": 68
+      },
+      "shared_baseline_sha256_by_seed": [
+        "3326cb9645a0010e968ee3cc44aa4638be43b645a17e702011d6153f741fc07e",
+        "82e5b45fb7620b80d5b31c1c9c852f55a5ec0ec4944136743f86022ad395ced9"
+      ],
+      "timeline": {
+        "governance": [
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.21945,
+              "attention": 0.213461,
+              "concern": 0.240111,
+              "opposition": 0.323957,
+              "satisfaction": 0.38942,
+              "support": 0.607367,
+              "trust": 0.499687
+            },
+            "tick": 0
+          },
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.000194,
+                    0.000404
+                  ],
+                  "ignore": [
+                    0.344248,
+                    0.694992
+                  ],
+                  "post": [
+                    0.000194,
+                    0.000404
+                  ],
+                  "read": [
+                    0.304043,
+                    0.654788
+                  ],
+                  "report_risk": [
+                    4.7e-05,
+                    9.7e-05
+                  ],
+                  "seek_help": [
+                    0.000191,
+                    0.000398
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.050201,
+                    0.315086
+                  ],
+                  "critical": [
+                    0.108539,
+                    0.420369
+                  ],
+                  "neutral": [
+                    0.101344,
+                    0.406084
+                  ],
+                  "supportive": [
+                    0.137402,
+                    0.460976
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                539,
+                772,
+                1117,
+                1228,
+                1404,
+                1619,
+                1729,
+                1831,
+                1848,
+                2330,
+                2419,
+                2503,
+                2963,
+                3317,
+                3600,
+                3694,
+                4035,
+                4572,
+                5683,
+                6232,
+                6346,
+                6533,
+                7002,
+                7045,
+                7598,
+                7681,
+                7960,
+                8482,
+                8564,
+                8716,
+                8960,
+                9851
+              ],
+              "inclusion_probability_range": [
+                0.00931239,
+                1.0
+              ],
+              "mean_kish_ess": 30.610194
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.194169,
+              "attention": 0.173266,
+              "concern": 0.198435,
+              "opposition": 0.317263,
+              "satisfaction": 0.284779,
+              "support": 0.572611,
+              "trust": 0.437372
+            },
+            "tick": 1
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.239131,
+              "attention": 0.227902,
+              "concern": 0.245551,
+              "opposition": 0.347852,
+              "satisfaction": 0.191737,
+              "support": 0.511956,
+              "trust": 0.349196
+            },
+            "tick": 2
+          },
+          {
+            "governance_actions": [
+              {
+                "action": "publish_verified_update",
+                "actor": "student_affairs_response_team",
+                "external_real_world_action": false,
+                "propagation_path": [
+                  "governance_actor",
+                  "cross_archetype_bridges",
+                  "semantic_neighborhoods"
+                ],
+                "resource_units": 14,
+                "tick": 3
+              }
+            ],
+            "phase": "burst",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.272408,
+              "attention": 0.274347,
+              "concern": 0.263356,
+              "opposition": 0.350395,
+              "satisfaction": 0.144702,
+              "support": 0.502819,
+              "trust": 0.296797
+            },
+            "tick": 3
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.286989,
+              "attention": 0.301029,
+              "concern": 0.263896,
+              "opposition": 0.356853,
+              "satisfaction": 0.115012,
+              "support": 0.487772,
+              "trust": 0.259573
+            },
+            "tick": 4
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.075432
+                  ],
+                  "ignore": [
+                    0.128048,
+                    0.421607
+                  ],
+                  "post": [
+                    0.0,
+                    0.101326
+                  ],
+                  "read": [
+                    0.470795,
+                    0.791794
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.0
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.093605
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.034744,
+                    0.287032
+                  ],
+                  "critical": [
+                    0.100021,
+                    0.397817
+                  ],
+                  "neutral": [
+                    0.107366,
+                    0.396269
+                  ],
+                  "supportive": [
+                    0.182461,
+                    0.494291
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                146,
+                603,
+                892,
+                1030,
+                1342,
+                1570,
+                1744,
+                3349,
+                3478,
+                3597,
+                4019,
+                4427,
+                4486,
+                4806,
+                4838,
+                5601,
+                5811,
+                5827,
+                5854,
+                6167,
+                6464,
+                6584,
+                6762,
+                6827,
+                6971,
+                7555,
+                7575,
+                8491,
+                9786,
+                9804,
+                9838,
+                9949
+              ],
+              "inclusion_probability_range": [
+                0.00918158,
+                0.1003585
+              ],
+              "mean_kish_ess": 30.585696
+            },
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.287233,
+              "attention": 0.309128,
+              "concern": 0.247777,
+              "opposition": 0.352366,
+              "satisfaction": 0.102253,
+              "support": 0.484951,
+              "trust": 0.237094
+            },
+            "tick": 5
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 86,
+            "state_means": {
+              "activity_probability": 0.274587,
+              "attention": 0.300528,
+              "concern": 0.216343,
+              "opposition": 0.337901,
+              "satisfaction": 0.10368,
+              "support": 0.493113,
+              "trust": 0.228411
+            },
+            "tick": 6
+          },
+          {
+            "governance_actions": [
+              {
+                "action": "open_support_channel",
+                "actor": "campus_service_coordinator",
+                "external_real_world_action": false,
+                "propagation_path": [
+                  "governance_actor",
+                  "cross_archetype_bridges",
+                  "semantic_neighborhoods"
+                ],
+                "resource_units": 18,
+                "tick": 7
+              }
+            ],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.259343,
+              "attention": 0.286179,
+              "concern": 0.180234,
+              "opposition": 0.318675,
+              "satisfaction": 0.115923,
+              "support": 0.507822,
+              "trust": 0.229016
+            },
+            "tick": 7
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.240679,
+              "attention": 0.265941,
+              "concern": 0.140189,
+              "opposition": 0.296485,
+              "satisfaction": 0.13813,
+              "support": 0.528556,
+              "trust": 0.238391
+            },
+            "tick": 8
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.220357,
+              "attention": 0.24103,
+              "concern": 0.09915,
+              "opposition": 0.272891,
+              "satisfaction": 0.168895,
+              "support": 0.554001,
+              "trust": 0.255534
+            },
+            "tick": 9
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.199331,
+              "attention": 0.211698,
+              "concern": 0.060251,
+              "opposition": 0.249579,
+              "satisfaction": 0.206297,
+              "support": 0.582703,
+              "trust": 0.279732
+            },
+            "tick": 10
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.0
+                  ],
+                  "ignore": [
+                    0.269447,
+                    0.608241
+                  ],
+                  "post": [
+                    0.0,
+                    0.0
+                  ],
+                  "read": [
+                    0.391759,
+                    0.730553
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.0
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.0,
+                    0.156628
+                  ],
+                  "critical": [
+                    0.061445,
+                    0.339239
+                  ],
+                  "neutral": [
+                    0.158062,
+                    0.466824
+                  ],
+                  "supportive": [
+                    0.251556,
+                    0.587728
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                144,
+                915,
+                1273,
+                1553,
+                1585,
+                1725,
+                2166,
+                2355,
+                2676,
+                3149,
+                3793,
+                4035,
+                4816,
+                5171,
+                5538,
+                6085,
+                6193,
+                6569,
+                6859,
+                7107,
+                7223,
+                7274,
+                7507,
+                7613,
+                8066,
+                8615,
+                8764,
+                9001,
+                9047,
+                9121,
+                9441,
+                9739
+              ],
+              "inclusion_probability_range": [
+                0.01020568,
+                0.10071462
+              ],
+              "mean_kish_ess": 30.900708
+            },
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.180088,
+              "attention": 0.17991,
+              "concern": 0.028954,
+              "opposition": 0.228779,
+              "satisfaction": 0.24746,
+              "support": 0.612291,
+              "trust": 0.309801
+            },
+            "tick": 11
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.159623,
+              "attention": 0.13901,
+              "concern": 0.007748,
+              "opposition": 0.211079,
+              "satisfaction": 0.290293,
+              "support": 0.642297,
+              "trust": 0.347883
+            },
+            "tick": 12
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.141972,
+              "attention": 0.093772,
+              "concern": 0.000858,
+              "opposition": 0.197734,
+              "satisfaction": 0.332198,
+              "support": 0.670419,
+              "trust": 0.392116
+            },
+            "tick": 13
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.127321,
+              "attention": 0.050614,
+              "concern": 0.0,
+              "opposition": 0.189786,
+              "satisfaction": 0.368134,
+              "support": 0.69193,
+              "trust": 0.436047
+            },
+            "tick": 14
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.144574
+                  ],
+                  "ignore": [
+                    0.151645,
+                    0.490529
+                  ],
+                  "post": [
+                    0.0,
+                    0.079886
+                  ],
+                  "read": [
+                    0.384894,
+                    0.743154
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.079168
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.0,
+                    0.0
+                  ],
+                  "critical": [
+                    0.049579,
+                    0.331231
+                  ],
+                  "neutral": [
+                    0.179431,
+                    0.536275
+                  ],
+                  "supportive": [
+                    0.272585,
+                    0.630899
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                110,
+                126,
+                136,
+                245,
+                1196,
+                1584,
+                1831,
+                2446,
+                2591,
+                2628,
+                3164,
+                3363,
+                3508,
+                3632,
+                3899,
+                5686,
+                5983,
+                6091,
+                6118,
+                6278,
+                6350,
+                6746,
+                6780,
+                7026,
+                7863,
+                8178,
+                8207,
+                8371,
+                8615,
+                8765,
+                9557,
+                9857
+              ],
+              "inclusion_probability_range": [
+                0.00868676,
+                0.07886375
+              ],
+              "mean_kish_ess": 30.625805
+            },
+            "resource_remaining": 68,
+            "state_means": {
+              "activity_probability": 0.116297,
+              "attention": 0.016379,
+              "concern": 0.0,
+              "opposition": 0.1836,
+              "satisfaction": 0.398718,
+              "support": 0.710141,
+              "trust": 0.477861
+            },
+            "tick": 15
+          }
+        ],
+        "natural": [
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.21945,
+              "attention": 0.213461,
+              "concern": 0.240111,
+              "opposition": 0.323957,
+              "satisfaction": 0.38942,
+              "support": 0.607367,
+              "trust": 0.499687
+            },
+            "tick": 0
+          },
+          {
+            "governance_actions": [],
+            "phase": "baseline",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.000194,
+                    0.000404
+                  ],
+                  "ignore": [
+                    0.344248,
+                    0.694992
+                  ],
+                  "post": [
+                    0.000194,
+                    0.000404
+                  ],
+                  "read": [
+                    0.304043,
+                    0.654788
+                  ],
+                  "report_risk": [
+                    4.7e-05,
+                    9.7e-05
+                  ],
+                  "seek_help": [
+                    0.000191,
+                    0.000398
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.050201,
+                    0.315086
+                  ],
+                  "critical": [
+                    0.108539,
+                    0.420369
+                  ],
+                  "neutral": [
+                    0.101344,
+                    0.406084
+                  ],
+                  "supportive": [
+                    0.137402,
+                    0.460976
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                13,
+                27,
+                285,
+                622,
+                1594,
+                1703,
+                1992,
+                2132,
+                2675,
+                2832,
+                3064,
+                3504,
+                3849,
+                4794,
+                4821,
+                4852,
+                5629,
+                5872,
+                6139,
+                6726,
+                7390,
+                7412,
+                8190,
+                8494,
+                8534,
+                8738,
+                8809,
+                9151,
+                9228,
+                9255,
+                9411,
+                9978
+              ],
+              "inclusion_probability_range": [
+                0.00931239,
+                1.0
+              ],
+              "mean_kish_ess": 30.610194
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.194169,
+              "attention": 0.173266,
+              "concern": 0.198435,
+              "opposition": 0.317263,
+              "satisfaction": 0.284779,
+              "support": 0.572611,
+              "trust": 0.437372
+            },
+            "tick": 1
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.239111,
+              "attention": 0.227898,
+              "concern": 0.245549,
+              "opposition": 0.347844,
+              "satisfaction": 0.191738,
+              "support": 0.511958,
+              "trust": 0.349198
+            },
+            "tick": 2
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.286243,
+              "attention": 0.289406,
+              "concern": 0.300901,
+              "opposition": 0.391584,
+              "satisfaction": 0.106571,
+              "support": 0.452379,
+              "trust": 0.264263
+            },
+            "tick": 3
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.316576,
+              "attention": 0.330298,
+              "concern": 0.338549,
+              "opposition": 0.428046,
+              "satisfaction": 0.045475,
+              "support": 0.407029,
+              "trust": 0.192229
+            },
+            "tick": 4
+          },
+          {
+            "governance_actions": [],
+            "phase": "burst",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.148029
+                  ],
+                  "ignore": [
+                    0.065991,
+                    0.348453
+                  ],
+                  "post": [
+                    0.0,
+                    0.131157
+                  ],
+                  "read": [
+                    0.420317,
+                    0.757575
+                  ],
+                  "report_risk": [
+                    0.000125,
+                    0.000256
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.17569
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.0,
+                    0.181119
+                  ],
+                  "critical": [
+                    0.206261,
+                    0.54276
+                  ],
+                  "neutral": [
+                    0.076078,
+                    0.346597
+                  ],
+                  "supportive": [
+                    0.172951,
+                    0.491967
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                336,
+                366,
+                483,
+                931,
+                1304,
+                1575,
+                1615,
+                1621,
+                1789,
+                2048,
+                2206,
+                2584,
+                2754,
+                2903,
+                2967,
+                3056,
+                3743,
+                4124,
+                4341,
+                4502,
+                5010,
+                5329,
+                6189,
+                7311,
+                7362,
+                7407,
+                8021,
+                8660,
+                8926,
+                9540,
+                9725,
+                9813
+              ],
+              "inclusion_probability_range": [
+                0.00721498,
+                0.3384512
+              ],
+              "mean_kish_ess": 30.53405
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.332906,
+              "attention": 0.353084,
+              "concern": 0.360094,
+              "opposition": 0.454129,
+              "satisfaction": 0.016854,
+              "support": 0.376666,
+              "trust": 0.132692
+            },
+            "tick": 5
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.335398,
+              "attention": 0.358899,
+              "concern": 0.366165,
+              "opposition": 0.469598,
+              "satisfaction": 0.006154,
+              "support": 0.357823,
+              "trust": 0.086612
+            },
+            "tick": 6
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.334259,
+              "attention": 0.358689,
+              "concern": 0.366582,
+              "opposition": 0.478522,
+              "satisfaction": 0.001931,
+              "support": 0.345395,
+              "trust": 0.052239
+            },
+            "tick": 7
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.328018,
+              "attention": 0.352306,
+              "concern": 0.361142,
+              "opposition": 0.48189,
+              "satisfaction": 0.000361,
+              "support": 0.338421,
+              "trust": 0.029347
+            },
+            "tick": 8
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.31843,
+              "attention": 0.341717,
+              "concern": 0.351492,
+              "opposition": 0.480788,
+              "satisfaction": 1e-05,
+              "support": 0.335607,
+              "trust": 0.01598
+            },
+            "tick": 9
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.304879,
+              "attention": 0.326068,
+              "concern": 0.3369,
+              "opposition": 0.475878,
+              "satisfaction": 0.0,
+              "support": 0.33578,
+              "trust": 0.008681
+            },
+            "tick": 10
+          },
+          {
+            "governance_actions": [],
+            "phase": "spread",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.0
+                  ],
+                  "ignore": [
+                    0.182684,
+                    0.513862
+                  ],
+                  "post": [
+                    0.0,
+                    0.104709
+                  ],
+                  "read": [
+                    0.361011,
+                    0.709378
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.086563
+                  ],
+                  "seek_help": [
+                    0.0,
+                    0.128052
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.025129,
+                    0.29107
+                  ],
+                  "critical": [
+                    0.064187,
+                    0.335647
+                  ],
+                  "neutral": [
+                    0.214196,
+                    0.552885
+                  ],
+                  "supportive": [
+                    0.104261,
+                    0.412624
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                423,
+                1242,
+                1504,
+                1559,
+                1704,
+                1788,
+                1850,
+                2318,
+                2420,
+                3213,
+                3224,
+                3356,
+                3500,
+                3662,
+                4279,
+                4501,
+                4627,
+                4877,
+                5421,
+                5655,
+                5840,
+                6374,
+                6435,
+                6616,
+                7098,
+                7108,
+                7455,
+                8582,
+                8658,
+                8788,
+                9124,
+                9356
+              ],
+              "inclusion_probability_range": [
+                0.01048458,
+                0.08828763
+              ],
+              "mean_kish_ess": 31.068414
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.289824,
+              "attention": 0.307793,
+              "concern": 0.319563,
+              "opposition": 0.4686,
+              "satisfaction": 0.0,
+              "support": 0.337609,
+              "trust": 0.004801
+            },
+            "tick": 11
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.267448,
+              "attention": 0.280612,
+              "concern": 0.29358,
+              "opposition": 0.457322,
+              "satisfaction": 0.0,
+              "support": 0.341654,
+              "trust": 0.002789
+            },
+            "tick": 12
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.243312,
+              "attention": 0.248913,
+              "concern": 0.262947,
+              "opposition": 0.443137,
+              "satisfaction": 0.0,
+              "support": 0.346907,
+              "trust": 0.001696
+            },
+            "tick": 13
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.219311,
+              "attention": 0.214844,
+              "concern": 0.229679,
+              "opposition": 0.427384,
+              "satisfaction": 0.0,
+              "support": 0.352896,
+              "trust": 0.001171
+            },
+            "tick": 14
+          },
+          {
+            "governance_actions": [],
+            "phase": "decay",
+            "probe_summary": {
+              "budget": 32,
+              "confidence_intervals_95": {
+                "action": {
+                  "comment": [
+                    0.0,
+                    0.090304
+                  ],
+                  "ignore": [
+                    0.1936,
+                    0.530103
+                  ],
+                  "post": [
+                    0.000154,
+                    0.000323
+                  ],
+                  "read": [
+                    0.4032,
+                    0.75058
+                  ],
+                  "report_risk": [
+                    0.0,
+                    0.08452
+                  ],
+                  "seek_help": [
+                    0.000441,
+                    0.000927
+                  ]
+                },
+                "stance": {
+                  "concerned": [
+                    0.111418,
+                    0.410367
+                  ],
+                  "critical": [
+                    0.066868,
+                    0.346053
+                  ],
+                  "neutral": [
+                    0.179461,
+                    0.519282
+                  ],
+                  "supportive": [
+                    0.034176,
+                    0.332376
+                  ]
+                }
+              },
+              "display_ordinals_are_sample_identities": false,
+              "display_probe_particle_ordinals": [
+                201,
+                912,
+                1406,
+                1538,
+                1832,
+                2111,
+                2158,
+                3108,
+                3464,
+                3535,
+                3919,
+                4051,
+                4593,
+                4952,
+                4959,
+                5234,
+                5824,
+                5950,
+                6729,
+                7036,
+                7292,
+                7649,
+                8173,
+                8176,
+                8344,
+                8407,
+                8426,
+                8497,
+                8631,
+                8706,
+                9177,
+                9612
+              ],
+              "inclusion_probability_range": [
+                0.00944195,
+                0.07461112
+              ],
+              "mean_kish_ess": 31.191092
+            },
+            "resource_remaining": 100,
+            "state_means": {
+              "activity_probability": 0.196636,
+              "attention": 0.179696,
+              "concern": 0.195078,
+              "opposition": 0.41087,
+              "satisfaction": 0.0,
+              "support": 0.359382,
+              "trust": 0.001199
+            },
+            "tick": 15
+          }
+        ]
+      }
+    }
+  },
+  "schema_version": "campus-pulse-live-aggregate-result-v3",
+  "seed_sensitivity": {
+    "lecture_external_incident_shock:governance": {
+      "range": 0.0,
+      "variance": 0.0
+    },
+    "lecture_external_incident_shock:natural": {
+      "range": 5.8e-05,
+      "variance": 0.0
+    },
+    "tongzhou_governance_information_shock:governance": {
+      "range": 0.0,
+      "variance": 0.0
+    },
+    "tongzhou_governance_information_shock:natural": {
+      "range": 0.000271,
+      "variance": 2e-08
+    }
+  },
+  "timeline_contract": {
+    "phases": [
+      {
+        "phase": "baseline",
+        "tick_count": 2
+      },
+      {
+        "phase": "burst",
+        "tick_count": 4
+      },
+      {
+        "phase": "spread",
+        "tick_count": 6
+      },
+      {
+        "phase": "decay",
+        "tick_count": 4
+      }
+    ],
+    "shared_baseline_ticks": 2,
+    "tick_count": 16
+  },
+  "usage": {
+    "low_cost_state_updates": 120000,
+    "provider_calls": 0,
+    "real_governance_actions": 0
+  },
+  "writeback_evaluation": {
+    "descriptive_baseline_non_degradation_limit": 0.035379,
+    "experimental_modes": [
+      "stance_only",
+      "full_state"
+    ],
+    "formal_mode": "observation_only",
+    "frozen_scenario_id": "lecture_external_incident_shock",
+    "metrics": {
+      "full_state": {
+        "descriptive_baseline_mae": 0.015379,
+        "phase_change_mae": 0.060571,
+        "primary_share_mae": 0.038466,
+        "seed_variance": 1e-07
+      },
+      "observation_only": {
+        "descriptive_baseline_mae": 0.015379,
+        "phase_change_mae": 0.060603,
+        "primary_share_mae": 0.038749,
+        "seed_variance": 3.3e-07
+      },
+      "stance_only": {
+        "descriptive_baseline_mae": 0.015379,
+        "phase_change_mae": 0.060603,
+        "primary_share_mae": 0.038749,
+        "seed_variance": 3.3e-07
+      }
+    },
+    "observation_only_fallback_applied": true,
+    "schema_version": "campus-pulse-writeback-evaluation-v1",
+    "seeds": [
+      20260722,
+      20261731
+    ]
+  }
+}

@@ -1,0 +1,186 @@
+:where(.campus-pulse-app, .campus-pulse-portal) {
+  /* Locked brand primitives */
+  --brand-red: #ae0b2a;
+  --brand-red-deep: #8b0821;
+  --brand-gold: #9b8a5c;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --neutral-light-brand-ref: #b3b3b3;
+  --neutral-dark-brand-ref: #595959;
+
+  /* CampusPulse application chrome. Page-local light surfaces remain mapped
+   * below until those pages are migrated deliberately. */
+  --cp-canvas-obsidian: #0b090a;
+  --cp-surface-charcoal: #151113;
+  --cp-surface-charcoal-raised: #1c1719;
+  --cp-border-graphite: #2a2428;
+  --cp-text-warm: #f1ece7;
+  --cp-text-warm-muted: #9e958f;
+  --cp-accent-crimson: #c51642;
+  --cp-accent-crimson-hover: #a91137;
+
+  /* Semantic color tokens */
+  --cp-surface-canvas: #f3f6f8;
+  --cp-surface-default: #ffffff;
+  --cp-surface-subtle: #eef3f6;
+  --cp-surface-raised: rgba(255, 255, 255, 0.92);
+  --cp-surface-inverse: #151414;
+  --cp-surface-selected: #f8e9ec;
+  --cp-text-primary: #191919;
+  --cp-text-secondary: #595959;
+  --cp-text-muted: #767676;
+  --cp-text-inverse: #ffffff;
+  --cp-text-inverse-muted: #d4d4d4;
+  --cp-border-default: #d7d4ce;
+  --cp-border-subtle: #e8e5df;
+  --cp-border-strong: #9b9b96;
+  --cp-border-inverse: #363636;
+  --cp-action-primary: var(--brand-red);
+  --cp-action-primary-hover: var(--brand-red-deep);
+  --cp-evidence: var(--brand-gold);
+  --cp-evidence-surface: #f4f0e6;
+  --cp-evidence-text: #55471f;
+  --cp-info: #245a78;
+  --cp-info-surface: #eaf3f7;
+  --cp-tech: #59656a;
+  --cp-tech-bright: #6e7b80;
+  --cp-tech-surface: #f0f2f2;
+  --cp-tech-line: #c9cecf;
+  --cp-tech-glow: none;
+  --cp-success: #286140;
+  --cp-success-surface: #ebf5ee;
+  --cp-warning: #7a5310;
+  --cp-warning-surface: #fbf1da;
+  --cp-danger: #b42318;
+  --cp-danger-surface: #fcecea;
+  --cp-focus-ring: #2f6fed;
+  --cp-sidebar-hover: #242424;
+  --cp-sidebar-active: #2b181c;
+  --cp-hero-surface-start: #181616;
+  --cp-hero-surface-mid: #211719;
+  --cp-hero-surface-end: #120f10;
+  --cp-hero-border: #282424;
+  --cp-hero-text: #ffffff;
+  --cp-hero-text-soft: #e7d7db;
+  --cp-hero-text-emphasis: #ead6db;
+  --cp-hero-text-secondary: #c7c1c0;
+  --cp-hero-text-muted: #a9a3a1;
+  --cp-hero-text-dim: #a8a1a0;
+  --cp-hero-action-start: #c41437;
+  --cp-hero-action-end: #970921;
+  --cp-hero-action-hover-start: #d41940;
+  --cp-hero-action-hover-end: #a50927;
+  --cp-hero-action-border: #c8173b;
+  --cp-overlay: rgba(0, 0, 0, 0.56);
+  --cp-shadow-drawer: 12px 0 36px rgba(0, 0, 0, 0.24);
+  --cp-shadow-card: 0 1px 2px rgba(24, 20, 18, 0.08);
+  --cp-shadow-card-hover: 0 1px 2px rgba(24, 20, 18, 0.11);
+  --cp-shadow-floating: 0 8px 24px rgba(21, 17, 15, 0.12);
+
+  /* Typography */
+  --cp-font-sans: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cp-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --cp-text-xs: 0.8125rem;
+  --cp-text-sm: 0.875rem;
+  --cp-text-md: 1rem;
+  --cp-text-lg: 1.125rem;
+  --cp-text-xl: 1.5rem;
+  --cp-text-2xl: 2rem;
+  --cp-text-3xl: 2.5rem;
+  --cp-leading-tight: 1.25;
+  --cp-leading-normal: 1.5;
+
+  /* Spacing and shape */
+  --cp-space-1: 0.25rem;
+  --cp-space-2: 0.5rem;
+  --cp-space-3: 0.75rem;
+  --cp-space-4: 1rem;
+  --cp-space-5: 1.25rem;
+  --cp-space-6: 1.5rem;
+  --cp-space-7: 1.75rem;
+  --cp-space-8: 2rem;
+  --cp-radius-xs: 4px;
+  --cp-radius-sm: 6px;
+  --cp-radius-md: 8px;
+  --cp-radius-lg: 8px;
+  --cp-control-height: 2.25rem;
+  --cp-touch-target: 2.75rem;
+
+  /* Shell geometry and layering */
+  --cp-sidebar-width: 13.75rem;
+  --cp-sidebar-compact-width: 4.5rem;
+  --cp-topbar-height: 3.5rem;
+  --cp-sourcebar-min-height: 2.5rem;
+  --cp-content-gutter: 1.5rem;
+  --cp-content-max: 105rem;
+  --cp-branch-natural: #2b6cb0;
+  --cp-branch-governance: #319795;
+  --cp-risk-medium: #dd6b20;
+  --cp-risk-high: #e53e3e;
+  --cp-z-shell: 20;
+  --cp-z-drawer-backdrop: 80;
+  --cp-z-drawer: 90;
+  --cp-z-skip-link: 120;
+  --cp-motion-fast: 120ms;
+  --cp-motion-standard: 180ms;
+
+  color: var(--cp-text-primary);
+  background:
+    radial-gradient(circle at 82% 4%, rgba(13,145,181,.07), transparent 28rem),
+    linear-gradient(180deg, #f8fafb 0, var(--cp-surface-canvas) 22rem);
+  font-family: var(--cp-font-sans);
+  line-height: 1.6;
+  color-scheme: light;
+}
+
+:where(.campus-pulse-app) :where(.case-card, .forum-lane, .feed-card, .result-card, .workbench-panel) {
+  transition: background-color var(--cp-motion-standard) ease, border-color var(--cp-motion-standard) ease;
+}
+
+:where(.campus-pulse-app) :where(.case-card, .forum-lane, .result-card):hover {
+  border-color: var(--cp-border-strong);
+}
+
+:where(.campus-pulse-app) :where(.feed-card):hover {
+  border-color: color-mix(in srgb, var(--cp-action-primary) 34%, var(--cp-border-default));
+  box-shadow: var(--cp-shadow-card);
+}
+
+.campus-pulse-app :is(a, button, input, select, textarea, summary, [tabindex], [role="button"]):focus-visible,
+.campus-pulse-portal :is(a, button, input, select, textarea, summary, [tabindex], [role="button"]):focus-visible {
+  outline: 3px solid var(--cp-focus-ring) !important;
+  /* Keep the ring inside the control so cards and panels with overflow:hidden
+   * cannot clip the keyboard focus indicator. */
+  outline-offset: -3px !important;
+  box-shadow:
+    inset 0 0 0 1px var(--cp-surface-default),
+    inset 0 0 0 4px var(--cp-focus-ring) !important;
+}
+
+:where(.campus-pulse-app, .campus-pulse-portal) :where(.cp-section-kicker, .section-label, .eyebrow) {
+  color: var(--cp-tech);
+  font-size: var(--cp-text-xs);
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+:where(.campus-pulse-app, .campus-pulse-portal) :where(button, [role="button"], a) {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  :where(.campus-pulse-app, .campus-pulse-portal),
+  :where(.campus-pulse-app, .campus-pulse-portal) *,
+  :where(.campus-pulse-app, .campus-pulse-portal) *::before,
+  :where(.campus-pulse-app, .campus-pulse-portal) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

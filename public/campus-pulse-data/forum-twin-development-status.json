@@ -1,0 +1,45 @@
+{
+  "schema_version": "campus-pulse-forum-twin-frontend-status-v1",
+  "generated_at": "2026-08-07",
+  "backend_loop_ready": true,
+  "publication_eligible": false,
+  "model_sha256": "9b33207ca3cb31611697a30895dc1b63a0e3e42cbb389934ee6ed18e6842d62c",
+  "population": {
+    "llm_agents": 1000,
+    "particles": 10000,
+    "current_source": "reviewed_1000_episode_population_bridge"
+  },
+  "engineering_evidence": {
+    "scenarios": 2,
+    "branches": 5,
+    "paired_seeds": 8,
+    "ticks": 24,
+    "semantic_slots": 16544,
+    "particle_updates": 17280000,
+    "provider_calls": 0,
+    "public_fixture_messages": 0,
+    "full_result_sha256": "a7b9f26fdfc9ede6e53eb0440d62077255bb09dabcf1bb670788229cef9830a4",
+    "evidence_sha256": "92511d7babac637546f313a187e491a88a792e698c877f64967d9b195b7911c3"
+  },
+  "live_pilot_evidence": {
+    "parallel_forum_available": true,
+    "closed_loop_available": true,
+    "real_llm_ablation_available": true,
+    "disclosure": "独立真实 LLM pilot 证据保存在交接目录，不与零 Provider 工程结果拼接。"
+  },
+  "blocking_gates": [
+    "remote_corpus_snapshot",
+    "full_local_embedding",
+    "authorized_active_review",
+    "profile_population_release",
+    "reviewed_forum_trace",
+    "hero_quality_review",
+    "formal_release"
+  ],
+  "claim_boundary": [
+    "1,000 个主体是 episode 驱动的合成 LLM Agent，不是真实学生。",
+    "10,000 粒子是状态不确定性，不是独立用户或证据。",
+    "当前默认页不展示 fixture 或未完成 trace 的论坛文字。",
+    "只有 publication-eligible result-v6 或正式离线包才能解锁平行论坛。"
+  ]
+}
