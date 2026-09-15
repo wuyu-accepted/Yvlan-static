@@ -2,9 +2,11 @@
 import { computed } from 'vue'
 import CpPageHeader from '../components/CpPageHeader.vue'
 import { currentLocale } from '../i18n/locale.ts'
+import { HERO_RESULT_KEY, HERO_SOURCE_KEY, LECTURE_HERO_RESULT_KEY, LECTURE_HERO_SOURCE_KEY } from '../source/registry.ts'
 
 const isEnglish = computed(() => currentLocale.value === 'en-US')
 const l = (zh: string, en: string) => isEnglish.value ? en : zh
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 </script>
 
 <template>
@@ -19,8 +21,8 @@ const l = (zh: string, en: string) => isEnglish.value ? en : zh
       <section class="audited-replay" aria-labelledby="audited-replay-title">
         <small>{{ l('审计回放', 'AUDITED REPLAY') }}</small>
         <h2 id="audited-replay-title">{{ l('世纪馆“幽灵预约”', 'Century Gym ghost-booking') }}</h2>
-        <p>{{ l('展示实时执行控制台的已验证回放。', 'Verified replay demonstrating the Live Execution Console.') }}</p>
-        <RouterLink class="primary-action" :to="{ name:'campus-pulse-century-gym-live' }">
+        <p>{{ l('通过已验证案例回放讨论与治理行动的演化过程。', 'Replay the evolution of discussion and governance actions through a verified case.') }}</p>
+        <RouterLink class="primary-action" :to="publicDemo ? { name:'campus-pulse-result-forum', params:{ resultKey:HERO_RESULT_KEY }, query:{ source:HERO_SOURCE_KEY, tick:'3', branch:'both', autoplay:'1' } } : { name:'campus-pulse-century-gym-live' }">
           {{ l('打开审计演示', 'Open audited demo') }}
           <i class="fa-solid fa-arrow-right" aria-hidden="true" />
         </RouterLink>
@@ -35,7 +37,7 @@ const l = (zh: string, en: string) => isEnglish.value ? en : zh
             <small>{{ l('场景预览', 'Scenario preview') }}</small>
             <h3>{{ l('暑期住宿治理争议', 'Summer Housing governance dispute') }}</h3>
             <p>{{ l('校园资源分配治理争议的预配置视图。', 'Preconfigured view of a campus resource-allocation governance dispute.') }}</p>
-            <RouterLink class="secondary-action" :to="{ name:'campus-pulse-live-world', query:{ scenario:'governance_legitimacy_dispute' } }">
+            <RouterLink class="secondary-action" :to="publicDemo ? { name:'campus-pulse-result-forum', params:{ resultKey:HERO_RESULT_KEY }, query:{ source:HERO_SOURCE_KEY, tick:'3', branch:'both', autoplay:'1' } } : { name:'campus-pulse-live-world', query:{ scenario:'governance_legitimacy_dispute' } }">
               {{ l('打开场景预览', 'Open scenario preview') }}
               <i class="fa-solid fa-arrow-right" aria-hidden="true" />
             </RouterLink>
@@ -44,7 +46,7 @@ const l = (zh: string, en: string) => isEnglish.value ? en : zh
             <small>{{ l('场景预览', 'Scenario preview') }}</small>
             <h3>{{ l('讲座事件', 'Lecture incident') }}</h3>
             <p>{{ l('外部讲座事件及治理回应的预配置视图。', 'Preconfigured view of an external lecture incident and governance response.') }}</p>
-            <RouterLink class="secondary-action" :to="{ name:'campus-pulse-live-world', query:{ scenario:'lecture_external_incident_shock' } }">
+            <RouterLink class="secondary-action" :to="publicDemo ? { name:'campus-pulse-result-forum', params:{ resultKey:LECTURE_HERO_RESULT_KEY }, query:{ source:LECTURE_HERO_SOURCE_KEY, tick:'3', branch:'both', autoplay:'1' } } : { name:'campus-pulse-live-world', query:{ scenario:'lecture_external_incident_shock' } }">
               {{ l('打开场景预览', 'Open scenario preview') }}
               <i class="fa-solid fa-arrow-right" aria-hidden="true" />
             </RouterLink>
@@ -52,7 +54,7 @@ const l = (zh: string, en: string) => isEnglish.value ? en : zh
         </div>
       </section>
 
-      <section class="project-workflow" aria-labelledby="project-live-title">
+      <section v-if="!publicDemo" class="project-workflow" aria-labelledby="project-live-title">
         <small>{{ l('项目工作流', 'PROJECT WORKFLOW') }}</small>
         <h2 id="project-live-title">{{ l('运行你自己的模拟', 'Run your own simulation') }}</h2>
         <p>{{ l('在工作台中创建并配置项目；场景、治理方案和运行合同就绪后，再启动真实运行。', 'Create and configure a project in Workbench, then launch a real run when its scenario, governance plan, and run contract are ready.') }}</p>
@@ -66,7 +68,7 @@ const l = (zh: string, en: string) => isEnglish.value ? en : zh
 </template>
 
 <style scoped>
-.live-evolution-landing { --cp-surface-default:var(--cp-surface-charcoal); --cp-surface-subtle:var(--cp-surface-charcoal-raised); --cp-text-primary:var(--cp-text-warm); --cp-text-secondary:var(--cp-text-warm-muted); --cp-text-muted:var(--cp-text-warm-muted); --cp-border-default:var(--cp-border-graphite); --cp-border-strong:color-mix(in srgb,var(--cp-text-warm-muted) 58%,var(--cp-border-graphite)); --cp-action-primary:var(--cp-accent-crimson); display:grid; box-sizing:border-box; width:min(100%,var(--cp-content-max)); min-height:calc(100vh - 7.5rem); align-content:start; gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) var(--cp-space-8); background:var(--cp-canvas-obsidian); color:var(--cp-text-primary); color-scheme:dark; }
+.live-evolution-landing { --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-border-default:#ded8d4; --cp-border-strong:#bdb4b0; --cp-action-primary:#b20f3d; display:grid; box-sizing:border-box; width:min(100%,var(--cp-content-max)); min-height:calc(100vh - 4.5rem); align-content:start; gap:var(--cp-space-4); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) var(--cp-space-8); background:#fff; color:var(--cp-text-primary); color-scheme:light; }
 .live-evolution-landing :deep(.cp-page-header) { padding:var(--cp-space-4); }
 .live-evolution-landing :deep(.cp-page-header h1) { font-size:var(--cp-text-2xl); }
 .live-evolution-landing :deep(.cp-page-header p) { max-width:46rem; margin:var(--cp-space-2) 0 0; color:var(--cp-text-secondary); font-size:var(--cp-text-sm); line-height:1.6; }

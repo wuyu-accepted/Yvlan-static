@@ -514,7 +514,7 @@ function buildEvidence(result: ResultViewModel): EvidenceVM {
       label: '发布门禁',
       status: result.source.publicationEligible === true ? 'passed' : result.source.publicationEligible === false ? 'failed' : 'unknown',
       reason: result.source.publicationEligible === true
-        ? '后端声明可发布；正式导出仍需后端再次校验。'
+        ? '当前记录标记为可发布；正式导出前仍需再次校验。'
         : result.source.publicationEligible === false
           ? '当前结果不可正式发布；仍可受限审阅。'
           : '服务端未声明发布资格。',

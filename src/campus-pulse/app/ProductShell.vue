@@ -28,6 +28,7 @@ let previousBodyOverflow = ''
 const motion = useCampusPulseMotion(appRoot)
 const isEnglish = computed(() => currentLocale.value === 'en-US')
 const l = (zh, en) => isEnglish.value ? en : zh
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 
 const currentNavId = computed(() => route.meta.navId || '')
 const routeTitle = computed(() => route.meta.title || 'CampusPulse')
@@ -120,7 +121,7 @@ watch(mobileNavOpen, (open) => {
 
 onMounted(() => {
   document.body.classList.add('campus-pulse-product-active')
-  refreshHealth()
+  if (!publicDemo) refreshHealth()
 })
 
 onBeforeUnmount(() => {
@@ -131,7 +132,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="appRoot" class="campus-pulse-app">
+  <div ref="appRoot" class="campus-pulse-app" :class="{ 'campus-pulse-app--public': publicDemo }">
     <a class="cp-skip-link" href="#main-content">跳到主要内容</a>
 
     <aside class="product-sidebar" aria-label="CampusPulse 产品导航">
@@ -141,8 +142,8 @@ onBeforeUnmount(() => {
       </RouterLink>
       <ProductNav :items="productNavigation" :current-id="currentNavId" />
       <div class="product-sidebar__footer">
-        <span><i class="fa-solid fa-shield-halved" aria-hidden="true" /> 可审计运行</span>
-        <p>{{ l('大语言模型驱动的校园论坛模拟', 'LLM-powered campus forum simulation') }}<br>{{ l('与治理预演平台', 'and governance rehearsal platform') }}</p>
+        <span><i class="fa-solid fa-shield-halved" aria-hidden="true" /> {{ l('案例资料', 'CASE MATERIALS') }}</span>
+        <p>{{ l('校园论坛模拟与治理案例展示', 'Campus forum simulation and governance case showcase') }}</p>
       </div>
     </aside>
 
@@ -156,16 +157,17 @@ onBeforeUnmount(() => {
           <span class="product-topbar__separator" aria-hidden="true" />
           <strong>{{ routeTitle }}</strong>
         </div>
-        <span class="product-topbar__live"><i class="fa-solid fa-circle" aria-hidden="true" /> {{ l('本机运行', 'LOCAL') }}</span>
+        <span v-if="publicDemo" class="product-topbar__showcase"><i class="fa-solid fa-book-open" aria-hidden="true" /> {{ l('公开展示', 'SHOWCASE') }}</span>
+        <span v-else class="product-topbar__live"><i class="fa-solid fa-circle" aria-hidden="true" /> {{ l('本机运行', 'LOCAL') }}</span>
         <LanguageToggle />
-        <RouterLink class="product-topbar__provider" to="/campus-pulse/system?tab=provider" :title="l('配置模型连接与访问凭据','Configure the model connection and credentials')">
+        <RouterLink v-if="!publicDemo" class="product-topbar__provider" to="/campus-pulse/system?tab=provider" :title="l('配置模型连接与访问凭据','Configure the model connection and credentials')">
           <i class="fa-solid fa-key" aria-hidden="true" />
           <span>{{ l('模型连接', 'Model connection') }}</span>
         </RouterLink>
       </header>
 
-      <SourceStatusBar :source-state="sourceState" :service-state="serviceState" :problem="sourceContext.problem.value" :details-open="sourceDetailsOpen" @open-details="sourceDetailsOpen = !sourceDetailsOpen" @refresh="refreshHealth" />
-      <section v-if="sourceDetailsOpen" id="source-boundary-details" class="source-detail" aria-label="运行详情">
+      <SourceStatusBar v-if="!publicDemo" :source-state="sourceState" :service-state="serviceState" :problem="sourceContext.problem.value" :details-open="sourceDetailsOpen" @open-details="sourceDetailsOpen = !sourceDetailsOpen" @refresh="refreshHealth" />
+      <section v-if="!publicDemo && sourceDetailsOpen" id="source-boundary-details" class="source-detail" aria-label="运行详情">
         <strong>运行详情</strong>
         <span>origin: {{ sourceState.provenance.origin || sourceState.provenance.evidenceId || '未声明' }}</span>
         <span>publication eligible: {{ sourceState.publicationEligible === null ? '未声明' : sourceState.publicationEligible ? '是' : '否' }}</span>
@@ -223,6 +225,7 @@ onBeforeUnmount(() => {
 .product-topbar__context { flex:1; }
 .product-topbar__live { display:inline-flex; align-items:center; gap:.38rem; padding:.35rem .55rem; border:1px solid #355746; border-radius:999px; background:#18251e; color:#8ac9a2; font-size:.62rem; font-weight:800; letter-spacing:.09em; }
 .product-topbar__live i { font-size:.38rem; }
+.product-topbar__showcase { display:inline-flex; align-items:center; gap:.4rem; padding:.35rem .55rem; border:1px solid #d9d2ce; border-radius:999px; background:#faf8f7; color:#70666a; font-size:.62rem; font-weight:800; letter-spacing:.08em; }
 .product-topbar__provider { display:inline-flex; min-height:2.25rem; align-items:center; gap:.45rem; padding:0 .7rem; border:1px solid #49343c; border-radius:var(--cp-radius-sm); background:var(--cp-surface-charcoal-raised); color:var(--cp-text-warm); font-size:var(--cp-text-xs); font-weight:700; text-decoration:none; }
 .product-topbar__provider:hover { border-color:var(--cp-accent-crimson); color:var(--cp-text-warm); text-decoration:none; }
 .product-topbar__provider i { color:#e24a6d; }
@@ -237,6 +240,14 @@ onBeforeUnmount(() => {
 .product-main-content { min-width:0; min-height:0; overflow:auto; overscroll-behavior:contain; background:var(--cp-surface-canvas); }
 .product-main-content > :deep(*) { will-change:opacity,transform; }
 .product-main-content:focus { outline-offset:-3px; }
+.campus-pulse-app--public .product-stage { grid-template-rows:auto minmax(0,1fr); background:#fff; }
+.campus-pulse-app--public .product-topbar { border-bottom-color:#e4dfdc; background:#fff; color:#2c2628; }
+.campus-pulse-app--public .product-topbar__eyebrow { color:#8b8084; }
+.campus-pulse-app--public .product-topbar__separator { background:#ddd7d3; }
+.campus-pulse-app--public .product-main-content { background:#fff; }
+.campus-pulse-app--public .product-topbar :deep(.language-toggle) { border-color:#ded8d4; background:#f7f5f3; }
+.campus-pulse-app--public .product-topbar :deep(.language-toggle button) { color:#766c70; }
+.campus-pulse-app--public .product-topbar :deep(.language-toggle button.active) { background:#fff; color:#2c2628; }
 .product-route-loading { max-width:72rem; margin:0 auto; padding:var(--cp-space-6) var(--cp-content-gutter); }
 .product-route-loading__label { display:block; margin-bottom:var(--cp-space-3); color:var(--cp-text-secondary); font-size:var(--cp-text-sm); }
 .mobile-navigation-layer { position:fixed; inset:0; z-index:var(--cp-z-drawer-backdrop); }
@@ -246,5 +257,5 @@ onBeforeUnmount(() => {
 .mobile-navigation p { margin:auto var(--cp-space-4) var(--cp-space-4); color:var(--neutral-light-brand-ref); font-size:var(--cp-text-xs); }
 @media (max-width:1439px) and (min-width:1024px) { .campus-pulse-app { grid-template-columns:var(--cp-sidebar-compact-width) minmax(0,1fr); } .product-brand { justify-content:center; padding:0; } .product-brand__text,.product-sidebar__footer { display:none; } .product-sidebar :deep(.product-nav) { display:grid; } .product-sidebar :deep(.product-nav__link) { justify-content:center; padding-inline:0; } .product-sidebar :deep(.product-nav__copy) { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .product-sidebar :deep(.product-nav__link::after) { position:absolute; left:calc(100% + .5rem); z-index:3; display:none; padding:.35rem .5rem; border:1px solid var(--cp-border-inverse); border-radius:var(--cp-radius-sm); background:var(--cp-surface-inverse); color:var(--cp-text-inverse); content:attr(data-label); font-size:var(--cp-text-xs); white-space:nowrap; } .product-sidebar :deep(.product-nav__link:is(:hover,:focus-visible)::after) { display:block; } }
 @media (max-width:1023px) { .campus-pulse-app { grid-template-columns:minmax(0,1fr); } .product-sidebar { display:none; } .product-topbar__menu { display:inline-grid; } }
-@media (max-width:767px) { .product-topbar { min-height:var(--cp-topbar-height); padding-inline:var(--cp-space-2) var(--cp-space-4); } .product-topbar__context { display:grid; gap:0; } .product-topbar__eyebrow,.product-topbar__separator,.product-topbar__live { display:none; } .product-topbar__provider { width:var(--cp-touch-target); min-width:var(--cp-touch-target); height:var(--cp-touch-target); justify-content:center; padding:0; } .product-topbar__provider span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .source-detail { align-items:flex-start; flex-wrap:wrap; padding-inline:var(--cp-space-4); } .source-detail span:nth-of-type(1) { min-width:100%; } .source-detail button { min-height:var(--cp-touch-target); } .product-route-loading { padding:var(--cp-space-4); } }
+@media (max-width:767px) { .product-topbar { min-height:var(--cp-topbar-height); padding-inline:var(--cp-space-2) var(--cp-space-4); } .product-topbar__context { display:grid; gap:0; } .product-topbar__eyebrow,.product-topbar__separator,.product-topbar__live,.product-topbar__showcase { display:none; } .product-topbar__provider { width:var(--cp-touch-target); min-width:var(--cp-touch-target); height:var(--cp-touch-target); justify-content:center; padding:0; } .product-topbar__provider span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } .source-detail { align-items:flex-start; flex-wrap:wrap; padding-inline:var(--cp-space-4); } .source-detail span:nth-of-type(1) { min-width:100%; } .source-detail button { min-height:var(--cp-touch-target); } .product-route-loading { padding:var(--cp-space-4); } }
 </style>

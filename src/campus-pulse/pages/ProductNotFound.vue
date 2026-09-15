@@ -20,6 +20,6 @@ const router = useRouter()
 </template>
 
 <style scoped>
-.product-not-found { --cp-surface-default:var(--cp-surface-charcoal); --cp-surface-subtle:var(--cp-surface-charcoal-raised); --cp-text-primary:var(--cp-text-warm); --cp-text-secondary:var(--cp-text-warm-muted); --cp-text-muted:var(--cp-text-warm-muted); --cp-border-default:var(--cp-border-graphite); --cp-border-strong:color-mix(in srgb,var(--cp-text-warm-muted) 58%,var(--cp-border-graphite)); --cp-action-primary:var(--cp-accent-crimson); min-height:calc(100dvh - var(--cp-topbar-height) - var(--cp-sourcebar-min-height)); padding:var(--cp-space-6) var(--cp-content-gutter); background:var(--cp-canvas-obsidian); color:var(--cp-text-primary); color-scheme:dark; }
+.product-not-found { --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-border-default:#ded8d4; --cp-border-strong:#bdb4b0; --cp-action-primary:#b20f3d; min-height:calc(100dvh - var(--cp-topbar-height)); padding:var(--cp-space-6) var(--cp-content-gutter); background:#fff; color:var(--cp-text-primary); color-scheme:light; }
 @media (max-width:767px) { .product-not-found { padding:var(--cp-space-4); } }
 </style>

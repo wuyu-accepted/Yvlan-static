@@ -26,6 +26,8 @@ const ForumTwinView = () =>
   import('../views/ForumTwinView.vue')
 const CampusPulseCoverPage = () =>
   import('../campus-pulse/landing/CampusPulseCoverPage.vue')
+const PublicShowcaseHome = () =>
+  import('../campus-pulse/landing/PublicShowcaseHome.vue')
 const CampusPulseOverviewView = () =>
   import('../views/CampusPulseOverviewView.vue')
 const CampusPulseResultsView = () =>
@@ -60,6 +62,8 @@ const GovernancePage = () =>
   import('../campus-pulse/results/GovernancePage.vue')
 const ResultEvidencePage = () =>
   import('../campus-pulse/results/ResultEvidencePage.vue')
+
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 
 function canonicalizeLegacyRun(to) {
   return legacyRunResultLocation(to.query.run_id) || true
@@ -104,8 +108,8 @@ const routes = [
   {
     path: '/campus-pulse',
     name: 'campus-pulse',
-    component: CampusPulseCoverPage,
-    meta: {
+    component: publicDemo ? PublicShowcaseHome : CampusPulseCoverPage,
+    meta: publicDemo ? productRouteMeta.overview : {
       standaloneCover: true,
       title: 'CampusPulse',
       documentTitle: 'CampusPulse · 校园论坛社会模拟',
@@ -331,6 +335,18 @@ const router = createRouter({
   routes
 })
 
+const publicDemoAllowedNames = new Set([
+  'campus-pulse',
+  'campus-pulse-live-evolution',
+  'campus-pulse-results',
+  'campus-pulse-result-forum',
+  'campus-pulse-result-summary',
+  'campus-pulse-result-mechanisms',
+  'campus-pulse-result-governance',
+  'campus-pulse-result-evidence',
+  'campus-pulse-not-found',
+])
+
 const publicDemoBlockedNames = new Set([
   'campus-pulse-project-center',
   'campus-pulse-project-new',
@@ -342,12 +358,15 @@ const publicDemoBlockedNames = new Set([
   'campus-pulse-run-live',
   'campus-pulse-run-analysis',
   'campus-pulse-workbench',
+  'campus-pulse-overview',
+  'campus-pulse-system',
+  'campus-pulse-innovation-evaluation',
 ])
 
-if (import.meta.env.VITE_PUBLIC_DEMO === 'true') {
+if (publicDemo) {
   router.beforeEach((to) => (
-    publicDemoBlockedNames.has(String(to.name || ''))
-      ? { name: 'campus-pulse-results', query: { mode: 'public-demo' } }
+    to.query.source === 'live-api' || publicDemoBlockedNames.has(String(to.name || '')) || (to.name && !publicDemoAllowedNames.has(String(to.name)))
+      ? { name: 'campus-pulse' }
       : true
   ))
 }

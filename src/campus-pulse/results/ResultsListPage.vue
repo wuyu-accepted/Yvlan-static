@@ -311,13 +311,13 @@ onBeforeUnmount(() => { loadGeneration += 1 })
 
 <style scoped>
 .results-list-page {
-  --cp-surface-canvas:#0b090a; --cp-surface-default:#151113; --cp-surface-subtle:#1c1719; --cp-surface-raised:#1c1719; --cp-surface-inverse:#080708; --cp-surface-selected:#29171d;
-  --cp-text-primary:#f1ece7; --cp-text-secondary:#b9b0aa; --cp-text-muted:#9e958f; --cp-text-inverse:#f1ece7;
-  --cp-border-default:#2a2428; --cp-border-subtle:#241f22; --cp-border-strong:#51464c; --cp-border-inverse:#2a2428;
+  --cp-surface-canvas:#fff; --cp-surface-default:#fff; --cp-surface-subtle:#f7f5f3; --cp-surface-raised:#fff; --cp-surface-inverse:#171315; --cp-surface-selected:#fff2f5;
+  --cp-text-primary:#2c2628; --cp-text-secondary:#6f6569; --cp-text-muted:#8c8185; --cp-text-inverse:#fff;
+  --cp-border-default:#ded8d4; --cp-border-subtle:#ebe7e4; --cp-border-strong:#bdb4b0; --cp-border-inverse:#30292c;
   --cp-action-primary:#c51642; --cp-action-primary-hover:#a91137;
-  --cp-evidence:#d4af37; --cp-evidence-surface:#211d12; --cp-evidence-text:#e2c65f;
-  --cp-info:#2b6cb0; --cp-info-surface:#111c27; --cp-warning:#dd6b20; --cp-warning-surface:#26180f; --cp-danger:#e53e3e; --cp-danger-surface:#281214;
-  --cp-tech:#9e958f; --cp-tech-bright:#b9b0aa; --cp-tech-surface:#1c1719; --cp-tech-line:#2a2428; --cp-tech-glow:none; --cp-shadow-card:none;
+  --cp-evidence:#9b7530; --cp-evidence-surface:#fff9e9; --cp-evidence-text:#765819;
+  --cp-info:#2b6cb0; --cp-info-surface:#edf6ff; --cp-warning:#b45f16; --cp-warning-surface:#fff6e8; --cp-danger:#c53030; --cp-danger-surface:#fff0f0;
+  --cp-tech:#776c70; --cp-tech-bright:#554c4f; --cp-tech-surface:#f4f1ef; --cp-tech-line:#ded8d4; --cp-tech-glow:none; --cp-shadow-card:none;
   width:100%; min-height:calc(100vh - 7.5rem); margin:0 auto; padding:var(--cp-space-4) var(--cp-content-gutter) 4rem; background:var(--cp-surface-canvas); color:var(--cp-text-primary);
 }
 .results-list-page__head { display:flex; align-items:flex-end; justify-content:space-between; gap:var(--cp-space-6); margin-bottom:var(--cp-space-7); }

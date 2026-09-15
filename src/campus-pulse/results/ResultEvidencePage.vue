@@ -15,7 +15,7 @@ const result = computed(() => context.result.value)
 async function downloadReport(format: 'json' | 'html') {
   if (!evidence.value?.report.available || !result.value?.runId) return
   const confirmed = window.confirm(
-    `确认下载 ${format.toUpperCase()} 报告：结果 ${result.value.key}，来源 ${result.value.source.key}。正式导出仍需后端门禁复核。`,
+    `确认下载 ${format.toUpperCase()} 报告：结果 ${result.value.key}，来源 ${result.value.source.key}。正式导出仍需发布门禁复核。`,
   )
   if (!confirmed) return
   try {

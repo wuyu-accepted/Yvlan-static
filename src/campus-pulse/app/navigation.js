@@ -14,10 +14,14 @@ const completeProductNavigation = [
   Object.freeze({ id: 'system', label: '系统与数据', description: '模型、证据与就绪状态', to: '/campus-pulse/system', icon: 'fa-shield-halved' }),
 ]
 
+const publicProductNavigation = [
+  Object.freeze({ id: 'overview', label: '项目介绍', description: 'CampusPulse 能力总览', to: '/campus-pulse', icon: 'fa-house' }),
+  Object.freeze({ id: 'forum', label: '演化展示', description: '观察讨论与回应过程', to: Object.freeze({ name: 'campus-pulse-live-evolution' }), icon: 'fa-comments' }),
+  Object.freeze({ id: 'results', label: '案例中心', description: '阅读案例与分支差异', to: '/campus-pulse/results', icon: 'fa-chart-column' }),
+]
+
 export const productNavigation = Object.freeze(
-  import.meta.env.VITE_PUBLIC_DEMO === 'true'
-    ? completeProductNavigation.filter((item) => item.id !== 'workbench')
-    : completeProductNavigation,
+  import.meta.env.VITE_PUBLIC_DEMO === 'true' ? publicProductNavigation : completeProductNavigation,
 )
 
 export function defineProductRouteMeta({ navId, title, source }) {

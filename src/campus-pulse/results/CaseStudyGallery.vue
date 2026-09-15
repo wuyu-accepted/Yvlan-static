@@ -72,6 +72,7 @@ const resourceIntervention = computed(() => resourceStory.value?.branchSummaries
 const resourceLoop = computed(() => resourceStory.value?.closedLoops[0] || null)
 const isEnglish = computed(() => currentLocale.value === 'en-US')
 const l = (zh: string, en: string) => isEnglish.value ? en : zh
+const publicDemo = import.meta.env.VITE_PUBLIC_DEMO === 'true'
 
 const lectureSteps = computed(() => {
   const forum = lectureResult.value?.forum
@@ -149,7 +150,7 @@ onBeforeUnmount(stopLecture)
     <p v-else-if="error && !resourceResult && !lectureResult" class="case-state case-state--error" role="alert">{{ error }}</p>
 
     <template v-else>
-      <section class="template-launcher" aria-label="案例模板">
+      <section v-if="!publicDemo" class="template-launcher" aria-label="案例模板">
         <div><span>TEMPLATE LIBRARY</span><strong>{{ l('把已验证案例复制到项目流程', 'Copy a verified case into the project flow') }}</strong><p>{{ l('保留固定 Agent 世界，重新配置事件、分支、预算和模型。', 'Keep the fixed Agent world, then reconfigure the event, branches, budget, and model.') }}</p></div>
         <nav><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'housing'}}">{{ l('复制住宿案例', 'Copy housing') }}</RouterLink><RouterLink :to="{name:'campus-pulse-project-new',query:{template:'lecture'}}">{{ l('复制讲座案例', 'Copy lecture') }}</RouterLink></nav>
       </section>
@@ -251,7 +252,7 @@ onBeforeUnmount(stopLecture)
     <details v-if="flagshipError" class="case-warning case-diagnostic" role="note">
       <summary>{{ l('部分扩展验证数据暂不可用', 'Some extended validation data is unavailable') }}</summary>
       <p>{{ flagshipError }}</p>
-      <RouterLink to="/campus-pulse/system">{{ l('查看数据与校验状态', 'Inspect data and verification status') }}</RouterLink>
+      <RouterLink v-if="!publicDemo" to="/campus-pulse/system">{{ l('查看数据与校验状态', 'Inspect data and verification status') }}</RouterLink>
     </details>
   </section>
 </template>
